@@ -1,0 +1,30 @@
+#' gosorensen: A package for making inference on gene lists based on the Sorensen-Dice dissimilarity
+#'
+#' Given two lists of genes, and a set of Gene Ontology (GO) items (e.g., all GO items in a given
+#' level of a given GO ontology) one may explore some aspects of their biological meaning by
+#' constructing a 2x2 contingency table, the cross-tabulation of: number of these GO items
+#' non-enriched in both gene lists (n00), items enriched in the first list but not in the second one
+#' (n10), items non-enriched in the first list but enriched in the second (n10) and items enriched
+#' in both lists (n11). Then, one may express the degree of similarity or dissimilarity between the
+#' two lists by means of an appropriate index computed on these frequency tables of concordance or
+#' non-concordance in GO items enrichment.
+#' In our opinion, an appropriate index is the Sorensen-Dice index which ignores the double negatives
+#' n00: if the total number of candidate GO items under consideration grows (e.g., all items in a deep
+#' level of an ontology) likely n00 will also grow artificially. On the other hand, intuitively the
+#' degree of similarity between both lists must be directly related to the degree of concordance in
+#' the enrichment, n11.
+#'
+#' For the moment, the gosorensen package provides the following functions:
+#' \describe{
+#'   \item{nice2x2Table}{Check the validity and reformate, if necessary, a table as described before.}
+#'   \item{dSorensen}{Compute the Sorensen-Dice dissimilarity}
+#'   \item{seSorensen}{Standard error estimate of the sample Sorensen-Dice dissimilarity}
+#'   \item{duppSorensen}{Upper limit of a one-sided confidence interval (0,dUpp] for the population dissimilarity}
+#'   \item{equivTestSorensen}{Equivalence test between two gene lists, based on the Sorensen-Dice dissimilarity}
+#' }
+#' All these functions are generic, adequate for different (S3) classes representing the before cited
+#' GO item enrichment cross-tabulations.
+#'
+#' @docType package
+#' @name gosorensen
+NULL

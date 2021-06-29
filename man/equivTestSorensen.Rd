@@ -13,15 +13,27 @@ equivTestSorensen(x, ...)
 
 \method{equivTestSorensen}{table}(
   x,
-  n = sum(x),
+  n,
   d0 = 1/(1 + 1.25),
   conf.level = 0.95,
   check.table = TRUE
 )
 
-\method{equivTestSorensen}{matrix}(x, n = sum(x), d0 = 1/(1 + 1.25), conf.level = 0.95)
+\method{equivTestSorensen}{matrix}(
+  x,
+  n,
+  d0 = 1/(1 + 1.25),
+  conf.level = 0.95,
+  check.table = TRUE
+)
 
-\method{equivTestSorensen}{numeric}(x, n = sum(x), d0 = 1/(1 + 1.25), conf.level = 0.95)
+\method{equivTestSorensen}{numeric}(
+  x,
+  n,
+  d0 = 1/(1 + 1.25),
+  conf.level = 0.95,
+  check.table = TRUE
+)
 
 \method{equivTestSorensen}{character}(
   x,
@@ -40,8 +52,8 @@ See the details section for more information.}
 
 \item{...}{extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.}
 
-\item{n}{total number of cases (GO nodes) in the contingency table. Only required
-(sometimes) on the "numeric" interface, see the details section of \code{\link{nice2x2Table}}.}
+\item{n}{tumeric. It is ignored except in the "table", "matrix" or "numeric" interfaces when argument \code{x}
+represents relative frequencies, see the details section for more information.}
 
 \item{d0}{equivalence threshold for the population Sorensen-Dice dissimilarity, d. The null hypothesis
 states that d >= d0, and the alternative that d < d0.}
@@ -77,15 +89,43 @@ all pairwise comparisons, each one being an object of "equivSDhtest" class.
 Asymptotic equivalence test for the Sorensen-Dice dissimilarity
 }
 \details{
-In the "table", "matrix" and "numeric" interfaces, \code{x} must represent a 2x2 contingency
-table of joint enrichment frequencies among n GO items: n00 items non enriched in both lists, n01 items
-non enriched in the first list but enriched in the second one and so on.
+This function computes the asymptotic equivalence test based on the Sorensen-Dice dissimilarity,
+given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
+or a "numeric" object):
+\deqn{
+ \tabular{rr}{
+  n_{00} \tab n_{01} \cr
+  n_{10} \tab n_{11},
+ }
+}{}
+
+\tabular{rr}{
+n_00 \tab n_01 \cr
+n_10 \tab n_11,
+}
+
+The subindex '00' corresponds to those GO items non enriched in both gene lists, '10' corresponds to those
+enriched in the first list but not in the second, '01' to items non enriched in the first list
+but enriched in the second and '11' to those GO items enriched in both lists.
+These values must be provided in this order. In the "numeric" interface,
+if \code{length(x) == 3} the values are interpreted as
+\eqn{(n_{10}, n_{01}, n_{11})}{%
+(n_10, n_01, n_11)} and otherwise as
+\eqn{(n_{00}, n_{10}, n_{01}, n_{11})}{%
+(n_00, n_10, n_01, n_11)}, discarding extra values if necessary.
+The result is correct, regardless the frequencies being absolute or relative but, in this second case, the value of
+argument \code{n} must be provided and must correspond to the total number of enriched GO items, i.e., to the sum
+of absolute frequencies
+\eqn{n_{10} + n_{01} + n_{11}}{%
+n_10 + n_01 + n_11.}
+
 If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 equivalence test is performed between lists \code{x} and \code{y}, after internally summarizing these
 gene lists as a 2x2 contingency table of joint enrichment.
+
 If \code{x} is an object of class "list", each of its elements must be a "character" vector of gene
 identifiers. Then all pairwise equivalence tests are performed between these gene lists.
-The test is based on the fact that the studentized statistic is asymptotically distributed
+The test is based on the fact that the studentized statistic (d - d0) / se is asymptotically distributed
 as a standard normal.
 }
 \section{Methods (by class)}{
@@ -108,6 +148,8 @@ tab_atlas.sanger_BP3
 equivTestSorensen(tab_atlas.sanger_BP3)
 
 library(equivStandardTest)
+data(humanEntrezIDs)
+
 # Building enrichment contingency tables from scratch, using package "equivStandardTest"
 # Gene universe:
 data(humanEntrezIDs)

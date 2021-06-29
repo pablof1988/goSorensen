@@ -86,7 +86,7 @@ nice2x2Table.table <- function(x, listNames) {
       x <- as.table(completeTable(x))
     }
   }
-  if (any(x < 0)) {
+  if (any(x < 0, na.rm = TRUE)) {
     stop("Negative frequencies in a contingency table")
   }
   if (!missing(listNames)) {
@@ -108,7 +108,7 @@ nice2x2Table.matrix <- function(x, listNames) {
       x <- completeTable(x)
     }
   }
-  if (any(x < 0)) {
+  if (any(x < 0, na.rm = TRUE)) {
     stop("Negative frequencies in a contingency table")
   }
   if (!missing(listNames)) {
@@ -125,7 +125,11 @@ nice2x2Table.numeric <- function(x, n) {
     stop("The minimum length of a vector representing a 2x2 enrichment contingency table must be 3")
   }
   if (length(x) == 3) {
-    tab <- c(n - sum(x), x)
+    if (missing(n)) {
+      tab <- c(NA, x)
+    } else {
+      tab <- c(n - sum(x), x)
+    }
     if (!is.null(names(tab))) {
       names(tab)[1] <- "n00"
     } else {
@@ -137,7 +141,7 @@ nice2x2Table.numeric <- function(x, n) {
       names(tab) <- c("n00", "n10", "n01", "n11")
     }
   }
-  if (any(tab < 0)) {
+  if (any(tab < 0, na.rm = TRUE)) {
     stop("Negative frequencies in a contingency table")
   }
   return(tab)

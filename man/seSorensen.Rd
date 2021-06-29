@@ -11,9 +11,9 @@
 \usage{
 seSorensen(x, ...)
 
-\method{seSorensen}{table}(x, n = sum(x), check.table = TRUE)
+\method{seSorensen}{table}(x, n, check.table = TRUE)
 
-\method{seSorensen}{matrix}(x, n = sum(x), check.table = TRUE)
+\method{seSorensen}{matrix}(x, n, check.table = TRUE)
 
 \method{seSorensen}{numeric}(x, n, check.table = TRUE)
 
@@ -26,6 +26,9 @@ seSorensen(x, ...)
 or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.}
 
 \item{...}{extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.}
+
+\item{n}{numeric. It is ignored except in the "table", "matrix" or "numeric" interfaces when argument \code{x}
+represents relative frequencies, see the details section for more information.}
 
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table. This checking is performed by means of function
@@ -42,7 +45,36 @@ dissimilarity estimates.
 Standard error of the sample Sorensen-Dice dissimilarity, asymptotic approach
 }
 \details{
-It is based on an asymptotic approach.
+This function computes the standard error estimate of the sample Sorensen-Dice dissimilarity,
+given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
+or a "numeric" object):
+\deqn{
+ \tabular{rr}{
+  n_{00} \tab n_{01} \cr
+  n_{10} \tab n_{11},
+ }
+}{}
+
+\tabular{rr}{
+n_00 \tab n_01 \cr
+n_10 \tab n_11,
+}
+
+The subindex '00' corresponds to those GO items non enriched in both gene lists, '10' corresponds to those
+enriched in the first list but not in the second, '01' to items non enriched in the first list
+but enriched in the second and '11' to those GO items enriched in both lists.
+These values must be provided in this order. In the "numeric" interface,
+if \code{length(x) == 3} the values are interpreted as
+\eqn{(n_{10}, n_{01}, n_{11})}{%
+(n_10, n_01, n_11)} and otherwise as
+\eqn{(n_{00}, n_{10}, n_{01}, n_{11})}{%
+(n_00, n_10, n_01, n_11)}, discarding extra values if necessary.
+
+The result is correct, regardless the frequencies being absolute or relative but, in this second case, the value of
+argument \code{n} must be provided and must correspond to the total number of enriched GO items, i.e., to the sum
+of absolute frequencies
+\eqn{n_{10} + n_{01} + n_{11}}{%
+n_10 + n_01 + n_11.}
 }
 \section{Methods (by class)}{
 \itemize{
@@ -65,11 +97,12 @@ atlas.sanger_BP3
 dSorensen(atlas.sanger_BP3)
 seSorensen(atlas.sanger_BP3)
 # To compute se for a proportions table:
-seSorensen(atlas.sanger_BP3/sum(atlas.sanger_BP3)) / sqrt(sum(atlas.sanger_BP3))
-# In general:
-# seSorensen(pij) / sqrt(n)
+relAtlas.sanger_BP3 <- atlas.sanger_BP3/sum(atlas.sanger_BP3)
+seSorensen(relAtlas.sanger_BP3, n = sum(atlas.sanger_BP3[2:4]))
 
 library(equivStandardTest)
+data(humanEntrezIDs)
+
 ?pbtGeneLists
 # (Time consuming:)
 seSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
@@ -83,6 +116,7 @@ pbtBP5.IRITD3vsKT1 <- nice2x2Table(
                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db"),
                           listNames = names(pbtGeneLists)[c(2,4)])
 seSorensen(pbtBP5.IRITD3vsKT1)
+
 # (Quite time consuming:)
 seSorensen(pbtGeneLists,
            onto = "BP", GOLevel = 5,

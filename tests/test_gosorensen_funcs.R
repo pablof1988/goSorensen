@@ -4,10 +4,10 @@ library(equivStandardTest)
 data(humanEntrezIDs)
 
 # ------ontology BP level 3 ----------------- atlas , sanger ------------------
-#   Enriched in sanger
-# Enriched in atlas FALSE TRUE
-# FALSE   471    1
-# TRUE     30   56
+#                    Enriched in sanger
+# Enriched in atlas  FALSE TRUE
+#              FALSE   471    1
+#              TRUE     30   56
 tab_atlas.sanger_BP3
 ?tab_atlas.sanger_BP3
 class(tab_atlas.sanger_BP3)
@@ -18,46 +18,46 @@ duppSorensen(tab_atlas.sanger_BP3)
 equivTestSorensen(tab_atlas.sanger_BP3)
 
 
-conti <- as.table(matrix(c(501, 27, 36, 12, 43, 15, 0, 0, 0),
-                         nrow = 3, ncol = 3,
-                         dimnames = list(c("a1","a2","a3"),
-                                         c("b1", "b2","b3"))))
-nice2x2Table(conti)
-nice2x2Table(conti, listNames = c("a gene list","another"))
-conti2 <- conti[1,1:min(2,ncol(conti)), drop = FALSE]
-conti2
-nice2x2Table(conti2)
-nice2x2Table(conti2, listNames = c("a gene list","another"))
+badConti <- as.table(matrix(c(501, 27, 36, 12, 43, 15, 0, 0, 0),
+                            nrow = 3, ncol = 3,
+                            dimnames = list(c("a1","a2","a3"),
+                                            c("b1", "b2","b3"))))
+nice2x2Table(badConti)
+nice2x2Table(badConti, listNames = c("a gene list","another"))
+incompleteConti <- badConti[1,1:min(2,ncol(badConti)), drop = FALSE]
+incompleteConti
+nice2x2Table(incompleteConti)
+nice2x2Table(incompleteConti, listNames = c("a gene list","another"))
 
-conti3 <- matrix(c(210, 12), ncol = 2, nrow = 1)
-conti3
-nice2x2Table(conti3)
+anotherIncomplete <- matrix(c(210, 12), ncol = 1, nrow = 2)
+anotherIncomplete
+nice2x2Table(anotherIncomplete)
 
-conti4 <- c(1439, 32, 21, 81)
-nice2x2Table(conti4)
-conti4.mat <- matrix(conti4, nrow = 2)
-conti4.mat
-conti5 <- c(32, 21, 81)
-nice2x2Table(conti5, n = 1573)
-nice2x2Table(conti5, n = 1000)
-try(nice2x2Table(conti5, n = 10))
+contiAsVector <- c(1439, 32, 21, 81)
+nice2x2Table(contiAsVector)
+contiAsVector.mat <- matrix(contiAsVector, nrow = 2)
+contiAsVector.mat
+contiAsVectorLen3 <- c(32, 21, 81)
+nice2x2Table(contiAsVectorLen3)
+nice2x2Table(contiAsVectorLen3, n = 1573)
+nice2x2Table(contiAsVectorLen3, n = 1000)
+try(nice2x2Table(contiAsVectorLen3, n = 10))
 
 ?tab_atlas.sanger_BP3
 dSorensen(tab_atlas.sanger_BP3)
 
-dSorensen(conti)
-dSorensen(conti, check.table = FALSE)
+dSorensen(badConti)
+dSorensen(badConti, check.table = FALSE)
 # Wrong value!
 # Better:
-dSorensen(nice2x2Table(conti), check.table = FALSE)
+dSorensen(nice2x2Table(badConti), check.table = FALSE)
 
-dSorensen(conti2)
-dSorensen(conti3)
-dSorensen(conti4)
-dSorensen(conti4.mat)
-dSorensen(conti5, n = 1573)
-dSorensen(conti5, n = 1000)
-dSorensen(conti5, n = 1573, check.table = FALSE)
+dSorensen(incompleteConti)
+dSorensen(anotherIncomplete)
+dSorensen(contiAsVector)
+dSorensen(contiAsVector.mat)
+dSorensen(contiAsVectorLen3)
+dSorensen(contiAsVectorLen3, check.table = FALSE)
 
 ?pbtGeneLists
 dSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
@@ -77,18 +77,18 @@ dSorensen(pbtGeneLists,
           onto = "BP", GOLevel = 5,
           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 
-seSorensen(conti)
-seSorensen(conti2)
-seSorensen(conti3)
-seSorensen(conti4)
-seSorensen(conti4.mat)
-seSorensen(conti5, n = 1573)
-seSorensen(conti5, n = 1000)
-seSorensen(conti5, n = 1573, check.table = FALSE)
+seSorensen(badConti)
+seSorensen(incompleteConti)
+seSorensen(anotherIncomplete)
+seSorensen(contiAsVector)
+seSorensen(contiAsVector.mat)
+seSorensen(contiAsVectorLen3)
+seSorensen(contiAsVectorLen3, check.table = FALSE)
 # To compute 'se' for a proportions table:
-seSorensen(conti4.mat/sum(conti4.mat)) / sqrt(sum(conti4.mat))
-# In general:
-# seSorensen(pij) / sqrt(n)
+seSorensen(contiAsVector.mat/sum(contiAsVector.mat), n = sum(contiAsVector.mat[2:4]))
+# # Alternatively:
+# seSorensen(contiAsVector.mat/sum(contiAsVector.mat)) / sqrt(sum(contiAsVector.mat))
+seSorensen(contiAsVectorLen3 / sum(contiAsVectorLen3), n = sum(contiAsVectorLen3))
 
 seSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
            listNames = names(pbtGeneLists)[c(2,4)],
@@ -101,21 +101,21 @@ seSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
 #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db"),
 #   listNames = names(pbtGeneLists)[c(2,4)]
 # )
-seSorensen(pbtBP5.IRITD3vsKT1)
+# seSorensen(pbtBP5.IRITD3vsKT1)
 
 seSorensen(pbtGeneLists,
            onto = "BP", GOLevel = 5,
            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 
 
-duppSorensen(conti)
-duppSorensen(conti2)
-duppSorensen(conti3)
-duppSorensen(conti4)
-duppSorensen(conti4.mat)
-duppSorensen(conti5, n = 1573)
-duppSorensen(conti5, n = 1000)
-duppSorensen(conti5, n = 1573, check.table = FALSE)
+duppSorensen(badConti)
+duppSorensen(incompleteConti)
+duppSorensen(anotherIncomplete)
+duppSorensen(contiAsVector)
+duppSorensen(contiAsVector.mat)
+duppSorensen(contiAsVectorLen3)
+duppSorensen(contiAsVectorLen3, check.table = FALSE)
+duppSorensen(contiAsVectorLen3 / sum(contiAsVectorLen3), n = sum(contiAsVectorLen3))
 
 duppSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
              listNames = names(pbtGeneLists)[c(2,4)],
@@ -128,7 +128,7 @@ duppSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
 #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db"),
 #   listNames = names(pbtGeneLists)[c(2,4)]
 # )
-duppSorensen(pbtBP5.IRITD3vsKT1)
+# duppSorensen(pbtBP5.IRITD3vsKT1)
 
 duppSorensen(pbtGeneLists,
              onto = "BP", GOLevel = 5,
@@ -136,19 +136,15 @@ duppSorensen(pbtGeneLists,
 
 
 equivTestSorensen(tab_atlas.sanger_BP3)
-equivTestSorensen(conti)
-equivTestSorensen(conti2)
-equivTestSorensen(conti3)
-equivTestSorensen(conti4)
-equivTestSorensen(conti4.mat)
-equivTestSorensen(conti5, n = 1573)
-equivTestSorensen(conti5, n = 1000)
-equivTestSorensen(conti5, n = 1573, check.table = FALSE)
-
-# To compute se for a proportions table:
-# seSorensen(prova.tab/sum(prova.tab)) / sqrt(sum(prova.tab))
-# In general:
-# seSorensen(pij) / sqrt(n)
+equivTestSorensen(badConti)
+equivTestSorensen(incompleteConti)
+equivTestSorensen(anotherIncomplete)
+equivTestSorensen(contiAsVector)
+equivTestSorensen(contiAsVector.mat)
+equivTestSorensen(contiAsVector.mat / sum(contiAsVector.mat), n = sum(contiAsVector.mat[2:4]))
+equivTestSorensen(contiAsVectorLen3)
+equivTestSorensen(contiAsVectorLen3, check.table = FALSE)
+equivTestSorensen(contiAsVectorLen3 / sum(contiAsVectorLen3), n = sum(contiAsVectorLen3))
 
 equivTestSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
                   listNames = names(pbtGeneLists)[c(2,4)],
@@ -161,7 +157,7 @@ equivTestSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
 #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db"),
 #   listNames = names(pbtGeneLists)[c(2,4)]
 # )
-equivTestSorensen(pbtBP5.IRITD3vsKT1)
+# equivTestSorensen(pbtBP5.IRITD3vsKT1)
 
 equivTestSorensen(pbtGeneLists,
                   onto = "BP", GOLevel = 5,

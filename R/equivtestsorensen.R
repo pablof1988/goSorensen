@@ -3,8 +3,8 @@
 #' @param x either an object of class "table", "matrix", "numeric", "character" or "list".
 #' See the details section for more information.
 #' @param y an object of class "character" representing a list of gene identifiers.
-#' @param n total number of cases (GO nodes) in the contingency table. Only required
-#' (sometimes) on the "numeric" interface, see the details section of \code{\link{nice2x2Table}}.
+#' @param n tumeric. It is ignored except in the "table", "matrix" or "numeric" interfaces when argument \code{x}
+#' represents relative frequencies, see the details section for more information.
 #' @param d0 equivalence threshold for the population Sorensen-Dice dissimilarity, d. The null hypothesis
 #' states that d >= d0, and the alternative that d < d0.
 #' @param conf.level confidence level of the one-sided confidence interval, a value between 0 and 1.
@@ -33,16 +33,44 @@
 #' all pairwise comparisons, each one being an object of "equivSDhtest" class.
 #'
 #' @details
-#' In the "table", "matrix" and "numeric" interfaces, \code{x} must represent a 2x2 contingency
-#' table of joint enrichment frequencies among n GO items: n00 items non enriched in both lists, n01 items
-#' non enriched in the first list but enriched in the second one and so on.
+#' This function computes the asymptotic equivalence test based on the Sorensen-Dice dissimilarity,
+#' given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
+#' or a "numeric" object):
+#' \deqn{
+#'  \tabular{rr}{
+#'   n_{00} \tab n_{01} \cr
+#'   n_{10} \tab n_{11},
+#'  }
+#' }{}
+#'
+#'\tabular{rr}{
+#' n_00 \tab n_01 \cr
+#' n_10 \tab n_11,
+#'}
+#'
+#' The subindex '00' corresponds to those GO items non enriched in both gene lists, '10' corresponds to those
+#' enriched in the first list but not in the second, '01' to items non enriched in the first list
+#' but enriched in the second and '11' to those GO items enriched in both lists.
+#' These values must be provided in this order. In the "numeric" interface,
+#' if \code{length(x) == 3} the values are interpreted as
+#' \eqn{(n_{10}, n_{01}, n_{11})}{%
+#' (n_10, n_01, n_11)} and otherwise as
+#' \eqn{(n_{00}, n_{10}, n_{01}, n_{11})}{%
+#' (n_00, n_10, n_01, n_11)}, discarding extra values if necessary.
+#' The result is correct, regardless the frequencies being absolute or relative but, in this second case, the value of
+#' argument \code{n} must be provided and must correspond to the total number of enriched GO items, i.e., to the sum
+#' of absolute frequencies
+#' \eqn{n_{10} + n_{01} + n_{11}}{%
+#' n_10 + n_01 + n_11.}
+#'
 #' If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 #' equivalence test is performed between lists \code{x} and \code{y}, after internally summarizing these
 #' gene lists as a 2x2 contingency table of joint enrichment.
+#'
 #' If \code{x} is an object of class "list", each of its elements must be a "character" vector of gene
 #' identifiers. Then all pairwise equivalence tests are performed between these gene lists.
 
-#' The test is based on the fact that the studentized statistic is asymptotically distributed
+#' The test is based on the fact that the studentized statistic (d - d0) / se is asymptotically distributed
 #' as a standard normal.
 #'
 #' @seealso \code{\link{nice2x2Table}} for checking and reformatting data,
@@ -60,9 +88,10 @@
 #' # of GO items in ontology BP at level 3.
 #' tab_atlas.sanger_BP3
 #' equivTestSorensen(tab_atlas.sanger_BP3)
-
 #'
 #' library(equivStandardTest)
+#' data(humanEntrezIDs)
+#'
 #' # Building enrichment contingency tables from scratch, using package "equivStandardTest"
 #' # Gene universe:
 #' data(humanEntrezIDs)
@@ -91,7 +120,7 @@ equivTestSorensen <- function(x, ...) {
 
 #' @describeIn equivTestSorensen S3 method for class "table"
 #' @export
-equivTestSorensen.table <- function(x, n = sum(x), d0 = 1 / (1 + 1.25),
+equivTestSorensen.table <- function(x, n, d0 = 1 / (1 + 1.25),
                                     conf.level = 0.95,
                                     check.table = TRUE){
   data.name <- deparse(substitute(x))
@@ -128,72 +157,72 @@ equivTestSorensen.table <- function(x, n = sum(x), d0 = 1 / (1 + 1.25),
 
 #' @describeIn equivTestSorensen S3 method for class "matrix"
 #' @export
-equivTestSorensen.matrix <- function(x, n = sum(x), d0 = 1 / (1 + 1.25),
-                                     conf.level = 0.95){
+equivTestSorensen.matrix <- function(x, n, d0 = 1 / (1 + 1.25),
+                                     conf.level = 0.95,
+                                     check.table = TRUE){
   data.name <- deparse(substitute(x))
-  return(equivTestSorensen.table(nice2x2Table.matrix(x),
-                                 d0 = d0, conf.level = conf.level,
-                                 check.table = FALSE))
-  # d <- dSorensen.matrix(x)
-  # names(d) <- "Sorensen dissimilarity"
-  # names(d0) <- "equivalence limit d0"
-  # se <- seSorensen.matrix(x, n, FALSE)
-  # attr(d, "se") <- se
-  # names(se) <- "standard deviation"
-  # stat <- (d - d0) / se
-  # names(stat) <- "(d - d0) / se"
-  # p.val <- pnorm(stat)
-  # names(p.val) <- "p-value"
-  # du <- duppSorensen.matrix(x, n, d, se, conf.level, check.table = FALSE)
-  # conf.int <- c(0, min(1, du))
-  # attr(conf.int, "conf.level") <- conf.level
-  # names(conf.int) <- c("confidence interval", "dUpper")
-  # result <- list(statistic = stat, p.value = p.val,
-  #                conf.int = conf.int,
-  #                # estimate = c(d, se),
-  #                estimate = d,
-  #                null.value = d0, stderr = se,
-  #                alternative = "less",
-  #                method = "Asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity",
-  #                data.name = data.name,
-  #                enrichTab = x)
-  # class(result) <- c("equivSDhtest", "htest")
-  # return(result)
+  if (check.table){
+    x <- nice2x2Table(x)
+  }
+  # return(equivTestSorensen.table(nice2x2Table.matrix(x), n,
+  #                                d0 = d0, conf.level = conf.level,
+  #                                check.table = FALSE))
+  d <- dSorensen.matrix(x)
+  names(d) <- "Sorensen dissimilarity"
+  names(d0) <- "equivalence limit d0"
+  se <- seSorensen.matrix(x, n, FALSE)
+  attr(d, "se") <- se
+  names(se) <- "standard deviation"
+  stat <- (d - d0) / se
+  names(stat) <- "(d - d0) / se"
+  p.val <- pnorm(stat)
+  names(p.val) <- "p-value"
+  du <- duppSorensen.matrix(x, n, d, se, conf.level, check.table = FALSE)
+  conf.int <- c(0, min(1, du))
+  attr(conf.int, "conf.level") <- conf.level
+  names(conf.int) <- c("confidence interval", "dUpper")
+  result <- list(statistic = stat, p.value = p.val,
+                 conf.int = conf.int,
+                 estimate = d,
+                 null.value = d0, stderr = se,
+                 alternative = "less",
+                 method = "Asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity",
+                 data.name = data.name,
+                 enrichTab = x)
+  class(result) <- c("equivSDhtest", "htest")
+  return(result)
 }
 
 #' @describeIn equivTestSorensen S3 method for class "numeric"
 #' @export
-equivTestSorensen.numeric <- function(x, n = sum(x), d0 = 1 / (1 + 1.25),
-                                      conf.level = 0.95){
+equivTestSorensen.numeric <- function(x, n, d0 = 1 / (1 + 1.25),
+                                      conf.level = 0.95,
+                                      check.table = TRUE){
   data.name <- deparse(substitute(x))
-  return(equivTestSorensen.table(nice2x2Table.numeric(x, n),
-                                 d0 = d0, conf.level = conf.level,
-                                 check.table = FALSE))
-  # d <- dSorensen.numeric(x, FALSE)
-  # names(d) <- "Sorensen dissimilarity"
-  # names(d0) <- "equivalence limit d0"
-  # se <- seSorensen.numeric(x, n, FALSE)
-  # attr(d, "se") <- se
-  # names(se) <- "standard deviation"
-  # stat <- (d - d0) / se
-  # names(stat) <- "(d - d0) / se"
-  # p.val <- pnorm(stat)
-  # names(p.val) <- "p-value"
-  # du <- duppSorensen.numeric(x, n, d, se, conf.level = conf.level, check.table = FALSE)
-  # conf.int <- c(0, min(1, du))
-  # attr(conf.int, "conf.level") <- conf.level
-  # names(conf.int) <- c("confidence interval", "dUpper")
-  # result <- list(statistic = stat, p.value = p.val,
-  #                conf.int = conf.int,
-  #                # estimate = c(d, se),
-  #                estimate = d,
-  #                null.value = d0, stderr = se,
-  #                alternative = "less",
-  #                method = "Asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity",
-  #                data.name = data.name,
-  #                enrichTab = x)
-  # class(result) <- c("equivSDhtest", "htest")
-  # return(result)
+  d <- dSorensen.numeric(x, FALSE)
+  names(d) <- "Sorensen dissimilarity"
+  names(d0) <- "equivalence limit d0"
+  se <- seSorensen.numeric(x, n, FALSE)
+  attr(d, "se") <- se
+  names(se) <- "standard deviation"
+  stat <- (d - d0) / se
+  names(stat) <- "(d - d0) / se"
+  p.val <- pnorm(stat)
+  names(p.val) <- "p-value"
+  du <- duppSorensen.numeric(x, n, d, se, conf.level = conf.level, check.table = FALSE)
+  conf.int <- c(0, min(1, du))
+  attr(conf.int, "conf.level") <- conf.level
+  names(conf.int) <- c("confidence interval", "dUpper")
+  result <- list(statistic = stat, p.value = p.val,
+                 conf.int = conf.int,
+                 estimate = d,
+                 null.value = d0, stderr = se,
+                 alternative = "less",
+                 method = "Asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity",
+                 data.name = data.name,
+                 enrichTab = x)
+  class(result) <- c("equivSDhtest", "htest")
+  return(result)
 }
 
 #' @describeIn equivTestSorensen S3 method for class "character"

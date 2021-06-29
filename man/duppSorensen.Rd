@@ -13,7 +13,7 @@ duppSorensen(x, ...)
 
 \method{duppSorensen}{table}(
   x,
-  n = sum(x),
+  n,
   dis = dSorensen.table(x),
   se = seSorensen.table(x, n, FALSE),
   conf.level = 0.95,
@@ -23,9 +23,9 @@ duppSorensen(x, ...)
 
 \method{duppSorensen}{matrix}(
   x,
-  n = sum(x),
+  n,
   dis = dSorensen.matrix(x),
-  se = seSorensen.matrix(x, n, FALSE),
+  se = seSorensen.table(x, n, FALSE),
   conf.level = 0.95,
   z.conf.level = qnorm(conf.level),
   check.table = TRUE
@@ -34,8 +34,8 @@ duppSorensen(x, ...)
 \method{duppSorensen}{numeric}(
   x,
   n,
-  dis = dSorensen.numeric(x, n, FALSE),
-  se = seSorensen.numeric(x, n, FALSE),
+  dis = dSorensen.numeric(x, FALSE),
+  se,
   conf.level = 0.95,
   z.conf.level = qnorm(conf.level),
   check.table = TRUE
@@ -59,8 +59,8 @@ duppSorensen(x, ...)
 \item{x}{either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
 or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.}
 
-\item{n}{total number of cases (GO nodes) in the contingency table. Only required
-(sometimes) on the "numeric" interface, see the details section.}
+\item{n}{numeric. It is ignored except in the "table", "matrix" or "numeric" interfaces when argument \code{x}
+represents relative frequencies, see the details section for more information.}
 
 \item{dis}{Sorensen-Dice dissimilarity value. Only required to speed computations if this value
 is known in advance.}
@@ -88,11 +88,43 @@ interval for the Sorensen-Dice dissimilarity. In the "list" interface, the symme
 Upper limit of a one-sided confidence interval (0, dUpp] for the Sorensen-Dice dissimilarity
 }
 \details{
+This function computes the upper limit of a one-sided confidence interval for the Sorensen-Dice dissimilarity,
+given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
+or a "numeric" object):
+\deqn{
+ \tabular{rr}{
+  n_{00} \tab n_{01} \cr
+  n_{10} \tab n_{11},
+ }
+}{}
+
+\tabular{rr}{
+n_00 \tab n_01 \cr
+n_10 \tab n_11,
+}
+
+The subindex '00' corresponds to those GO items non enriched in both gene lists, '10' corresponds to those
+enriched in the first list but not in the second, '01' to items non enriched in the first list
+but enriched in the second and '11' to those GO items enriched in both lists.
+These values must be provided in this order. In the "numeric" interface,
+if \code{length(x) == 3}, the values are interpreted as \eqn{(n_{10}, n_{01}, n_{11})}{%
+(n_10, n_01, n_11)} and otherwise as
+\eqn{(n_{00}, n_{10}, n_{01}, n_{11})}{%
+(n_00, n_10, n_01, n_11)}, discarding extra values if necessary.
+
+The result is correct, regardless the frequencies being absolute or relative but, in this second case, the value of
+argument \code{n} must be provided and must correspond to the total number of enriched GO items, i.e., to the sum
+of absolute frequencies
+\eqn{n_{10} + n_{01} + n_{11}}{%
+n_10 + n_01 + n_11.}
+
 Arguments \code{dis}, \code{se} and \code{z.conf.level} are not required. If known in advance (e.g., as
 a consequence of previous computations with the same data), providing its value may speed the computations.
+
 If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 confidence interval for the dissimilarity between lists \code{x} and \code{y} is computed, after summarizing
 these gene lists as a 2x2 contingency table of joint enrichment.
+
 In the "list" interface, the argument must be a list of "character" vectors, each one
 representing a gene list (character identifiers). Then, all pairwise upper limits of the dissimilarity between
 these gene lists are computed.
@@ -119,6 +151,8 @@ seSorensen(tab_atlas.sanger_BP3)
 duppSorensen(tab_atlas.sanger_BP3)
 
 library(equivStandardTest)
+data(humanEntrezIDs)
+
 ?pbtGeneLists
 # (Time consuming:)
 duppSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],

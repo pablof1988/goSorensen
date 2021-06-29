@@ -3,6 +3,8 @@
 #' @param x either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
 #' or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.
 #' @param y an object of class "character" representing a vector of gene identifiers.
+#' @param n numeric. It is ignored except in the "table", "matrix" or "numeric" interfaces when argument \code{x}
+#' represents relative frequencies, see the details section for more information.
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table. This checking is performed by means of function
 #' \code{nice2x2Table}  (only in the "table", "matrix" or "numeric" interfaces).
@@ -13,7 +15,37 @@
 #' dissimilarity estimates.
 #'
 #' @details
-#' It is based on an asymptotic approach.
+#' This function computes the standard error estimate of the sample Sorensen-Dice dissimilarity,
+#' given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
+#' or a "numeric" object):
+#' \deqn{
+#'  \tabular{rr}{
+#'   n_{00} \tab n_{01} \cr
+#'   n_{10} \tab n_{11},
+#'  }
+#' }{}
+#'
+#'\tabular{rr}{
+#' n_00 \tab n_01 \cr
+#' n_10 \tab n_11,
+#'}
+#'
+#' The subindex '00' corresponds to those GO items non enriched in both gene lists, '10' corresponds to those
+#' enriched in the first list but not in the second, '01' to items non enriched in the first list
+#' but enriched in the second and '11' to those GO items enriched in both lists.
+#' These values must be provided in this order. In the "numeric" interface,
+#' if \code{length(x) == 3} the values are interpreted as
+#' \eqn{(n_{10}, n_{01}, n_{11})}{%
+#' (n_10, n_01, n_11)} and otherwise as
+#' \eqn{(n_{00}, n_{10}, n_{01}, n_{11})}{%
+#' (n_00, n_10, n_01, n_11)}, discarding extra values if necessary.
+#'
+#' The result is correct, regardless the frequencies being absolute or relative but, in this second case, the value of
+#' argument \code{n} must be provided and must correspond to the total number of enriched GO items, i.e., to the sum
+#' of absolute frequencies
+#' \eqn{n_{10} + n_{01} + n_{11}}{%
+#' n_10 + n_01 + n_11.}
+
 #'
 #' @seealso \code{\link{nice2x2Table}} for checking and reformatting data,
 #' \code{\link{dSorensen}} for computing the Sorensen-Dice dissimilarity,
@@ -28,11 +60,12 @@
 #' dSorensen(atlas.sanger_BP3)
 #' seSorensen(atlas.sanger_BP3)
 #' # To compute se for a proportions table:
-#' seSorensen(atlas.sanger_BP3/sum(atlas.sanger_BP3)) / sqrt(sum(atlas.sanger_BP3))
-#' # In general:
-#' # seSorensen(pij) / sqrt(n)
+#' relAtlas.sanger_BP3 <- atlas.sanger_BP3/sum(atlas.sanger_BP3)
+#' seSorensen(relAtlas.sanger_BP3, n = sum(atlas.sanger_BP3[2:4]))
 #'
 #' library(equivStandardTest)
+#' data(humanEntrezIDs)
+#'
 #' ?pbtGeneLists
 #' # (Time consuming:)
 #' seSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
@@ -46,6 +79,7 @@
 #'                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db"),
 #'                           listNames = names(pbtGeneLists)[c(2,4)])
 #' seSorensen(pbtBP5.IRITD3vsKT1)
+#'
 #' # (Quite time consuming:)
 #' seSorensen(pbtGeneLists,
 #'            onto = "BP", GOLevel = 5,
@@ -58,24 +92,44 @@ seSorensen <- function(x, ...) {
 
 #' @describeIn seSorensen S3 method for class "table"
 #' @export
-seSorensen.table <- function(x, n = sum(x), check.table = TRUE) {
+seSorensen.table <- function(x, n, check.table = TRUE) {
   if (check.table){
     x <- nice2x2Table(x)
   }
-  pij_samp <- x[2:4] / n
-  denom <- (2 * pij_samp[3] + pij_samp[1] + pij_samp[2])^2
-  t11 <- -2 * (pij_samp[1] + pij_samp[2]) / denom
-  t21 <- t12 <- 2 * pij_samp[3] / denom
-  sig_cuad <- (t11^2 * pij_samp[3] + t12^2 * pij_samp[1] + t21^2 * pij_samp[2]) -
-    (t11 * pij_samp[3] + t12 * pij_samp[1] + t21 * pij_samp[2])^2
-  return(sqrt(sig_cuad / n))
+  if (missing(n)) {
+    n <- sum(x[2:4])
+    pij_samp <- x[2:4] / n
+  } else {
+    pij_samp <- x[2:4] / sum(x[2:4])
+  }
+  pNonCoincid <- pij_samp[1] + pij_samp[2]
+  denom <- (2 * pij_samp[3] + pNonCoincid)^2
+  t11 <- -2 * pNonCoincid / denom
+  t10 <- t01 <- 2 * pij_samp[3] / denom
+  sig2 <- 4 * pij_samp[3] * pNonCoincid / (denom * denom)
+  return(sqrt(sig2 / n))
 }
 
 #' @describeIn seSorensen S3 method for class "matrix"
 #' @export
-seSorensen.matrix <- function(x, n = sum(x), check.table = TRUE) {
-  x <- as.table(x)
-  seSorensen.table(x, n, check.table)
+seSorensen.matrix <- function(x, n, check.table = TRUE) {
+  # x <- as.table(x)
+  # seSorensen.table(x, n, check.table)
+  if (check.table){
+    x <- nice2x2Table(x)
+  }
+  if (missing(n)) {
+    n <- sum(x[2:4])
+    pij_samp <- x[2:4] / n
+  } else {
+    pij_samp <- x[2:4] / sum(x[2:4])
+  }
+  pNonCoincid <- pij_samp[1] + pij_samp[2]
+  denom <- (2 * pij_samp[3] + pNonCoincid)^2
+  t11 <- -2 * pNonCoincid / denom
+  t10 <- t01 <- 2 * pij_samp[3] / denom
+  sig2 <- 4 * pij_samp[3] * pNonCoincid / (denom * denom)
+  return(sqrt(sig2 / n))
 }
 
 #' @describeIn seSorensen S3 method for class "numeric"
@@ -84,14 +138,27 @@ seSorensen.numeric <- function(x, n, check.table = TRUE) {
   if (check.table){
     x <- nice2x2Table(x, n)
   }
-  n <- sum(x)
-  pij_samp <- x[2:4] / n
-  denom <- (2 * pij_samp[3] + pij_samp[1] + pij_samp[2])^2
-  t11 <- -2 * (pij_samp[1] + pij_samp[2]) / denom
-  t21 <- t12 <- 2 * pij_samp[3] / denom
-  sig_cuad <- (t11^2 * pij_samp[3] + t12^2 * pij_samp[1] + t21^2 * pij_samp[2]) -
-    (t11 * pij_samp[3] + t12 * pij_samp[1] + t21 * pij_samp[2])^2
-  result <- sqrt(sig_cuad / n)
+  if (length(x) == 3) {
+    if (missing(n)) {
+      n <- sum(x)
+      pij_samp <- x / n
+    } else {
+      pij_samp <- x / sum(x)
+    }
+  } else {
+    if (missing(n)) {
+      n <- sum(x[2:4])
+      pij_samp <- x[2:4] / n
+    } else {
+      pij_samp <- x[2:4] / sum(x[2:4])
+    }
+  }
+  pNonCoincid <- pij_samp[1] + pij_samp[2]
+  denom <- (2 * pij_samp[3] + pNonCoincid)^2
+  t11 <- -2 * pNonCoincid / denom
+  t10 <- t01 <- 2 * pij_samp[3] / denom
+  sig2 <- 4 * pij_samp[3] * pNonCoincid / (denom * denom)
+  result <- sqrt(sig2 / n)
   names(result) <- NULL
   return(result)
 }

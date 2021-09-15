@@ -15,11 +15,17 @@ dSorensen(x, ...)
 
 \method{dSorensen}{matrix}(x, check.table = TRUE)
 
-\method{dSorensen}{numeric}(x, check.table = TRUE)
+\method{dSorensen}{numeric}(x, n, check.table = TRUE)
 
-\method{dSorensen}{character}(x, y, listNames = c("gene.list1", "gene.list2"), ...)
+\method{dSorensen}{character}(
+  x,
+  y,
+  listNames = c("gene.list1", "gene.list2"),
+  check.table = TRUE,
+  ...
+)
 
-\method{dSorensen}{list}(x, ...)
+\method{dSorensen}{list}(x, check.table = TRUE, ...)
 }
 \arguments{
 \item{x}{either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
@@ -28,8 +34,7 @@ or a "character" (a set of gene identifiers) or "list" object. See the details s
 \item{...}{extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.}
 
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
-represent a 2x2 contingency table, by means of function \code{nice2x2Table}  (only in the "table", "matrix"
-or "numeric" interfaces).}
+represent a 2x2 contingency table, by means of function \code{nice2x2Table}.}
 
 \item{y}{an object of class "character" representing a vector of gene identifiers.}
 }
@@ -45,32 +50,30 @@ Given a 2x2 arrangement of frequencies (either implemented as a "table", a "matr
 or a "numeric" object):
 \deqn{
  \tabular{rr}{
-  n_{00} \tab n_{01} \cr
-  n_{10} \tab n_{11},
+  n_{11} \tab n_{01} \cr
+  n_{10} \tab n_{00},
  }
 }{}
 
 \tabular{rr}{
-n_00 \tab n_01 \cr
-n_10 \tab n_11,
+n_11 \tab n_01 \cr
+n_10 \tab n_00,
 }
 
 this function computes the Sorensen-Dice dissimilarity
 \deqn{\frac{n_{10} + n_{01}}{2 n_{11} + n_{10} + n_{01}}.}{{%
 n_10 + n_01}/{2 n_11 + n_10 + n_01}.}
 
-The subindex '00' corresponds to those GO items
-non enriched in both gene lists, '10' to items enriched in the first list but not in the second,
-'01' to items non enriched in the first list but enriched in the second one and '11' to those
-GO items enriched in both lists. These values must be provided in this order.
+The subindex '11' corresponds to those
+GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,
+'10' to items enriched in the first list but not enriched in the second one and '00' corresponds
+to those GO items non enriched in both gene lists, i.e., to the double negatives, a value which
+is ignored in the computations.
 
-In the "numeric" interface,
-if \code{length(x) == 3} the values are interpreted as
-\eqn{(n_{10}, n_{01}, n_{11})}{%
-(n_10, n_01, n_11)} and otherwise
-as \eqn{(n_{00}, n_{10}, n_{01}, n_{11})}{%
-(n_00, n_10, n_01, n_11)}, discarding extra values if necessary.
-
+In the "numeric" interface, if \code{length(x) >= 3}, the values are interpreted
+as
+\eqn{(n_{11}, n_{01}, n_{10})}{%
+(n_11, n_01, n_10)}, always in this order and discarding extra values if necessary.
 The result is correct, regardless the frequencies are absolute or relative.
 
 If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
@@ -100,20 +103,8 @@ gene lists are computed.
 ?tab_atlas.sanger_BP3
 dSorensen(tab_atlas.sanger_BP3)
 
-# Badly formed table:
-conti <- as.table(matrix(c(501, 27, 36, 12, 43, 15, 0, 0, 0),
-                         nrow = 3, ncol = 3,
-                         dimnames = list(c("a1","a2","a3"),
-                                         c("b1", "b2","b3"))))
-dSorensen(conti)
-dSorensen(conti, check.table = FALSE)
-# Wrong value!
-# Correct:
-dSorensen(nice2x2Table(conti), check.table = FALSE)
-conti2 <- conti[1,1:min(2,ncol(conti)), drop = FALSE]
-dSorensen(conti2)
-dSorensen(matrix(c(210, 12), ncol = 2, nrow = 1))
-conti4 <- c(1439, 32, 21, 81)
+try{dSorensen(matrix(c(210, 12), ncol = 2, nrow = 1))}
+conti4 <- c(32, 21, 81, 1439)
 dSorensen(conti4)
 # This function is also appropriate for proportions:
 dSorensen(conti4 / sum(conti4))
@@ -131,11 +122,9 @@ dSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
           onto = "BP", GOLevel = 5,
           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Essentially, the above code makes the same as:
-pbtBP5.IRITD3vsKT1 <- nice2x2Table(
-  crossTabGOIDs4GeneLists(pbtGeneLists[[2]], pbtGeneLists[[4]],
+pbtBP5.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
                           onto = "BP", GOLevel = 5,
-                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db"),
-  listNames = names(pbtGeneLists)[c(2,4)])
+                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 dSorensen(pbtBP5.IRITD3vsKT1)
 # (Quite time consuming:)
 dSorensen(pbtGeneLists,
@@ -143,7 +132,7 @@ dSorensen(pbtGeneLists,
           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 }
 \seealso{
-\code{\link{nice2x2Table}} for checking and reformatting data,
+\code{\link{nice2x2Table}} for checking data,
 \code{\link{seSorensen}} for computing the standard error of the dissimilarity,
 \code{\link{duppSorensen}} for the upper limit of a one-sided confidence interval
 of the dissimilarity, \code{\link{equivTestSorensen}} for an equivalence test.

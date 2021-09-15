@@ -8,6 +8,9 @@ allEquivTestSorensen(
   x,
   d0 = 1/(1 + 1.25),
   conf.level = 0.95,
+  boot = FALSE,
+  nboot = 10000,
+  check.table = TRUE,
   ontos = c("BP", "CC", "MF"),
   GOLevels = 3:10,
   ...
@@ -45,7 +48,7 @@ library(equivStandardTest)
 data(humanEntrezIDs)
 # Gene lists to be explored for enrichment:
 data(pbtGeneLists)
-AllEquivTestSorensen(pbtGeneLists,
+allEquivTestSorensen(pbtGeneLists,
                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
                     ontos = c("MF", "BP"), GOLevels = 4:6)
 

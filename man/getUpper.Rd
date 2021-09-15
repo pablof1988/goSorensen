@@ -5,7 +5,7 @@
 \alias{getUpper.equivSDhtest}
 \alias{getUpper.equivSDhtestList}
 \alias{getUpper.AllEquivSDhtest}
-\title{Acces to Sorensen-Dice asymptotic test confidence interval upper limit}
+\title{Acces to Sorensen-Dice confidence interval upper limit}
 \usage{
 getUpper(x, ...)
 
@@ -16,7 +16,7 @@ getUpper(x, ...)
 \method{getUpper}{AllEquivSDhtest}(x, onto, GOLevel, listNames, simplify = TRUE)
 }
 \description{
-Acces to Sorensen-Dice asymptotic test confidence interval upper limit
+Acces to Sorensen-Dice confidence interval upper limit
 }
 \section{Methods (by class)}{
 \itemize{

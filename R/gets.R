@@ -1,3 +1,5 @@
+#' Access to specific fields of an equivalence test result
+#'
 #' Accessor functions to specific fields of objects of classes "equivSDhtest", "equivSDhtestList"
 #' or "allEquivSDtest", i.e., to the result of functions 'equivTestSorensen' and 'allEquivTestSorensen'.
 #'
@@ -170,7 +172,7 @@ getTable.AllEquivSDhtest <- function(x,
   return(result)
 }
 
-#' Acces to Sorensen-Dice asymptotic test p-value
+#' Acces to Sorensen-Dice equivalence test p-value
 #'
 #' @export
 getPvalue <- function(x, ...) {
@@ -351,7 +353,7 @@ getDissimilarity.AllEquivSDhtest <- function(x, onto, GOLevel, listNames,
   return(result)
 }
 
-#' Acces to Sorensen-Dice asymptotic test confidence interval upper limit
+#' Acces to Sorensen-Dice confidence interval upper limit
 #'
 #' @export
 getUpper <- function(x, ...) {

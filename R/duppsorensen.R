@@ -3,19 +3,24 @@
 #' @param x either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
 #' or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.
 #' @param y an object of class "character" representing a vector of gene identifiers.
-#' @param n numeric. It is ignored except in the "table", "matrix" or "numeric" interfaces when argument \code{x}
-#' represents relative frequencies, see the details section for more information.
+# @param n numeric. It is ignored except sometimes in the "table", "matrix" or "numeric" interfaces,
+# see the details section for more information.
 #' @param dis Sorensen-Dice dissimilarity value. Only required to speed computations if this value
 #' is known in advance.
 #' @param se standard error estimate of the sample dissimilarity. Only required to speed computations
 #' if this value is known in advance.
-#' @param conf.level confidence level of the one-sided confidence interval, a value between 0 and 1.
-#' @param z.conf.level standard normal distribution quantile at the \code{conf.level} value. Only
-#' required to speed computations if this value is known in advance. Then, the parameter \code{conf.level}
-#' is ignored.
+#' @param conf.level confidence level of the one-sided confidence interval, a numeric value between 0 and 1.
+#' @param z.conf.level standard normal (or bootstrap, see arguments below) distribution quantile at the
+#' \code{1 - conf.level} value. Only required to speed computations if this value is known in advance.
+#' Then, the argument \code{conf.level} is ignored.
+#' @param boot boolean. If TRUE, \code{z.conf.level} is computed by means of a bootstrap
+#' approach instead of the asymptotic normal approach. Defaults to FALSE.
+#' @param nboot numeric, number of bootstrap replicates. Ignored if \code{boot == FALSE}. Defaults to 10000.
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table. This checking is performed by means of function
-#' \code{nice2x2Table} (only in the "table", "matrix" or "numeric" interfaces).
+#' \code{nice2x2Table}.
+#' @param ... additional arguments for function \code{crossTabGOIDs4GeneLists} at package
+#' \code{equivStandardTest}. See the details section.
 #'
 #' @return In the "table", "matrix", "numeric" and "character" interfaces, the value of the Upper limit of the confidence
 #' interval for the Sorensen-Dice dissimilarity. In the "list" interface, the symmetric matrix of all pairwise upper limits.
@@ -26,37 +31,59 @@
 #' or a "numeric" object):
 #' \deqn{
 #'  \tabular{rr}{
-#'   n_{00} \tab n_{01} \cr
-#'   n_{10} \tab n_{11},
+#'   n_{11} \tab n_{01} \cr
+#'   n_{10} \tab n_{00},
 #'  }
 #' }{}
 #'
 #'\tabular{rr}{
-#' n_00 \tab n_01 \cr
-#' n_10 \tab n_11,
+#' n_11 \tab n_01 \cr
+#' n_10 \tab n_00,
 #'}
 #'
-#' The subindex '00' corresponds to those GO items non enriched in both gene lists, '10' corresponds to those
-#' enriched in the first list but not in the second, '01' to items non enriched in the first list
-#' but enriched in the second and '11' to those GO items enriched in both lists.
-#' These values must be provided in this order. In the "numeric" interface,
-#' if \code{length(x) == 3}, the values are interpreted as \eqn{(n_{10}, n_{01}, n_{11})}{%
-#' (n_10, n_01, n_11)} and otherwise as
-#' \eqn{(n_{00}, n_{10}, n_{01}, n_{11})}{%
-#' (n_00, n_10, n_01, n_11)}, discarding extra values if necessary.
+#' The subindex '11' corresponds to those
+#' GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,
+#' '10' to items enriched in the first list but not enriched in the second one and '00' corresponds
+#' to those GO items non enriched in both gene lists, i.e., to the double negatives, a value which
+#' is ignored in the computations, except if \code{boot == TRUE}.
+# The result is correct, regardless the frequencies being absolute or relative
+# but in this second case (relative frequencies), the value of
+# argument \code{n} must be provided and must correspond to the total number of enriched
+# GO items, i.e., to the sum of absolute frequencies
+# \eqn{n_{10} + n_{01} + n_{11}}{%
+# n_10 + n_01 + n_11.}
 #'
-#' The result is correct, regardless the frequencies being absolute or relative but, in this second case, the value of
-#' argument \code{n} must be provided and must correspond to the total number of enriched GO items, i.e., to the sum
-#' of absolute frequencies
-#' \eqn{n_{10} + n_{01} + n_{11}}{%
-#' n_10 + n_01 + n_11.}
+#' In the "numeric" interface, if \code{length(x) >= 4}, the values are interpreted
+#' as
+#' \eqn{(n_{11}, n_{01}, n_{10}), n_{00})}{%
+#' (n_11, n_01, n_10, n_00)}, always in this order and discarding extra values if necessary.
+# If \code{1 <= length(x) <= 2}, \code{x[1]} must correspond to \eqn{n_{11}}{%
+# n_11}, and a possible extra second
+# value is ignored. Then, the value of argument \code{n} must be provided and must
+# correspond to the sum of absolute frequencies
+# \eqn{(n_{11} + n_{01} + n_{10})}{%
+# (n_11 + n_01 + n_10)}.
 #'
 #' Arguments \code{dis}, \code{se} and \code{z.conf.level} are not required. If known in advance (e.g., as
 #' a consequence of previous computations with the same data), providing its value may speed the computations.
 #'
+#' By default, \code{z.conf.level} corresponds to the 1 - conf.level quantile of a standard normal N(0,1)
+#' distribution, as the studentized statistic (^d - d) / ^se) is asymptotically N(0,1). In
+#' the studentized statistic, d stands for the "true" Sorensen-Dice dissimilarity, ^d to its sample estimate
+#' and ^se for the estimate of its standard error.
+#' In fact, the normal is its limiting distribution but, for finite samples, the true sampling
+#' distribution may present departures from normality (mainly with some inflation in the
+#' left tail).
+#' Computing in advance the value of argument \code{z.conf.level} may be a way to cope with
+#' these departures from normality, by means of a more adequate quantile function.
+#' Alternatively, if \code{boot == TRUE}, a bootstrap quantile is internally computed.
+#'
 #' If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 #' confidence interval for the dissimilarity between lists \code{x} and \code{y} is computed, after summarizing
-#' these gene lists as a 2x2 contingency table of joint enrichment.
+#' these gene lists as a 2x2 contingency table of joint enrichment. This last task is performed by function
+#' \code{\link{buildEnrichTable}} which itself calls function \code{crossTabGOIDs4GeneLists} at package
+#' \code{equivStandardTest}. In general, the argument \code{...} provides extra information for this last
+#' function, like p and q cut-off values to stablish enrichment.
 #'
 #' In the "list" interface, the argument must be a list of "character" vectors, each one
 #' representing a gene list (character identifiers). Then, all pairwise upper limits of the dissimilarity between
@@ -84,12 +111,6 @@
 #'              listNames = names(pbtGeneLists)[c(2,4)],
 #'              onto = "BP", GOLevel = 5,
 #'              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-#' # Essentially, the above code makes the same as:
-#' pbtBP5.IRITD3vsKT1 <- nice2x2Table(
-#'   crossTabGOIDs4GeneLists(pbtGeneLists[[2]], pbtGeneLists[[4]],
-#'                           onto = "BP", GOLevel = 5,
-#'                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db"),
-#'                           listNames = names(pbtGeneLists)[c(2,4)])
 #' duppSorensen(pbtBP5.IRITD3vsKT1)
 #' # (Quite time consuming:)
 #' duppSorensen(pbtGeneLists,
@@ -103,61 +124,117 @@ duppSorensen <- function(x, ...) {
 
 #' @describeIn duppSorensen S3 method for class "table"
 #' @export
-duppSorensen.table <- function(x, n, dis = dSorensen.table(x),
-                               se = seSorensen.table(x, n, FALSE),
-                               conf.level = 0.95, z.conf.level = qnorm(conf.level),
+duppSorensen.table <- function(x, #n,
+                               dis = dSorensen.table(x, check.table = FALSE),
+                               se = seSorensen.table(x, check.table = FALSE),
+                               conf.level = 0.95, z.conf.level = qnorm(1 - conf.level),
+                               boot = FALSE, nboot = 10000,
                                check.table = TRUE){
   if (check.table){
-    x <- nice2x2Table(x)
+    if (!nice2x2Table(x)) {
+      print(x)
+      stop("Inadequate contingency table")}
   }
-  return(dis + z.conf.level * se)
+  if (boot) {
+    n <- sum(x)
+    pTab <- x / n
+    bootTabs <- rmultinom(nboot, size = n, prob = pTab)
+    tStats <- apply(bootTabs, 2, function(xBoot) {
+      nu <- sum(xBoot[1:3])
+      dBoot <- (xBoot[2] + xBoot[3]) / (nu + xBoot[1])
+      p11 <- xBoot[1] / nu
+      p11plus <- 1 + p11
+      se <- 2 * sqrt(p11 * (1 - p11) / (nu - 1)) / (p11plus * p11plus)
+      (dBoot - dis) / se
+    })
+    z.conf.level <- quantile(tStats, probs = 1 - conf.level, na.rm = TRUE)
+  }
+  result <- dis - z.conf.level * se
+  names(result) <- NULL
+  return(result)
 }
 
 #' @describeIn duppSorensen S3 method for class "matrix"
 #' @export
-duppSorensen.matrix <- function(x, n, dis = dSorensen.matrix(x),
-                                se = seSorensen.table(x, n, FALSE),
-                                conf.level = 0.95, z.conf.level = qnorm(conf.level),
+duppSorensen.matrix <- function(x, #n,
+                                dis = dSorensen.matrix(x, check.table = FALSE),
+                                se = seSorensen.matrix(x, check.table = FALSE),
+                                conf.level = 0.95, z.conf.level = qnorm(1 - conf.level),
+                                boot = FALSE, nboot = 10000,
                                 check.table = TRUE){
   if (check.table){
-    x <- nice2x2Table(x)
+    if (!nice2x2Table(x)) {
+      print(x)
+      stop("Inadequate contingency table")}
   }
-  return(dis + z.conf.level * se)
+  if (boot) {
+    n <- sum(x)
+    pTab <- x / n
+    bootTabs <- rmultinom(nboot, size = n, prob = pTab)
+    tStats <- apply(bootTabs, 2, function(xBoot) {
+      nu <- sum(xBoot[1:3])
+      dBoot <- (xBoot[2] + xBoot[3]) / (nu + xBoot[1])
+      p11 <- xBoot[1] / nu
+      p11plus <- 1 + p11
+      se <- 2 * sqrt(p11 * (1 - p11) / (nu - 1)) / (p11plus * p11plus)
+      (dBoot - dis) / se
+    })
+    z.conf.level <- quantile(tStats, probs = 1 - conf.level, na.rm = TRUE)
+  }
+  result <- dis - z.conf.level * se
+  names(result) <- NULL
+  return(result)
 }
 
 #' @describeIn duppSorensen S3 method for class "numeric"
 #' @export
-duppSorensen.numeric <- function(x, n, dis = dSorensen.numeric(x, FALSE),
-                                 se,
-                                 conf.level = 0.95, z.conf.level = qnorm(conf.level),
+duppSorensen.numeric <- function(x, #n,
+                                 dis = dSorensen.numeric(x, check.table = FALSE),
+                                 se = seSorensen.numeric(x, check.table = FALSE),
+                                 conf.level = 0.95, z.conf.level = qnorm(1 - conf.level),
+                                 boot = FALSE, nboot = 10000,
                                  check.table = TRUE){
   if (check.table){
-    x <- nice2x2Table(x, n)
+    if (!nice2x2Table(x)) {
+      print(x)
+      stop("Inadequate contingency table")}
   }
-  if (missing(se)) {
-    se <- seSorensen.numeric(x, n, FALSE)
+  if (boot) {
+    if (length(x) < 4) {
+      stop("A numeric vector of almost 4 frequencies is required to bootstrap")
+    }
+    n <- sum(x)
+    pTab <- x / n
+    bootTabs <- rmultinom(nboot, size = n, prob = pTab)
+    tStats <- apply(bootTabs, 2, function(xBoot) {
+      nu <- sum(xBoot[1:3])
+      dBoot <- (xBoot[2] + xBoot[3]) / (nu + xBoot[1])
+      p11 <- xBoot[1] / nu
+      p11plus <- 1 + p11
+      se <- 2 * sqrt(p11 * (1 - p11) / (nu - 1)) / (p11plus * p11plus)
+      (dBoot - dis) / se
+    })
+    z.conf.level <- quantile(tStats, probs = 1 - conf.level, na.rm = TRUE)
   }
-  result <- dis + z.conf.level * se
+  result <- dis - z.conf.level * se
   names(result) <- NULL
   return(result)
 }
 
 #' @describeIn duppSorensen S3 method for class "character"
 #' @export
-duppSorensen.character <- function(x, y, conf.level = 0.95,
-                                   dis, se, z.conf.level = qnorm(conf.level),
+duppSorensen.character <- function(x, y,
+                                   conf.level = 0.95,
+                                   boot = FALSE, nboot = 10000,
                                    listNames = c("gene.list1", "gene.list2"), check.table = TRUE,
                                    ...){
-  tab <- crossTabGOIDs4GeneLists (genelist1 = x, genelist2 = y, ...)
+  tab <- buildEnrichTable(x, y, listNames, check.table, ...)
   # Typical ... arguments:
   # geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db",
   # onto = onto, GOLevel = ontoLevel,
-  tab <- nice2x2Table.table(tab, listNames)
   result <- duppSorensen.table(tab,
-                               dis = if (missing(dis)) dSorensen.table(tab, check.table = FALSE) else dis,
-                               se = if (missing(se)) seSorensen.table(tab, check.table = FALSE) else se,
-                               z.conf.level = if (missing(z.conf.level)) qnorm(conf.level) else z.conf.level,
-                               conf.level = 0.95)
+                               conf.level = conf.level,
+                               boot = boot, nboot = nboot)
   if (is.null(listNames)) {
     names(result) <- NULL
   } else {
@@ -168,13 +245,20 @@ duppSorensen.character <- function(x, y, conf.level = 0.95,
 
 #' @describeIn duppSorensen S3 method for class "list"
 #' @export
-duppSorensen.list <- function(x, ...){
+duppSorensen.list <- function(x,
+                              conf.level = 0.95, check.table = TRUE,
+                              boot = FALSE, nboot = 10000,
+                              ...){
   numLists <- length(x)
   lstNams <- names(x)
   result <- matrix(0.0, ncol = numLists, nrow = numLists)
   for (iLst1 in 2:numLists) {
     for (iLst2 in 1:(iLst1-1)) {
-      result[iLst1, iLst2] <- duppSorensen.character(x[[iLst1]], x[[iLst2]], listNames = NULL, ...)
+      result[iLst1, iLst2] <- duppSorensen.character(x[[iLst1]], x[[iLst2]],
+                                                     conf.level = conf.level,
+                                                     check.table = check.table,
+                                                     boot = boot, nboot = nboot,
+                                                     listNames = NULL, ...)
     }
   }
   result[upper.tri(result)] <- t(result)[upper.tri(result)]

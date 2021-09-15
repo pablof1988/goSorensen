@@ -1,5 +1,7 @@
-#' The Sorensen-Dice test performed on some of the kidney rejection after transplantation gene lists at
-#' \url{https://rdrr.io/cran/tcgsaseq/man/PBT_gmt.html} for all GO ontologies and for GO levels 3 to 10.
+#' The Sorensen-Dice test performed on some gene lists possibly related to kidney rejection after transplantation
+#' based on non-updated information at \url{https://rdrr.io/cran/tcgsaseq/man/PBT_gmt.html}, take them just as an
+#' illustrative example.
+#' Tests performed for all GO ontologies and for GO levels 3 to 10.
 #'
 #' For each ontology and GO level, the result contains the result of all pairwise tests of equivalence between
 #' these gene lists.
@@ -22,4 +24,4 @@
 #' class(pbtAllOntosAndLevels$BP$`level 4`$KT1$IRITD5)
 #' pbtAllOntosAndLevels$BP$`level 4`$KT1$IRITD5
 
-"cancerEquivSorensen"
+"pbtAllOntosAndLevels"

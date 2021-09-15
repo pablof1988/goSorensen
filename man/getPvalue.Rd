@@ -5,7 +5,7 @@
 \alias{getPvalue.equivSDhtest}
 \alias{getPvalue.equivSDhtestList}
 \alias{getPvalue.AllEquivSDhtest}
-\title{Acces to Sorensen-Dice asymptotic test p-value}
+\title{Acces to Sorensen-Dice equivalence test p-value}
 \usage{
 getPvalue(x, ...)
 
@@ -16,7 +16,7 @@ getPvalue(x, ...)
 \method{getPvalue}{AllEquivSDhtest}(x, onto, GOLevel, listNames, simplify = TRUE)
 }
 \description{
-Acces to Sorensen-Dice asymptotic test p-value
+Acces to Sorensen-Dice equivalence test p-value
 }
 \section{Methods (by class)}{
 \itemize{

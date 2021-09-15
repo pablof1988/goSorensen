@@ -5,12 +5,12 @@ completeTable <- function(x, listNames) {
     if (nrow(x) == 1) {
       fullTab[1,1] <- x[1,1]
     } else {
-      fullTab[,1] <- x[,1]
+      fullTab[,colnames(x)] <- x[,1]
     }
   } else {
     if (nrow(x) == 1) {
-      fullTab[1,] <- x[1,]
-    } 
+      fullTab[rownames(x),] <- x[1,]
+    }
   }
   if (!missing(listNames)) {
     names(dimnames(fullTab)) <- paste0("Enriched in ", listNames)

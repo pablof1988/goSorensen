@@ -5,8 +5,7 @@
 \alias{getTable.equivSDhtest}
 \alias{getTable.equivSDhtestList}
 \alias{getTable.AllEquivSDhtest}
-\title{Accessor functions to specific fields of objects of classes "equivSDhtest", "equivSDhtestList"
-or "allEquivSDtest", i.e., to the result of functions 'equivTestSorensen' and 'allEquivTestSorensen'.}
+\title{Access to specific fields of an equivalence test result}
 \usage{
 getTable(x, ...)
 

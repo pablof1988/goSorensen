@@ -22,11 +22,15 @@ the enrichment, n11.
 \details{
 For the moment, the gosorensen package provides the following functions:
 \describe{
-  \item{nice2x2Table}{Check the validity and reformate, if necessary, a table as described before.}
+  \item{buildEnrichTable}{Build an enrichment contingency table from two gene lists}
+  \item{nice2x2Table}{Check for validity an enrichment contingency table}
   \item{dSorensen}{Compute the Sorensen-Dice dissimilarity}
   \item{seSorensen}{Standard error estimate of the sample Sorensen-Dice dissimilarity}
   \item{duppSorensen}{Upper limit of a one-sided confidence interval (0,dUpp] for the population dissimilarity}
   \item{equivTestSorensen}{Equivalence test between two gene lists, based on the Sorensen-Dice dissimilarity}
+  \item{allEquivTestSorensen}{Iterate equivTestSorensen along GO ontologies and GO levels}
+  \item{getDissimilarity, getPvalue, getSE, getTable, getUpper}{Accessor functions to some fields of an equivalence test result}
+  \item{upgrade}{Updating the result of an equivalence test, e.g., changing the equivalence limit}
 }
 All these functions are generic, adequate for different (S3) classes representing the before cited
 GO item enrichment cross-tabulations.

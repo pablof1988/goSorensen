@@ -20,5 +20,6 @@ To perform the test, the information in these gene
 lists was summarized by means of contingency tables of mutual GO item enrichment, for all GO items
 at level 4 of the BP ontology. The tests were performed for an equivalence
 limit d0 = 0.4444 and a confidence level conf.int = 0.95.
+Based on a non up-to-date version of these gene lists, take just as an illustrative example.
 }
 \keyword{datasets}

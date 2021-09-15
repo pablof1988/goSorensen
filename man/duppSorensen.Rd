@@ -13,31 +13,34 @@ duppSorensen(x, ...)
 
 \method{duppSorensen}{table}(
   x,
-  n,
-  dis = dSorensen.table(x),
-  se = seSorensen.table(x, n, FALSE),
+  dis = dSorensen.table(x, check.table = FALSE),
+  se = seSorensen.table(x, check.table = FALSE),
   conf.level = 0.95,
-  z.conf.level = qnorm(conf.level),
+  z.conf.level = qnorm(1 - conf.level),
+  boot = FALSE,
+  nboot = 10000,
   check.table = TRUE
 )
 
 \method{duppSorensen}{matrix}(
   x,
-  n,
-  dis = dSorensen.matrix(x),
-  se = seSorensen.table(x, n, FALSE),
+  dis = dSorensen.matrix(x, check.table = FALSE),
+  se = seSorensen.matrix(x, check.table = FALSE),
   conf.level = 0.95,
-  z.conf.level = qnorm(conf.level),
+  z.conf.level = qnorm(1 - conf.level),
+  boot = FALSE,
+  nboot = 10000,
   check.table = TRUE
 )
 
 \method{duppSorensen}{numeric}(
   x,
-  n,
-  dis = dSorensen.numeric(x, FALSE),
-  se,
+  dis = dSorensen.numeric(x, check.table = FALSE),
+  se = seSorensen.numeric(x, check.table = FALSE),
   conf.level = 0.95,
-  z.conf.level = qnorm(conf.level),
+  z.conf.level = qnorm(1 - conf.level),
+  boot = FALSE,
+  nboot = 10000,
   check.table = TRUE
 )
 
@@ -45,22 +48,28 @@ duppSorensen(x, ...)
   x,
   y,
   conf.level = 0.95,
-  dis,
-  se,
-  z.conf.level = qnorm(conf.level),
+  boot = FALSE,
+  nboot = 10000,
   listNames = c("gene.list1", "gene.list2"),
   check.table = TRUE,
   ...
 )
 
-\method{duppSorensen}{list}(x, ...)
+\method{duppSorensen}{list}(
+  x,
+  conf.level = 0.95,
+  check.table = TRUE,
+  boot = FALSE,
+  nboot = 10000,
+  ...
+)
 }
 \arguments{
 \item{x}{either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
 or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.}
 
-\item{n}{numeric. It is ignored except in the "table", "matrix" or "numeric" interfaces when argument \code{x}
-represents relative frequencies, see the details section for more information.}
+\item{...}{additional arguments for function \code{crossTabGOIDs4GeneLists} at package
+\code{equivStandardTest}. See the details section.}
 
 \item{dis}{Sorensen-Dice dissimilarity value. Only required to speed computations if this value
 is known in advance.}
@@ -68,15 +77,20 @@ is known in advance.}
 \item{se}{standard error estimate of the sample dissimilarity. Only required to speed computations
 if this value is known in advance.}
 
-\item{conf.level}{confidence level of the one-sided confidence interval, a value between 0 and 1.}
+\item{conf.level}{confidence level of the one-sided confidence interval, a numeric value between 0 and 1.}
 
-\item{z.conf.level}{standard normal distribution quantile at the \code{conf.level} value. Only
-required to speed computations if this value is known in advance. Then, the parameter \code{conf.level}
-is ignored.}
+\item{z.conf.level}{standard normal (or bootstrap, see arguments below) distribution quantile at the
+\code{1 - conf.level} value. Only required to speed computations if this value is known in advance.
+Then, the argument \code{conf.level} is ignored.}
+
+\item{boot}{boolean. If TRUE, \code{z.conf.level} is computed by means of a bootstrap
+approach instead of the asymptotic normal approach. Defaults to FALSE.}
+
+\item{nboot}{numeric, number of bootstrap replicates. Ignored if \code{boot == FALSE}. Defaults to 10000.}
 
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table. This checking is performed by means of function
-\code{nice2x2Table} (only in the "table", "matrix" or "numeric" interfaces).}
+\code{nice2x2Table}.}
 
 \item{y}{an object of class "character" representing a vector of gene identifiers.}
 }
@@ -93,37 +107,47 @@ given a 2x2 arrangement of frequencies (either implemented as a "table", a "matr
 or a "numeric" object):
 \deqn{
  \tabular{rr}{
-  n_{00} \tab n_{01} \cr
-  n_{10} \tab n_{11},
+  n_{11} \tab n_{01} \cr
+  n_{10} \tab n_{00},
  }
 }{}
 
 \tabular{rr}{
-n_00 \tab n_01 \cr
-n_10 \tab n_11,
+n_11 \tab n_01 \cr
+n_10 \tab n_00,
 }
 
-The subindex '00' corresponds to those GO items non enriched in both gene lists, '10' corresponds to those
-enriched in the first list but not in the second, '01' to items non enriched in the first list
-but enriched in the second and '11' to those GO items enriched in both lists.
-These values must be provided in this order. In the "numeric" interface,
-if \code{length(x) == 3}, the values are interpreted as \eqn{(n_{10}, n_{01}, n_{11})}{%
-(n_10, n_01, n_11)} and otherwise as
-\eqn{(n_{00}, n_{10}, n_{01}, n_{11})}{%
-(n_00, n_10, n_01, n_11)}, discarding extra values if necessary.
+The subindex '11' corresponds to those
+GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,
+'10' to items enriched in the first list but not enriched in the second one and '00' corresponds
+to those GO items non enriched in both gene lists, i.e., to the double negatives, a value which
+is ignored in the computations, except if \code{boot == TRUE}.
 
-The result is correct, regardless the frequencies being absolute or relative but, in this second case, the value of
-argument \code{n} must be provided and must correspond to the total number of enriched GO items, i.e., to the sum
-of absolute frequencies
-\eqn{n_{10} + n_{01} + n_{11}}{%
-n_10 + n_01 + n_11.}
+In the "numeric" interface, if \code{length(x) >= 4}, the values are interpreted
+as
+\eqn{(n_{11}, n_{01}, n_{10}), n_{00})}{%
+(n_11, n_01, n_10, n_00)}, always in this order and discarding extra values if necessary.
 
 Arguments \code{dis}, \code{se} and \code{z.conf.level} are not required. If known in advance (e.g., as
 a consequence of previous computations with the same data), providing its value may speed the computations.
 
+By default, \code{z.conf.level} corresponds to the 1 - conf.level quantile of a standard normal N(0,1)
+distribution, as the studentized statistic (^d - d) / ^se) is asymptotically N(0,1). In
+the studentized statistic, d stands for the "true" Sorensen-Dice dissimilarity, ^d to its sample estimate
+and ^se for the estimate of its standard error.
+In fact, the normal is its limiting distribution but, for finite samples, the true sampling
+distribution may present departures from normality (mainly with some inflation in the
+left tail).
+Computing in advance the value of argument \code{z.conf.level} may be a way to cope with
+these departures from normality, by means of a more adequate quantile function.
+Alternatively, if \code{boot == TRUE}, a bootstrap quantile is internally computed.
+
 If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 confidence interval for the dissimilarity between lists \code{x} and \code{y} is computed, after summarizing
-these gene lists as a 2x2 contingency table of joint enrichment.
+these gene lists as a 2x2 contingency table of joint enrichment. This last task is performed by function
+\code{\link{buildEnrichTable}} which itself calls function \code{crossTabGOIDs4GeneLists} at package
+\code{equivStandardTest}. In general, the argument \code{...} provides extra information for this last
+function, like p and q cut-off values to stablish enrichment.
 
 In the "list" interface, the argument must be a list of "character" vectors, each one
 representing a gene list (character identifiers). Then, all pairwise upper limits of the dissimilarity between
@@ -159,12 +183,6 @@ duppSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
              listNames = names(pbtGeneLists)[c(2,4)],
              onto = "BP", GOLevel = 5,
              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# Essentially, the above code makes the same as:
-pbtBP5.IRITD3vsKT1 <- nice2x2Table(
-  crossTabGOIDs4GeneLists(pbtGeneLists[[2]], pbtGeneLists[[4]],
-                          onto = "BP", GOLevel = 5,
-                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db"),
-                          listNames = names(pbtGeneLists)[c(2,4)])
 duppSorensen(pbtBP5.IRITD3vsKT1)
 # (Quite time consuming:)
 duppSorensen(pbtGeneLists,

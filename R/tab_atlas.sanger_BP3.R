@@ -3,8 +3,10 @@
 #' From the "Cancer gene list" of Bushman Lab, a collection of gene lists related with cancer,
 #' for gene lists "Atlas" and "Sanger", this dataset is the cross-tabulation of all GO items
 #' of ontology BP at level 3 which are:
-#' non-enriched in both lists, enriched in atlas but not in sanger, non-enriched in atlas
-#' but enriched in sanger and enriched in both lists.
+#' Enriched in both lists, enriched in sanger but not in atlas, non-enriched in sanger
+#' but enriched in atlas and non-enriched in both lists.
+#' Take it just as an illustrative example, non up-to-date for changes in the gene lists
+#' or changes in the GO.
 #'
 #' @format An object of class "table" representing a 2x2 contingency table.
 #' @source \url{http://www.bushmanlab.org/links/genelists}

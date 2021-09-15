@@ -7,31 +7,34 @@
 \alias{equivTestSorensen.numeric}
 \alias{equivTestSorensen.character}
 \alias{equivTestSorensen.list}
-\title{Asymptotic equivalence test for the Sorensen-Dice dissimilarity}
+\title{Equivalence test based on the Sorensen-Dice dissimilarity}
 \usage{
 equivTestSorensen(x, ...)
 
 \method{equivTestSorensen}{table}(
   x,
-  n,
   d0 = 1/(1 + 1.25),
   conf.level = 0.95,
+  boot = FALSE,
+  nboot = 10000,
   check.table = TRUE
 )
 
 \method{equivTestSorensen}{matrix}(
   x,
-  n,
   d0 = 1/(1 + 1.25),
   conf.level = 0.95,
+  boot = FALSE,
+  nboot = 10000,
   check.table = TRUE
 )
 
 \method{equivTestSorensen}{numeric}(
   x,
-  n,
   d0 = 1/(1 + 1.25),
   conf.level = 0.95,
+  boot = FALSE,
+  nboot = 10000,
   check.table = TRUE
 )
 
@@ -40,11 +43,22 @@ equivTestSorensen(x, ...)
   y,
   d0 = 1/(1 + 1.25),
   conf.level = 0.95,
+  boot = FALSE,
+  nboot = 10000,
   listNames = c("gene.list1", "gene.list2"),
+  check.table = TRUE,
   ...
 )
 
-\method{equivTestSorensen}{list}(x, d0 = 1/(1 + 1.25), conf.level = 0.95, ...)
+\method{equivTestSorensen}{list}(
+  x,
+  d0 = 1/(1 + 1.25),
+  conf.level = 0.95,
+  boot = FALSE,
+  nboot = 10000,
+  check.table = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{either an object of class "table", "matrix", "numeric", "character" or "list".
@@ -52,13 +66,17 @@ See the details section for more information.}
 
 \item{...}{extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.}
 
-\item{n}{tumeric. It is ignored except in the "table", "matrix" or "numeric" interfaces when argument \code{x}
-represents relative frequencies, see the details section for more information.}
-
-\item{d0}{equivalence threshold for the population Sorensen-Dice dissimilarity, d. The null hypothesis
-states that d >= d0, and the alternative that d < d0.}
+\item{d0}{equivalence threshold for the Sorensen-Dice dissimilarity, d.
+The null hypothesis states that d >= d0, i.e., inequivalence between the compared
+gene lists and the alternative that d < d0, i.e., equivalence or dissimilarity
+irrelevance (up to a level d0).}
 
 \item{conf.level}{confidence level of the one-sided confidence interval, a value between 0 and 1.}
+
+\item{boot}{boolean. If TRUE, the confidence interval and the test p-value are computed by means
+of a bootstrap approach instead of the asymptotic normal approach. Defaults to FALSE.}
+
+\item{nboot}{numeric, number of bootstrap replicates. Ignored if \code{boot == FALSE}. Defaults to 10000.}
 
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table. This checking is performed by means of function
@@ -67,8 +85,8 @@ represent a 2x2 contingency table. This checking is performed by means of functi
 \item{y}{an object of class "character" representing a list of gene identifiers.}
 }
 \value{
-For all interfaces (except for the "list" interface) the result is a list of class "equivSDhtest" descending
-from "htest", with the following components:
+For all interfaces (except for the "list" interface) the result is a list of class "equivSDhtest" which
+inherits from "htest", with the following components:
 \describe{
   \item{statistic}{the value of the studentized statistic (dSorensen(x) - d0) / seSorensen(x)}
   \item{p.value}{the p-value of the test}
@@ -86,38 +104,34 @@ For the "list" interface, the result is an "equivSDhtestList", a list of objects
 all pairwise comparisons, each one being an object of "equivSDhtest" class.
 }
 \description{
-Asymptotic equivalence test for the Sorensen-Dice dissimilarity
+Equivalence test based on the Sorensen-Dice dissimilarity
 }
 \details{
-This function computes the asymptotic equivalence test based on the Sorensen-Dice dissimilarity,
-given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
-or a "numeric" object):
+This function computes either the normal asymptotic or the bootstrap equivalence
+test based on the Sorensen-Dice dissimilarity, given a 2x2 arrangement of frequencies
+(either implemented as a "table", a "matrix" or a "numeric" object):
 \deqn{
  \tabular{rr}{
-  n_{00} \tab n_{01} \cr
-  n_{10} \tab n_{11},
+  n_{11} \tab n_{10} \cr
+  n_{01} \tab n_{00},
  }
 }{}
 
 \tabular{rr}{
-n_00 \tab n_01 \cr
-n_10 \tab n_11,
+n_11 \tab n_10 \cr
+n_01 \tab n_00,
 }
 
-The subindex '00' corresponds to those GO items non enriched in both gene lists, '10' corresponds to those
-enriched in the first list but not in the second, '01' to items non enriched in the first list
-but enriched in the second and '11' to those GO items enriched in both lists.
-These values must be provided in this order. In the "numeric" interface,
-if \code{length(x) == 3} the values are interpreted as
-\eqn{(n_{10}, n_{01}, n_{11})}{%
-(n_10, n_01, n_11)} and otherwise as
-\eqn{(n_{00}, n_{10}, n_{01}, n_{11})}{%
-(n_00, n_10, n_01, n_11)}, discarding extra values if necessary.
-The result is correct, regardless the frequencies being absolute or relative but, in this second case, the value of
-argument \code{n} must be provided and must correspond to the total number of enriched GO items, i.e., to the sum
-of absolute frequencies
-\eqn{n_{10} + n_{01} + n_{11}}{%
-n_10 + n_01 + n_11.}
+The subindex '11' corresponds to those
+GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,
+'10' to items enriched in the first list but not enriched in the second one and '00' corresponds
+to those GO items non enriched in both gene lists, i.e., to the double negatives, a value which
+is ignored in the computations, except if \code{boot == TRUE}.
+
+In the "numeric" interface, if \code{length(x) >= 4}, the values are interpreted
+as
+\eqn{(n_{11}, n_{01}, n_{10}, n_{00})}{%
+(n_11, n_01, n_10, n_00)}, always in this order and discarding extra values if necessary.
 
 If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 equivalence test is performed between lists \code{x} and \code{y}, after internally summarizing these
@@ -125,8 +139,11 @@ gene lists as a 2x2 contingency table of joint enrichment.
 
 If \code{x} is an object of class "list", each of its elements must be a "character" vector of gene
 identifiers. Then all pairwise equivalence tests are performed between these gene lists.
-The test is based on the fact that the studentized statistic (d - d0) / se is asymptotically distributed
-as a standard normal.
+The test is based on the fact that the studentized statistic (^d - d) / ^se is aproximately distributed
+as a standard normal. ^d stands for the sample Sorensen-Dice dissimilarity, d for its true (unknown) value
+and ^se for the estimate of its standard error. This result is asymptotically correct, but the true distribution
+of the studentized statistic is not exactly normal for finite samples, with a heavier left tail than expected
+under the Gaussian model. The bootstrap method provides a better approximation to this distribuion.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -148,18 +165,18 @@ tab_atlas.sanger_BP3
 equivTestSorensen(tab_atlas.sanger_BP3)
 
 library(equivStandardTest)
-data(humanEntrezIDs)
 
-# Building enrichment contingency tables from scratch, using package "equivStandardTest"
+# Building enrichment contingency tables from scratch
 # Gene universe:
 data(humanEntrezIDs)
 # Gene lists to be explored for enrichment:
 pbtGeneLists
-IRITD3VS5.MF4 <- crossTabGOIDs4GeneLists(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
-                                         geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                                         onto = "MF", GOLevel = 4)
-IRITD3VS5.MF4
+IRITD3VS5.MF4 <- buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
+                                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+                                  onto = "MF", GOLevel = 4)
 equivTestSorensen(IRITD3VS5.MF4)
+equivTestSorensen(IRITD3VS5.MF4, boot = TRUE)
+
 # Perform these computations in a single step:
 equivTestSorensen(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
@@ -169,6 +186,9 @@ equivTestSorensen(pbtGeneLists,
                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
                   onto = "MF", GOLevel = 4)
 
+
+equivTestSorensen(c(35, 12, 21))
+equivTestSorensen(c(35, 12, 21), boot = TRUE)
 
 }
 \seealso{

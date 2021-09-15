@@ -11,15 +11,21 @@
 \usage{
 seSorensen(x, ...)
 
-\method{seSorensen}{table}(x, n, check.table = TRUE)
+\method{seSorensen}{table}(x, check.table = TRUE)
 
 \method{seSorensen}{matrix}(x, n, check.table = TRUE)
 
 \method{seSorensen}{numeric}(x, n, check.table = TRUE)
 
-\method{seSorensen}{character}(x, y, listNames = c("gene.list1", "gene.list2"), ...)
+\method{seSorensen}{character}(
+  x,
+  y,
+  listNames = c("gene.list1", "gene.list2"),
+  check.table = TRUE,
+  ...
+)
 
-\method{seSorensen}{list}(x, ...)
+\method{seSorensen}{list}(x, check.table = TRUE, ...)
 }
 \arguments{
 \item{x}{either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
@@ -27,12 +33,9 @@ or a "character" (a set of gene identifiers) or "list" object. See the details s
 
 \item{...}{extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.}
 
-\item{n}{numeric. It is ignored except in the "table", "matrix" or "numeric" interfaces when argument \code{x}
-represents relative frequencies, see the details section for more information.}
-
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table. This checking is performed by means of function
-\code{nice2x2Table}  (only in the "table", "matrix" or "numeric" interfaces).}
+\code{nice2x2Table}.}
 
 \item{y}{an object of class "character" representing a vector of gene identifiers.}
 }
@@ -50,31 +53,34 @@ given a 2x2 arrangement of frequencies (either implemented as a "table", a "matr
 or a "numeric" object):
 \deqn{
  \tabular{rr}{
-  n_{00} \tab n_{01} \cr
-  n_{10} \tab n_{11},
+  n_{11} \tab n_{10} \cr
+  n_{01} \tab n_{00},
  }
 }{}
 
 \tabular{rr}{
-n_00 \tab n_01 \cr
-n_10 \tab n_11,
+n_11 \tab n_10 \cr
+n_01 \tab n_00,
 }
 
-The subindex '00' corresponds to those GO items non enriched in both gene lists, '10' corresponds to those
-enriched in the first list but not in the second, '01' to items non enriched in the first list
-but enriched in the second and '11' to those GO items enriched in both lists.
-These values must be provided in this order. In the "numeric" interface,
-if \code{length(x) == 3} the values are interpreted as
-\eqn{(n_{10}, n_{01}, n_{11})}{%
-(n_10, n_01, n_11)} and otherwise as
-\eqn{(n_{00}, n_{10}, n_{01}, n_{11})}{%
-(n_00, n_10, n_01, n_11)}, discarding extra values if necessary.
+The subindex '11' corresponds to those
+GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,
+'10' to items enriched in the first list but not enriched in the second one and '00' corresponds
+to those GO items non enriched in both gene lists, i.e., to the double negatives, a value which
+is ignored in the computations.
 
-The result is correct, regardless the frequencies being absolute or relative but, in this second case, the value of
-argument \code{n} must be provided and must correspond to the total number of enriched GO items, i.e., to the sum
-of absolute frequencies
-\eqn{n_{10} + n_{01} + n_{11}}{%
-n_10 + n_01 + n_11.}
+In the "numeric" interface, if \code{length(x) >= 3}, the values are interpreted
+as
+\eqn{(n_{11}, n_{01}, n_{10})}{%
+(n_11, n_01, n_10)}, always in this order and discarding extra values if necessary.
+
+If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
+standard error for the dissimilarity between lists \code{x} and \code{y} is computed, after summarizing
+these gene lists as a 2x2 contingency table of joint enrichment.
+
+In the "list" interface, the argument must be a list of "character" vectors, each one
+representing a gene list (character identifiers). Then, all pairwise standard errors
+of the dissimilarity between these gene lists are computed.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -96,12 +102,7 @@ n_10 + n_01 + n_11.}
 atlas.sanger_BP3
 dSorensen(atlas.sanger_BP3)
 seSorensen(atlas.sanger_BP3)
-# To compute se for a proportions table:
-relAtlas.sanger_BP3 <- atlas.sanger_BP3/sum(atlas.sanger_BP3)
-seSorensen(relAtlas.sanger_BP3, n = sum(atlas.sanger_BP3[2:4]))
 
-library(equivStandardTest)
-data(humanEntrezIDs)
 
 ?pbtGeneLists
 # (Time consuming:)
@@ -110,11 +111,10 @@ seSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
            onto = "BP", GOLevel = 5,
            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Essentially, the above code makes the same as:
-pbtBP5.IRITD3vsKT1 <- nice2x2Table(
-  crossTabGOIDs4GeneLists(pbtGeneLists[[2]], pbtGeneLists[[4]],
+pbtBP5.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
+                          listNames = names(pbtGeneLists)[c(2,4)],
                           onto = "BP", GOLevel = 5,
-                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db"),
-                          listNames = names(pbtGeneLists)[c(2,4)])
+                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db"))
 seSorensen(pbtBP5.IRITD3vsKT1)
 
 # (Quite time consuming:)

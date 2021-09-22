@@ -117,6 +117,7 @@
 #'              onto = "BP", GOLevel = 5,
 #'              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #'
+
 #' @export
 duppSorensen <- function(x, ...) {
   UseMethod("duppSorensen")
@@ -135,21 +136,27 @@ duppSorensen.table <- function(x, #n,
       print(x)
       stop("Inadequate contingency table")}
   }
+  if ((se == 0.0) || !is.finite(se)) {
+    warning("Null or not finite standard error")
+    return(1.0)
+  }
   if (boot) {
     n <- sum(x)
     pTab <- x / n
     bootTabs <- rmultinom(nboot, size = n, prob = pTab)
-    tStats <- apply(bootTabs, 2, function(xBoot) {
-      nu <- sum(xBoot[1:3])
-      dBoot <- (xBoot[2] + xBoot[3]) / (nu + xBoot[1])
-      p11 <- xBoot[1] / nu
-      p11plus <- 1 + p11
-      se <- 2 * sqrt(p11 * (1 - p11) / (nu - 1)) / (p11plus * p11plus)
-      (dBoot - dis) / se
-    })
-    z.conf.level <- quantile(tStats, probs = 1 - conf.level, na.rm = TRUE)
+    tStats <- apply(bootTabs, 2, boot.tStat, dis = dis)
+    tStats <- tStats[is.finite(tStats)]
+    if (length(tStats) < nboot) {
+      warMsg <- paste0("Non finite values generated in the bootstrap process (",
+                       length(tStats), " out of ", nboot, ")")
+      warning(warMsg)
+    }
+    z.conf.level <- quantile(tStats, probs = 1 - conf.level)
   }
   result <- dis - z.conf.level * se
+  if (boot) {
+    attr(result, "nboot") <- length(tStats)
+  }
   names(result) <- NULL
   return(result)
 }
@@ -167,21 +174,25 @@ duppSorensen.matrix <- function(x, #n,
       print(x)
       stop("Inadequate contingency table")}
   }
+  if ((se == 0.0) || !is.finite(se)) {
+    warning("Null or not finite standard error")
+    return(1.0)
+  }
   if (boot) {
     n <- sum(x)
     pTab <- x / n
     bootTabs <- rmultinom(nboot, size = n, prob = pTab)
-    tStats <- apply(bootTabs, 2, function(xBoot) {
-      nu <- sum(xBoot[1:3])
-      dBoot <- (xBoot[2] + xBoot[3]) / (nu + xBoot[1])
-      p11 <- xBoot[1] / nu
-      p11plus <- 1 + p11
-      se <- 2 * sqrt(p11 * (1 - p11) / (nu - 1)) / (p11plus * p11plus)
-      (dBoot - dis) / se
-    })
-    z.conf.level <- quantile(tStats, probs = 1 - conf.level, na.rm = TRUE)
+    tStats <- apply(bootTabs, 2, boot.tStat, dis = dis)
+    tStats <- tStats[is.finite(tStats)]
+    if (length(tStats) < nboot) {
+      warning("Non finite values generated in the bootstrap process")
+    }
+    z.conf.level <- quantile(tStats, probs = 1 - conf.level)
   }
   result <- dis - z.conf.level * se
+  if (boot) {
+    attr(result, "nboot") <- length(tStats)
+  }
   names(result) <- NULL
   return(result)
 }
@@ -199,6 +210,10 @@ duppSorensen.numeric <- function(x, #n,
       print(x)
       stop("Inadequate contingency table")}
   }
+  if ((se == 0.0) || !is.finite(se)) {
+    warning("Null or not finite standard error")
+    return(1.0)
+  }
   if (boot) {
     if (length(x) < 4) {
       stop("A numeric vector of almost 4 frequencies is required to bootstrap")
@@ -206,17 +221,17 @@ duppSorensen.numeric <- function(x, #n,
     n <- sum(x)
     pTab <- x / n
     bootTabs <- rmultinom(nboot, size = n, prob = pTab)
-    tStats <- apply(bootTabs, 2, function(xBoot) {
-      nu <- sum(xBoot[1:3])
-      dBoot <- (xBoot[2] + xBoot[3]) / (nu + xBoot[1])
-      p11 <- xBoot[1] / nu
-      p11plus <- 1 + p11
-      se <- 2 * sqrt(p11 * (1 - p11) / (nu - 1)) / (p11plus * p11plus)
-      (dBoot - dis) / se
-    })
-    z.conf.level <- quantile(tStats, probs = 1 - conf.level, na.rm = TRUE)
+    tStats <- apply(bootTabs, 2, boot.tStat, dis = dis)
+    tStats <- tStats[is.finite(tStats)]
+    if (length(tStats) < nboot) {
+      warning("Non finite values generated in the bootstrap process")
+    }
+    z.conf.level <- quantile(tStats, probs = 1 - conf.level)
   }
   result <- dis - z.conf.level * se
+  if (boot) {
+    attr(result, "nboot") <- length(tStats)
+  }
   names(result) <- NULL
   return(result)
 }

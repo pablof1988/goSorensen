@@ -5,7 +5,7 @@
 \alias{upgrade.equivSDhtest}
 \alias{upgrade.equivSDhtestList}
 \alias{upgrade.AllEquivSDhtest}
-\title{Update the result of an Sorensen-Dice equivalence test.}
+\title{Update the result of a Sorensen-Dice equivalence test.}
 \usage{
 upgrade(x, ...)
 
@@ -18,14 +18,14 @@ upgrade(x, ...)
 \arguments{
 \item{x}{an object of class "equivSDhtest", "equivSDhtestList" or "AllEquivSDhtest"}
 
-\item{...}{additional parameters for functions "equivTestSorensen" or "allEquivTestSorensen",
-for the moment, these are 'd0', the equivalence limit for the Sorensen-Dice dissimilarity,
-and 'conf.level' the confidence level of the one-sided confidence interval upon which the
-test is based.}
+\item{...}{any valid parameters for function "equivTestSorensen" for its interface "table".
+The test(s) will be recomputed according to these parameters, or according to default values
+for non-specified parameters}
 }
 \description{
-Change d0 or conf.level in an object of class "equivSDhtest", "equivSDhtestList" or "AllEquivSDhtest"
-(i.e.,the output of functions "equivTestSorensen" or "allEquivTestSorensen")
+Recompute the test (or tests) from an object of class "equivSDhtest", "equivSDhtestList" or "AllEquivSDhtest"
+(i.e.,the output of functions "equivTestSorensen" or "allEquivTestSorensen"). Using the same table or tables
+of enrichment frequencies in 'x', obtain again the result of the equivalence test.
 }
 \section{Methods (by class)}{
 \itemize{

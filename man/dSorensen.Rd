@@ -15,7 +15,7 @@ dSorensen(x, ...)
 
 \method{dSorensen}{matrix}(x, check.table = TRUE)
 
-\method{dSorensen}{numeric}(x, n, check.table = TRUE)
+\method{dSorensen}{numeric}(x, check.table = TRUE)
 
 \method{dSorensen}{character}(
   x,

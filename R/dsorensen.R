@@ -125,9 +125,9 @@ dSorensen.matrix <- function(x, check.table = TRUE){
 
 #' @describeIn dSorensen S3 method for class "numeric"
 #' @export
-dSorensen.numeric <- function(x, n, check.table = TRUE){
+dSorensen.numeric <- function(x, check.table = TRUE){
   if (check.table){
-    if (!nice2x2Table.numeric(x, n)) {
+    if (!nice2x2Table.numeric(x)) {
       print(x)
       stop("Inadequate contingency table")}
   }

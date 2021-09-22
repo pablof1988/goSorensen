@@ -1,13 +1,13 @@
-#' Update the result of an Sorensen-Dice equivalence test.
+#' Update the result of a Sorensen-Dice equivalence test.
 #'
-#' Change d0 or conf.level in an object of class "equivSDhtest", "equivSDhtestList" or "AllEquivSDhtest"
-#' (i.e.,the output of functions "equivTestSorensen" or "allEquivTestSorensen")
+#' Recompute the test (or tests) from an object of class "equivSDhtest", "equivSDhtestList" or "AllEquivSDhtest"
+#' (i.e.,the output of functions "equivTestSorensen" or "allEquivTestSorensen"). Using the same table or tables
+#' of enrichment frequencies in 'x', obtain again the result of the equivalence test.
 #'
 #' @param x an object of class "equivSDhtest", "equivSDhtestList" or "AllEquivSDhtest"
-#' @param ... additional parameters for functions "equivTestSorensen" or "allEquivTestSorensen",
-#' for the moment, these are 'd0', the equivalence limit for the Sorensen-Dice dissimilarity,
-#' and 'conf.level' the confidence level of the one-sided confidence interval upon which the
-#' test is based.
+#' @param ... any valid parameters for function "equivTestSorensen" for its interface "table".
+#' The test(s) will be recomputed according to these parameters, or according to default values
+#' for non-specified parameters
 #'
 #' @examples
 #' # Result of the equivalence test between gene lists 'waldman' and 'atlas', in dataset
@@ -44,7 +44,7 @@ upgrade <- function(x, ...) {
 #' @export
 upgrade.equivSDhtest <- function(x, ...) {
   tab <- getTable.equivSDhtest(x)
-  return(equivTestSorensen(tab, ...))
+  return(equivTestSorensen.table(tab, ...))
 }
 
 #' @describeIn upgrade S3 method for class "equivSDhtestList"
@@ -53,7 +53,7 @@ upgrade.equivSDhtestList <- function(x, ...) {
   result <- lapply(x, function(xi){
     resaux <- lapply(xi, function(testij) {
       tab <- getTable.equivSDhtest(testij)
-      return(equivTestSorensen(tab, ...))
+      return(equivTestSorensen.table(tab, ...))
     })
     names(resaux) <- names(xi)
     return(resaux)
@@ -75,7 +75,7 @@ upgrade.AllEquivSDhtest <- function(x, ...) {
         namsList2 <- names(x[[ionto]][[ilev]][[ilist1]])
         resList2 <- lapply(namsList2, function(ilist2) {
           tab <- x[[ionto]][[ilev]][[ilist1]][[ilist2]]$enrichTab
-          return(equivTestSorensen(tab, ...))
+          return(equivTestSorensen.table(tab, ...))
         })
         names(resList2) <- namsList2
         return(resList2)

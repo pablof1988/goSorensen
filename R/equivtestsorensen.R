@@ -1,5 +1,8 @@
 #' Equivalence test based on the Sorensen-Dice dissimilarity
 #'
+#' Equivalence test based on the Sorensen-Dice dissimilarity, computed either by an asymptotic
+#' normal or by a bootstrap approach.
+#'
 #' @param x either an object of class "table", "matrix", "numeric", "character" or "list".
 #' See the details section for more information.
 #' @param y an object of class "character" representing a list of gene identifiers.
@@ -131,7 +134,6 @@
 #' equivTestSorensen(c(35, 12, 21))
 #' equivTestSorensen(c(35, 12, 21), boot = TRUE)
 
-#'
 #' @export
 equivTestSorensen <- function(x, ...) {
   UseMethod("equivTestSorensen")
@@ -151,42 +153,50 @@ equivTestSorensen.table <- function(x, #n,
       stop("Inadequate table to compute the standard error")
     }
   }
+  se <- seSorensen.table(x, FALSE)
   d <- dSorensen.table(x)
   names(d) <- "Sorensen dissimilarity"
-  names(d0) <- "equivalence limit d0"
-  se <- seSorensen.table(x, FALSE)
-  attr(d, "se") <- se
   names(se) <- "standard error"
-  stat <- (d - d0) / se
-  names(stat) <- "(d - d0) / se"
-  if (boot) {
-    n <- sum(x)
-    pTab <- x / n
-    bootTabs <- rmultinom(nboot, size = n, prob = pTab)
-    tStats <- apply(bootTabs, 2, function(xBoot) {
-      nu <- sum(xBoot[1:3])
-      dBoot <- (xBoot[2] + xBoot[3]) / (nu + xBoot[1])
-      p11 <- xBoot[1] / nu
-      p11plus <- 1 + p11
-      se <- 2 * sqrt(p11 * (1 - p11) / (nu - 1)) / (p11plus * p11plus)
-      (dBoot - d) / se
-    })
-    z.conf.level <- quantile(tStats, probs = 1 - conf.level, na.rm = TRUE)
-    p.val <- (sum(tStats <= stat) + 1) / (nboot + 1)
-    meth <- "Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+  attr(d, "se") <- se
+  names(d0) <- "equivalence limit d0"
+  if ((se == 0.0) || !is.finite(se)) {
+    stat <- Inf
+    names(stat) <- "(d - d0) / se"
+    p.val <- 1.0
+    names(p.val) <- "p-value"
+    meth <- "No test performed due to null or not finite standard error"
+    conf.int <- c(0.0, 1.0)
+    names(conf.int) <- c("confidence interval", "dUpper")
   } else {
-    z.conf.level <- qnorm(1 - conf.level)
-    p.val <- pnorm(stat)
-    meth <- "Normal asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+    stat <- (d - d0) / se
+    names(stat) <- "(d - d0) / se"
+    if (boot) {
+      n <- sum(x)
+      pTab <- x / n
+      bootTabs <- rmultinom(nboot, size = n, prob = pTab)
+      tStats <- apply(bootTabs, 2, boot.tStat, dis = d)
+      tStats <- tStats[is.finite(tStats)]
+      len.tStats <- length(tStats)
+      if (len.tStats < nboot) {
+        warning("Non finite values generated in the bootstrap process")
+      }
+      z.conf.level <- quantile(tStats, probs = 1 - conf.level)
+      p.val <- (sum(tStats <= stat) + 1) / (len.tStats + 1)
+      meth <- paste0(
+        "Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity (nboot = ",
+        len.tStats, ")")
+      attr(meth, "nboot") <- len.tStats
+    } else {
+        z.conf.level <- qnorm(1 - conf.level)
+        p.val <- pnorm(stat)
+        meth <- "Normal asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+    }
+    names(p.val) <- "p-value"
+    du <- d - z.conf.level * se
+    conf.int <- c(0, min(1, du))
+    attr(conf.int, "conf.level") <- conf.level
+    names(conf.int) <- c("confidence interval", "dUpper")
   }
-  names(p.val) <- "p-value"
-  du <- d - z.conf.level * se
-  conf.int <- c(0, min(1, du))
-  attr(conf.int, "conf.level") <- conf.level
-  names(conf.int) <- c("confidence interval", "dUpper")
-  # if (!missing(n)) {
-  #   attr(x, "n") <- n
-  # }
   result <- list(statistic = stat,
                  p.value = p.val,
                  conf.int = conf.int,
@@ -215,39 +225,50 @@ equivTestSorensen.matrix <- function(x, #n,
       stop("Inadequate table to compute the standard error")
     }
   }
+  se <- seSorensen.matrix(x, FALSE)
   d <- dSorensen.matrix(x)
   names(d) <- "Sorensen dissimilarity"
   names(d0) <- "equivalence limit d0"
-  se <- seSorensen.matrix(x, FALSE)
-  attr(d, "se") <- se
   names(se) <- "standard error"
-  stat <- (d - d0) / se
-  names(stat) <- "(d - d0) / se"
-  if (boot) {
-    n <- sum(x)
-    pTab <- x / n
-    bootTabs <- rmultinom(nboot, size = n, prob = pTab)
-    tStats <- apply(bootTabs, 2, function(xBoot) {
-      nu <- sum(xBoot[1:3])
-      dBoot <- (xBoot[2] + xBoot[3]) / (nu + xBoot[1])
-      p11 <- xBoot[1] / nu
-      p11plus <- 1 + p11
-      se <- 2 * sqrt(p11 * (1 - p11) / (nu - 1)) / (p11plus * p11plus)
-      (dBoot - d) / se
-    })
-    z.conf.level <- quantile(tStats, probs = 1 - conf.level, na.rm = TRUE)
-    p.val <- (sum(tStats <= stat) + 1) / (nboot + 1)
-    meth <- "Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+  attr(d, "se") <- se
+  if ((se == 0.0) || !is.finite(se)) {
+    stat <- Inf
+    names(stat) <- "(d - d0) / se"
+    p.val <- 1.0
+    names(p.val) <- "p-value"
+    meth <- "No test performed due to null or not finite standard error"
+    conf.int <- c(0.0, 1.0)
+    names(conf.int) <- c("confidence interval", "dUpper")
   } else {
-    z.conf.level <- qnorm(1 - conf.level)
-    p.val <- pnorm(stat)
-    meth <- "Normal asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+    stat <- (d - d0) / se
+    names(stat) <- "(d - d0) / se"
+    if (boot) {
+      n <- sum(x)
+      pTab <- x / n
+      bootTabs <- rmultinom(nboot, size = n, prob = pTab)
+      tStats <- apply(bootTabs, 2, boot.tStat, dis = d)
+      tStats <- tStats[is.finite(tStats)]
+      len.tStats <- length(tStats)
+      if (len.tStats < nboot) {
+        warning("Non finite values generated in the bootstrap process")
+      }
+      z.conf.level <- quantile(tStats, probs = 1 - conf.level)
+      p.val <- (sum(tStats <= stat) + 1) / (len.tStats + 1)
+      meth <- paste0(
+        "Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity (nboot = ",
+        len.tStats, ")")
+      attr(meth, "nboot") <- len.tStats
+    } else {
+      z.conf.level <- qnorm(1 - conf.level)
+      p.val <- pnorm(stat)
+      meth <- "Normal asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+    }
+    names(p.val) <- "p-value"
+    du <- d - z.conf.level * se
+    conf.int <- c(0, min(1, du))
+    attr(conf.int, "conf.level") <- conf.level
+    names(conf.int) <- c("confidence interval", "dUpper")
   }
-  names(p.val) <- "p-value"
-  du <- d - z.conf.level * se
-  conf.int <- c(0, min(1, du))
-  attr(conf.int, "conf.level") <- conf.level
-  names(conf.int) <- c("confidence interval", "dUpper")
   # if (!missing(n)) {
   #   attr(x, "n") <- n
   # }
@@ -277,42 +298,53 @@ equivTestSorensen.numeric <- function(x, #n,
       stop("Inadequate table to compute the standard error")
     }
   }
+  se <- seSorensen.numeric(x, FALSE)
   d <- dSorensen.numeric(x, FALSE)
   names(d) <- "Sorensen dissimilarity"
   names(d0) <- "equivalence limit d0"
-  se <- seSorensen.numeric(x, FALSE)
-  attr(d, "se") <- se
   names(se) <- "standard error"
-  stat <- (d - d0) / se
-  names(stat) <- "(d - d0) / se"
-  if (boot) {
-    if (length(x) < 4) {
-      stop("A numeric vector of almost 4 frequencies is required to bootstrap")
-    }
-    n <- sum(x)
-    pTab <- x / n
-    bootTabs <- rmultinom(nboot, size = n, prob = pTab)
-    tStats <- apply(bootTabs, 2, function(xBoot) {
-      nu <- sum(xBoot[1:3])
-      dBoot <- (xBoot[2] + xBoot[3]) / (nu + xBoot[1])
-      p11 <- xBoot[1] / nu
-      p11plus <- 1 + p11
-      se <- 2 * sqrt(p11 * (1 - p11) / (nu - 1)) / (p11plus * p11plus)
-      (dBoot - d) / se
-    })
-    z.conf.level <- quantile(tStats, probs = 1 - conf.level, na.rm = TRUE)
-    p.val <- (sum(tStats <= stat) + 1) / (nboot + 1)
-    meth <- "Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+  attr(d, "se") <- se
+  if ((se == 0.0) || !is.finite(se)) {
+    stat <- Inf
+    names(stat) <- "(d - d0) / se"
+    p.val <- 1.0
+    names(p.val) <- "p-value"
+    meth <- "No test performed due to null or not finite standard error"
+    conf.int <- c(0.0, 1.0)
+    names(conf.int) <- c("confidence interval", "dUpper")
   } else {
-    z.conf.level <- qnorm(1 - conf.level)
-    p.val <- pnorm(stat)
-    meth <- "Normal asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+    stat <- (d - d0) / se
+    names(stat) <- "(d - d0) / se"
+    if (boot) {
+      if (length(x) < 4) {
+        stop("A numeric vector of almost 4 frequencies is required to bootstrap")
+      }
+      n <- sum(x)
+      pTab <- x / n
+      bootTabs <- rmultinom(nboot, size = n, prob = pTab)
+      tStats <- apply(bootTabs, 2, boot.tStat, dis = d)
+      tStats <- tStats[is.finite(tStats)]
+      len.tStats <- length(tStats)
+      if (len.tStats < nboot) {
+        warning("Non finite values generated in the bootstrap process")
+      }
+      z.conf.level <- quantile(tStats, probs = 1 - conf.level)
+      p.val <- (sum(tStats <= stat) + 1) / (len.tStats + 1)
+      meth <- paste0(
+        "Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity (nboot = ",
+        len.tStats, ")")
+      attr(meth, "nboot") <- len.tStats
+    } else {
+      z.conf.level <- qnorm(1 - conf.level)
+      p.val <- pnorm(stat)
+      meth <- "Normal asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+    }
+    names(p.val) <- "p-value"
+    du <- d - z.conf.level * se
+    conf.int <- c(0, min(1, du))
+    attr(conf.int, "conf.level") <- conf.level
+    names(conf.int) <- c("confidence interval", "dUpper")
   }
-  names(p.val) <- "p-value"
-  du <- d - z.conf.level * se
-  conf.int <- c(0, min(1, du))
-  attr(conf.int, "conf.level") <- conf.level
-  names(conf.int) <- c("confidence interval", "dUpper")
   # if (!missing(n)) {
   #   attr(x, "n") <- n
   # }
@@ -337,9 +369,9 @@ equivTestSorensen.character <- function(x, y, d0 = 1 / (1 + 1.25),
                                         check.table = TRUE,
                                         ...){
   tab <- buildEnrichTable(x, y, listNames, check.table, ...)
-                                  # Typical ... arguments:
-                                  # geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db",
-                                  # onto = onto, GOLevel = ontoLevel,
+  # Typical ... arguments:
+  # geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db",
+  # onto = onto, GOLevel = ontoLevel,
   return(equivTestSorensen.table(tab, d0 = d0,
                                  boot = boot, nboot = nboot,
                                  conf.level = conf.level, check.table = FALSE))
@@ -398,7 +430,6 @@ equivTestSorensen.list <- function(x, d0 = 1 / (1 + 1.25),
 #' allEquivTestSorensen(pbtGeneLists,
 #'                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #'                     ontos = c("MF", "BP"), GOLevels = 4:6)
-
 #'
 #' @export
 allEquivTestSorensen <- function(x, d0 = 1 / (1 + 1.25), conf.level = 0.95,
@@ -425,4 +456,3 @@ allEquivTestSorensen <- function(x, d0 = 1 / (1 + 1.25), conf.level = 0.95,
   class(allOntos) <- c("AllEquivSDhtest", "list")
   return(allOntos)
 }
-

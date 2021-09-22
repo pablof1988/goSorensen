@@ -104,7 +104,8 @@ For the "list" interface, the result is an "equivSDhtestList", a list of objects
 all pairwise comparisons, each one being an object of "equivSDhtest" class.
 }
 \description{
-Equivalence test based on the Sorensen-Dice dissimilarity
+Equivalence test based on the Sorensen-Dice dissimilarity, computed either by an asymptotic
+normal or by a bootstrap approach.
 }
 \details{
 This function computes either the normal asymptotic or the bootstrap equivalence
@@ -189,7 +190,6 @@ equivTestSorensen(pbtGeneLists,
 
 equivTestSorensen(c(35, 12, 21))
 equivTestSorensen(c(35, 12, 21), boot = TRUE)
-
 }
 \seealso{
 \code{\link{nice2x2Table}} for checking and reformatting data,

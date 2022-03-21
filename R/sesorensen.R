@@ -3,12 +3,10 @@
 #' @param x either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
 #' or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.
 #' @param y an object of class "character" representing a vector of gene identifiers.
-# @param n numeric. It is ignored except sometimes in the "table", "matrix" or "numeric"
-# interfaces. See the details section for more information.
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table. This checking is performed by means of function
 #' \code{nice2x2Table}.
-#' @param ... extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.
+#' @param ... extra parameters for function \code{buildEnrichTable}.
 #'
 #' @return In the "table", "matrix", "numeric" and "character" interfaces, the value of the standard error of the
 #' Sorensen-Dice dissimilarity estimate. In the "list" interface, the symmetric matrix of all pairwise standard error
@@ -69,18 +67,13 @@
 #' @examples
 #' # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
 #' # of GO items in ontology BP at level 3.
-#' # load(file = "atlas.sanger_BP3.Rda")
-#' atlas.sanger_BP3
-#' dSorensen(atlas.sanger_BP3)
-#' seSorensen(atlas.sanger_BP3)
+#' tab_atlas.sanger_BP3
+#' dSorensen(tab_atlas.sanger_BP3)
+#' seSorensen(tab_atlas.sanger_BP3)
 #'
-# # To compute se for a proportions table:
-# nEnrich <- sum(atlas.sanger_BP3[1:3]
-# relAtlas.sanger_BP3 <- atlas.sanger_BP3[1:3]/nEnrich)
-# seSorensen(relAtlas.sanger_BP3, n = nEnRich)
-#
-# library(equivStandardTest)
-# data(humanEntrezIDs)
+#' # Contingency table as a numeric vector:
+#' seSorensen(c(56, 1, 30, 47))
+#' seSorensen(c(56, 1, 30))
 #'
 #' ?pbtGeneLists
 #' # (Time consuming:)
@@ -160,7 +153,7 @@ seSorensen.matrix <- function(x, n, check.table = TRUE) {
 
 #' @describeIn seSorensen S3 method for class "numeric"
 #' @export
-seSorensen.numeric <- function(x, n, check.table = TRUE) {
+seSorensen.numeric <- function(x, check.table = TRUE) {
   if (check.table){
     if (!nice2x2Table.numeric(x)) {
       print(x)

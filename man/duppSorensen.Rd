@@ -68,8 +68,7 @@ duppSorensen(x, ...)
 \item{x}{either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
 or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.}
 
-\item{...}{additional arguments for function \code{crossTabGOIDs4GeneLists} at package
-\code{equivStandardTest}. See the details section.}
+\item{...}{additional arguments for function \code{buildEnrichTable}.}
 
 \item{dis}{Sorensen-Dice dissimilarity value. Only required to speed computations if this value
 is known in advance.}
@@ -174,8 +173,9 @@ dSorensen(tab_atlas.sanger_BP3)
 seSorensen(tab_atlas.sanger_BP3)
 duppSorensen(tab_atlas.sanger_BP3)
 
-library(equivStandardTest)
-data(humanEntrezIDs)
+# Contingency table as a numeric vector:
+duppSorensen(c(56, 1, 30, 47))
+duppSorensen(c(56, 1, 30))
 
 ?pbtGeneLists
 # (Time consuming:)

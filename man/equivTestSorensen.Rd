@@ -64,7 +64,7 @@ equivTestSorensen(x, ...)
 \item{x}{either an object of class "table", "matrix", "numeric", "character" or "list".
 See the details section for more information.}
 
-\item{...}{extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.}
+\item{...}{extra parameters for function \code{buildEnrichTable}.}
 
 \item{d0}{equivalence threshold for the Sorensen-Dice dissimilarity, d.
 The null hypothesis states that d >= d0, i.e., inequivalence between the compared
@@ -165,8 +165,6 @@ under the Gaussian model. The bootstrap method provides a better approximation t
 tab_atlas.sanger_BP3
 equivTestSorensen(tab_atlas.sanger_BP3)
 
-library(equivStandardTest)
-
 # Building enrichment contingency tables from scratch
 # Gene universe:
 data(humanEntrezIDs)
@@ -188,8 +186,12 @@ equivTestSorensen(pbtGeneLists,
                   onto = "MF", GOLevel = 4)
 
 
-equivTestSorensen(c(35, 12, 21))
-equivTestSorensen(c(35, 12, 21), boot = TRUE)
+# Equivalence test on a contingency table represented as a numeric vector:
+equivTestSorensen(c(56, 1, 30, 47))
+equivTestSorensen(c(56, 1, 30, 47), boot = TRUE)
+equivTestSorensen(c(56, 1, 30))
+# Error: all frequencies are needed for bootstrap:
+equivTestSorensen(c(56, 1, 30), boot = TRUE)
 }
 \seealso{
 \code{\link{nice2x2Table}} for checking and reformatting data,

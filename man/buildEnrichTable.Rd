@@ -13,7 +13,14 @@ buildEnrichTable(x, ...)
   y,
   listNames = c("gene.list1", "gene.list2"),
   check.table = TRUE,
-  ...
+  geneUniverse,
+  orgPackg,
+  onto,
+  GOLevel,
+  restricted = FALSE,
+  pAdjustMeth = "BH",
+  pvalCutoff = 0.01,
+  qvalCutoff = 0.05
 )
 
 \method{buildEnrichTable}{character}(
@@ -21,20 +28,47 @@ buildEnrichTable(x, ...)
   y,
   listNames = c("gene.list1", "gene.list2"),
   check.table = TRUE,
-  ...
+  geneUniverse,
+  orgPackg,
+  onto,
+  GOLevel,
+  restricted = FALSE,
+  pAdjustMeth = "BH",
+  pvalCutoff = 0.01,
+  qvalCutoff = 0.05
 )
 }
 \arguments{
 \item{x}{an object of class "character" (or coerzable to "character") representing a vector of gene identifiers.}
-
-\item{...}{extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.}
 
 \item{y}{an object of class "character" (or coerzable to "character") representing a vector of gene identifiers.}
 
 \item{listNames}{a character(2) object containing the names of the gene lists
 which will originate the cross-tabulated enrichment frequencies.}
 
-\item{check.table}{boolean. The resulting table must be checked}
+\item{check.table}{boolean. The resulting table must be checked. Defaults to TRUE.}
+
+\item{geneUniverse}{character vector containing all genes from where geneLists have been extracted.}
+
+\item{onto}{string describing the ontology. Either "BP", "MF" or "CC".}
+
+\item{restricted}{Boolean variable to decide how tabulation of GOIDs is performed. Defaults to FALSE.
+Unrestricted tabulation crosses _all_ GO Terms located at the level indicated by `GOLev`
+with the two GOIDs lists. Restricted tabulation crosses only terms from the selected GO level
+that are _common to ancestor terms of either list_.
+That is, if one term in the selected GO level is not an ancestor of at least one of the gene list
+most specific GO terms it is excluded from the GO Level's terms because it is impossible that it
+appears as being enriched.}
+
+\item{pAdjustMeth}{string describing the adjust method, either "BH", "BY" or "Bonf", defaults to 'BH'.}
+
+\item{pvalCutoff}{A numeric value. Defaults to 0.05.}
+
+\item{qvalCutoff}{A numeric value. Defaults to 0.01.}
+
+\item{orgPackage}{A string with the name of the annotation package.}
+
+\item{GOLev}{An integer, the GO ontology level.}
 }
 \value{
 an object of class "table" representing a 2x2 contingency table

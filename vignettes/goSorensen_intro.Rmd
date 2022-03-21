@@ -1,0 +1,40 @@
+---
+title: "goSorensen_intro : An introduction to package goSorensen"
+author: 
+- name: Jordi Oca\~na
+  email: jocana@ub.edu
+  affiliation: Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona
+author: 
+- name: Jordi Oca\~na
+  email: jocana@ub.edu
+  affiliation: Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona, Barcelona, Spain
+author: 
+- name: Pablo Flores
+  email: pablof1988@yahoo.es
+  affiliation: Escuela Superior Polit\´ecnica de Chimborazo (ESPOCH), Research Group in Data Science CIDED, Riobamba, Ecuador
+author: 
+- name: Alexandre Sanchez-Pla 
+  email: asanchez@ub.edu
+  affiliation: Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona and Statistics and Bioinformatics Unit, Vall d’Hebron Institute of Research (VHIR), Barcelona, Spain
+author: 
+- name: Miquel Salicr\´u
+  email: msalicru@ub.edu
+  affiliation: Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona, Barcelona, Spain
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{An introduction to package goSorensen}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(goSorensen)
+```

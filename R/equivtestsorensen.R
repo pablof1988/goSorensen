@@ -19,7 +19,7 @@
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table. This checking is performed by means of function
 #' \code{nice2x2Table}.
-#' @param ... extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.
+#' @param ... extra parameters for function \code{buildEnrichTable}.
 #'
 #' @return
 #' For all interfaces (except for the "list" interface) the result is a list of class "equivSDhtest" which
@@ -108,8 +108,6 @@
 #' tab_atlas.sanger_BP3
 #' equivTestSorensen(tab_atlas.sanger_BP3)
 #'
-#' library(equivStandardTest)
-#'
 #' # Building enrichment contingency tables from scratch
 #' # Gene universe:
 #' data(humanEntrezIDs)
@@ -131,8 +129,13 @@
 #'                   onto = "MF", GOLevel = 4)
 #'
 #'
-#' equivTestSorensen(c(35, 12, 21))
-#' equivTestSorensen(c(35, 12, 21), boot = TRUE)
+#' # Equivalence test on a contingency table represented as a numeric vector:
+#' equivTestSorensen(c(56, 1, 30, 47))
+#' equivTestSorensen(c(56, 1, 30, 47), boot = TRUE)
+#' equivTestSorensen(c(56, 1, 30))
+#' # Error: all frequencies are needed for bootstrap:
+#' equivTestSorensen(c(56, 1, 30), boot = TRUE)
+
 
 #' @export
 equivTestSorensen <- function(x, ...) {

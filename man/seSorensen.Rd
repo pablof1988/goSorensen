@@ -15,7 +15,7 @@ seSorensen(x, ...)
 
 \method{seSorensen}{matrix}(x, n, check.table = TRUE)
 
-\method{seSorensen}{numeric}(x, n, check.table = TRUE)
+\method{seSorensen}{numeric}(x, check.table = TRUE)
 
 \method{seSorensen}{character}(
   x,
@@ -31,7 +31,7 @@ seSorensen(x, ...)
 \item{x}{either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
 or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.}
 
-\item{...}{extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.}
+\item{...}{extra parameters for function \code{buildEnrichTable}.}
 
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table. This checking is performed by means of function
@@ -98,11 +98,13 @@ of the dissimilarity between these gene lists are computed.
 \examples{
 # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
 # of GO items in ontology BP at level 3.
-# load(file = "atlas.sanger_BP3.Rda")
-atlas.sanger_BP3
-dSorensen(atlas.sanger_BP3)
-seSorensen(atlas.sanger_BP3)
+tab_atlas.sanger_BP3
+dSorensen(tab_atlas.sanger_BP3)
+seSorensen(tab_atlas.sanger_BP3)
 
+# Contingency table as a numeric vector:
+seSorensen(c(56, 1, 30, 47))
+seSorensen(c(56, 1, 30))
 
 ?pbtGeneLists
 # (Time consuming:)

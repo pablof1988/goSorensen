@@ -6,7 +6,7 @@
 # see the details section.
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table, by means of function \code{nice2x2Table}.
-#' @param ... extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.
+#' @param ... extra parameters for function \code{buildEnrichTable}.
 #'
 #' @return In the "table", "matrix", "numeric" and "character" interfaces, the value of the Sorensen-Dice
 #' dissimilarity. In the "list" interface, the symmetric matrix of all pairwise dissimilarities.
@@ -66,22 +66,24 @@
 #' # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
 #' # of GO items in ontology BP at level 3.
 #' ?tab_atlas.sanger_BP3
+#' tab_atlas.sanger_BP3
 #' dSorensen(tab_atlas.sanger_BP3)
 #'
-#' try{dSorensen(matrix(c(210, 12), ncol = 2, nrow = 1))}
-#' conti4 <- c(32, 21, 81, 1439)
+#' # Table represented as a vector:
+#' conti4 <- c(56, 1, 30, 471)
 #' dSorensen(conti4)
+#' # or as a plain matrix:
+#' dSorensen(matrix(conti4, nrow = 2))
+#'
 #' # This function is also appropriate for proportions:
 #' dSorensen(conti4 / sum(conti4))
-#' dSorensen(matrix(conti4, nrow = 2))
-#' conti5 <- c(32, 21, 81)
-#' dSorensen(conti5)
 #'
-#' library(equivStandardTest)
-#' data(humanEntrezIDs)
+#' conti3 <- c(56, 1, 30)
+#' dSorensen(conti3)
 #'
+#' # Sorensen-Dice dissimilarity from scratch, directly from two gene lists:
 #' ?pbtGeneLists
-#' # (Time consuming:)
+#' # (Time consuming, building the table requires many enrichment tests:)
 #' dSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
 #'           listNames = names(pbtGeneLists)[c(2,4)],
 #'           onto = "BP", GOLevel = 5,
@@ -91,7 +93,7 @@
 #'                           onto = "BP", GOLevel = 5,
 #'                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #' dSorensen(pbtBP5.IRITD3vsKT1)
-#' # (Quite time consuming:)
+#' # (Quite time consuming, all pairwise dissimilarities:)
 #' dSorensen(pbtGeneLists,
 #'           onto = "BP", GOLevel = 5,
 #'           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
@@ -167,7 +169,7 @@ dSorensen.character <- function(x, y,
   if (is.null(listNames)) {
     names(result) <- NULL
   } else {
-    names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
+    names(result) <- paste("Sorensen-Dice disimilarity ", listNames[1], ",", listNames[2], sep = "")
   }
   return(result)
 }

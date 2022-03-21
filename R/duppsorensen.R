@@ -19,8 +19,7 @@
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table. This checking is performed by means of function
 #' \code{nice2x2Table}.
-#' @param ... additional arguments for function \code{crossTabGOIDs4GeneLists} at package
-#' \code{equivStandardTest}. See the details section.
+#' @param ... additional arguments for function \code{buildEnrichTable}.
 #'
 #' @return In the "table", "matrix", "numeric" and "character" interfaces, the value of the Upper limit of the confidence
 #' interval for the Sorensen-Dice dissimilarity. In the "list" interface, the symmetric matrix of all pairwise upper limits.
@@ -102,8 +101,9 @@
 #' seSorensen(tab_atlas.sanger_BP3)
 #' duppSorensen(tab_atlas.sanger_BP3)
 #'
-#' library(equivStandardTest)
-#' data(humanEntrezIDs)
+#' # Contingency table as a numeric vector:
+#' duppSorensen(c(56, 1, 30, 47))
+#' duppSorensen(c(56, 1, 30))
 #'
 #' ?pbtGeneLists
 #' # (Time consuming:)
@@ -199,7 +199,7 @@ duppSorensen.matrix <- function(x, #n,
 
 #' @describeIn duppSorensen S3 method for class "numeric"
 #' @export
-duppSorensen.numeric <- function(x, #n,
+duppSorensen.numeric <- function(x,
                                  dis = dSorensen.numeric(x, check.table = FALSE),
                                  se = seSorensen.numeric(x, check.table = FALSE),
                                  conf.level = 0.95, z.conf.level = qnorm(1 - conf.level),

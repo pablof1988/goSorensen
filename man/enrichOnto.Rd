@@ -37,6 +37,7 @@ This function performs a standard test of equivalence between two gene lists
  data(humanEntrezIDs)
  gl1 <-kidneyGeneLists[[1]]
  anOnto <- 'BP'
- enriched <- enrichOnto (geneL=gl1, geneUniverse=humanEntrezIDs, orgPackage='org.Hs.eg.db', onto=anOnto)
+ enriched <- enrichOnto (geneL=gl1, geneUniverse=humanEntrezIDs,
+ orgPackage='org.Hs.eg.db', onto=anOnto)
  GOIDs <- as.character(as.data.frame(enriched)$ID)
 }

@@ -25,8 +25,6 @@
 #' "Number of enriched items in list 1 (TRUE, FALSE)" x "Number of enriched items in
 #' list 2 (TRUE, FALSE)".
 #'
-#' @details
-#'
 #' @examples
 #'
 #' # Gene universe:
@@ -43,10 +41,12 @@
 #' vog.VS.Wald
 #' # Incomplete 2x2 table due to zero frequencies (no annotated items for list IRITD5):
 #' buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
-#'                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db", onto = "MF", GOLevel = 7)
+#'                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#'                  onto = "MF", GOLevel = 7)
 #' buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
 #'                  check.table = FALSE,
-#'                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db", onto = "MF", GOLevel = 7)
+#'                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#'                  onto = "MF", GOLevel = 7)
 #'
 #' @export
 buildEnrichTable <- function(x, ...) {

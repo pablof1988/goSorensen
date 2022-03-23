@@ -320,7 +320,9 @@ equivTestSorensen.numeric <- function(x, #n,
     names(stat) <- "(d - d0) / se"
     if (boot) {
       if (length(x) < 4) {
-        stop("A numeric vector of almost 4 frequencies is required to bootstrap")
+        print(x)
+        message("A numeric vector of almost 4 frequencies is required to bootstrap")
+        stop()
       }
       n <- sum(x)
       pTab <- x / n

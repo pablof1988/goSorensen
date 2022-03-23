@@ -14,9 +14,10 @@
 #' waldman_atlas.BP.4
 #' class(waldman_atlas.BP.4)
 #' # This may correspond to the result of code like:
-#' # waldman_atlas.BP.4 <- equivTestSorensen(allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
-#' #                                         geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #                                         onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
+#' # waldman_atlas.BP.4 <- equivTestSorensen(allOncoGeneLists[["waldman"]],
+#' # allOncoGeneLists[["atlas"]],
+#' # geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#' # onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
 #' getPvalue(waldman_atlas.BP.4)
 #' getDissimilarity(waldman_atlas.BP.4)
 #' getUpper(waldman_atlas.BP.4)
@@ -75,7 +76,8 @@
 #' getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
 #' getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
 #' getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", simplify = FALSE)
-#' getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", listNames = c("waldman", "sanger"))
+#' getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
+#' listNames = c("waldman", "sanger"))
 #' getDissimilarity(cancerEquivSorensen$BP$`level 4`)
 #'
 #' # Upper confidence limits for the Sorensen-Dice dissimilarity:
@@ -86,7 +88,8 @@
 #' getUpper(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
 #' getUpper(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
 #' getUpper(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", simplify = FALSE)
-#' getUpper(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", listNames = c("waldman", "sanger"))
+#' getUpper(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
+#' listNames = c("waldman", "sanger"))
 #' getUpper(cancerEquivSorensen$BP$`level 4`)
 #'
 #' # Standard error of the Sorensen-Dice dissimilarity estimate:
@@ -97,7 +100,8 @@
 #' getSE(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
 #' getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
 #' getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", simplify = FALSE)
-#' getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", listNames = c("waldman", "sanger"))
+#' getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
+#' listNames = c("waldman", "sanger"))
 #' getSE(cancerEquivSorensen$BP$`level 4`)
 #'
 #'
@@ -568,7 +572,7 @@ getNboot.equivSDhtestList <- function(x, simplify = TRUE) {
 #' @describeIn getNboot S3 method for class "AllEquivSDhtest"
 #' @export
 getNboot.AllEquivSDhtest <- function(x, onto, GOLevel, listNames,
-                                             simplify = TRUE) {
+                                     simplify = TRUE) {
   if (missing(onto)) {
     onto <- names(x)
   }
@@ -584,7 +588,7 @@ getNboot.AllEquivSDhtest <- function(x, onto, GOLevel, listNames,
         resList1 <- sapply(namsList1, function(ilist1) {
           namsList2 <- names(x[[ionto]][[ilev]][[ilist1]])
           resList2 <- sapply(namsList2, function(ilist2) {
-            return(x[[ionto]][[ilev]][[ilist1]][[ilist2]]$estimate)
+            return(attr(x[[ionto]][[ilev]][[ilist1]][[ilist2]]$method, "nboot"))
           })
           names(resList2) <- namsList2
           return(resList2)
@@ -602,7 +606,7 @@ getNboot.AllEquivSDhtest <- function(x, onto, GOLevel, listNames,
         }
         return(resList1)
       }else {
-        return(x[[ionto]][[ilev]][[listNames[1]]][[listNames[2]]]$estimate)
+        return(attr(x[[ionto]][[ilev]][[listNames[1]]][[listNames[2]]]$method, "nboot"))
       }
     })
     names(resLev) <- GOLevel

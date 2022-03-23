@@ -25,7 +25,8 @@ extractGOIDs <- function (enriched) {
 #'  data(humanEntrezIDs)
 #'  gl1 <-kidneyGeneLists[[1]]
 #'  anOnto <- 'BP'
-#'  enriched <- enrichOnto (geneL=gl1, geneUniverse=humanEntrezIDs, orgPackage='org.Hs.eg.db', onto=anOnto)
+#'  enriched <- enrichOnto (geneL=gl1, geneUniverse=humanEntrezIDs,
+#'  orgPackage='org.Hs.eg.db', onto=anOnto)
 #'  GOIDs <- as.character(as.data.frame(enriched)$ID)
 enrichOnto <- function (geneList,
                         geneUniverse,
@@ -90,7 +91,8 @@ crossTabGOIDsUnrestricted <- function (GO1, GO2, onto, GOLevel, listNames=NULL)
 #'  orgPkg ='org.Hs.eg.db'
 #'  GOIDSinLevel.1 <- GOIDsInLevel (GOLev=GOLev, onto = anOnto,  restricted=FALSE);
 #'  length(GOIDSinLevel.1)
-#'  GOIDSinLevel.2 <- GOIDsInLevel (GOLev=GOLev, onto = anOnto,  geneList1 = gl1, geneList2 = gl2, orgPackage =orgPkg)
+#'  GOIDSinLevel.2 <- GOIDsInLevel (GOLev=GOLev, onto = anOnto,  geneList1 = gl1,
+#'  geneList2 = gl2, orgPackage =orgPkg)
 #'  length(GOIDSinLevel.2)
 GOIDsInLevel <- function (GOLev, onto, geneList1=NULL, geneList2 =NULL, orgPackage=NULL, restricted=TRUE){
   levelIDs <- goProfiles::getGOLevel(onto=onto, level=GOLev)
@@ -134,11 +136,13 @@ GOIDsInLevel <- function (GOLev, onto, geneList1=NULL, geneList2 =NULL, orgPacka
 #'  orgPkg ='org.Hs.eg.db'
 #'  restrictTab <- TRUE
 #'  crossTabbedGOIdsRestricted <- crossTabGOIDs (GO1 = GOIDs1, GO2 = GOIDs2, onto = anOnto,
-#'  GOLevel =GOLev, listNames=names4lists, geneList1 = gl1, geneList2 = gl2, orgPackage =orgPkg, restricted = restrictTab)
+#'  GOLevel =GOLev, listNames=names4lists, geneList1 = gl1, geneList2 = gl2,
+#'  orgPackage =orgPkg, restricted = restrictTab)
 #'  show(crossTabbedGOIdsRestricted)
 #'  restrictTab <- FALSE
 #'  crossTabbedGOIdsUnrestricted <- crossTabGOIDs (GO1 = GOIDs1, GO2 = GOIDs2, onto = anOnto,
-#'  GOLevel =GOLev, listNames=names4lists, geneList1 = gl1, geneList2 = gl2, orgPackage =orgPkg, restricted = restrictTab)
+#'  GOLevel =GOLev, listNames=names4lists, geneList1 = gl1, geneList2 = gl2,
+#'  orgPackage =orgPkg, restricted = restrictTab)
 #'  show(crossTabbedGOIdsUnrestricted)
 crossTabGOIDs <- function (GO1, GO2, onto, GOLevel, listNames=NULL,
                            geneList1=NULL, geneList2=NULL, orgPackage = NULL, restricted=FALSE)
@@ -213,10 +217,12 @@ stdTest4GOIDs <- function (GO1, GO2, onto, GOLevel, listNames=NULL)
 #'  pValCut <- 0.05
 #'  qValCut <- 0.01
 #'  crossTabFromGeneListsUnrestricted <- crossTabGOIDs4GeneLists (genelist1=gl1, genelist2=gl2,
-#'  geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db", onto=anOnto, GOLevel=GOLev, restricted=restricted)
+#'  geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db", onto=anOnto, GOLevel=GOLev,
+#'  restricted=restricted)
 #'  restricted <- TRUE
 #'  crossTabFromGeneListsRestricted <- crossTabGOIDs4GeneLists (genelist1=gl1, genelist2=gl2,
-#'  geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db", onto=anOnto, GOLevel=GOLev, restricted=restricted)
+#'  geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db", onto=anOnto, GOLevel=GOLev,
+#'  restricted=restricted)
 crossTabGOIDs4GeneLists <- function (genelist1, genelist2, geneUniverse, orgPackg, onto, GOLevel, restricted =FALSE,
                                pAdjustMeth="BH", pvalCutoff=0.01, qvalCutoff=0.05)
 {

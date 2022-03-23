@@ -38,6 +38,7 @@ This function extends getGOLevel returning only GO identifiers appearing between
  orgPkg ='org.Hs.eg.db'
  GOIDSinLevel.1 <- GOIDsInLevel (GOLev=GOLev, onto = anOnto,  restricted=FALSE);
  length(GOIDSinLevel.1)
- GOIDSinLevel.2 <- GOIDsInLevel (GOLev=GOLev, onto = anOnto,  geneList1 = gl1, geneList2 = gl2, orgPackage =orgPkg)
+ GOIDSinLevel.2 <- GOIDsInLevel (GOLev=GOLev, onto = anOnto,  geneList1 = gl1,
+ geneList2 = gl2, orgPackage =orgPkg)
  length(GOIDSinLevel.2)
 }

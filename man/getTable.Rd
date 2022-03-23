@@ -44,9 +44,10 @@ or "allEquivSDtest", i.e., to the result of functions 'equivTestSorensen' and 'a
 waldman_atlas.BP.4
 class(waldman_atlas.BP.4)
 # This may correspond to the result of code like:
-# waldman_atlas.BP.4 <- equivTestSorensen(allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
-#                                         geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#                                         onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
+# waldman_atlas.BP.4 <- equivTestSorensen(allOncoGeneLists[["waldman"]],
+# allOncoGeneLists[["atlas"]],
+# geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+# onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
 getPvalue(waldman_atlas.BP.4)
 getDissimilarity(waldman_atlas.BP.4)
 getUpper(waldman_atlas.BP.4)
@@ -104,7 +105,8 @@ getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
 getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
 getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
 getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", simplify = FALSE)
-getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", listNames = c("waldman", "sanger"))
+getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
+listNames = c("waldman", "sanger"))
 getDissimilarity(cancerEquivSorensen$BP$`level 4`)
 
 # Upper confidence limits for the Sorensen-Dice dissimilarity:
@@ -115,7 +117,8 @@ getUpper(cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
 getUpper(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
 getUpper(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
 getUpper(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", simplify = FALSE)
-getUpper(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", listNames = c("waldman", "sanger"))
+getUpper(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
+listNames = c("waldman", "sanger"))
 getUpper(cancerEquivSorensen$BP$`level 4`)
 
 # Standard error of the Sorensen-Dice dissimilarity estimate:
@@ -126,7 +129,8 @@ getSE(cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
 getSE(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
 getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
 getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", simplify = FALSE)
-getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", listNames = c("waldman", "sanger"))
+getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
+listNames = c("waldman", "sanger"))
 getSE(cancerEquivSorensen$BP$`level 4`)
 
 

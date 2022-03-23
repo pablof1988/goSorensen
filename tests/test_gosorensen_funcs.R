@@ -50,24 +50,25 @@ contiAsVector.mat
 contiAsVectorLen3 <- c(32, 21, 81)
 nice2x2Table(contiAsVectorLen3)
 
-dSorensen(badConti)
-dSorensen(badConti, check.table = FALSE)  # Wrong value!
+try(dSorensen(badConti), TRUE)
+# Apparently it works fine, but returns a wrong value!
+dSorensen(badConti, check.table = FALSE)
 
-dSorensen(incompleteConti)
+try(dSorensen(incompleteConti), TRUE)
 dSorensen(contiAsVector)
 dSorensen(contiAsVector.mat)
 dSorensen(contiAsVectorLen3)
 dSorensen(contiAsVectorLen3, check.table = FALSE)
 
-seSorensen(badConti)
-seSorensen(incompleteConti)
+try(seSorensen(badConti), TRUE)
+try(seSorensen(incompleteConti), TRUE)
 seSorensen(contiAsVector)
 seSorensen(contiAsVector.mat)
 seSorensen(contiAsVectorLen3)
 seSorensen(contiAsVectorLen3, check.table = FALSE)
 
-duppSorensen(badConti)
-duppSorensen(incompleteConti)
+try(duppSorensen(badConti), TRUE)
+try(duppSorensen(incompleteConti), TRUE)
 duppSorensen(contiAsVector)
 duppSorensen(contiAsVector.mat)
 set.seed(123)
@@ -78,7 +79,7 @@ duppSorensen(contiAsVector.mat, boot = TRUE)
 duppSorensen(contiAsVectorLen3)
 # Bootstrapping requires full contingency tables (4 values)
 set.seed(123)
-duppSorensen(contiAsVectorLen3, boot = TRUE)
+try(duppSorensen(contiAsVectorLen3, boot = TRUE), TRUE)
 
 # Sorensen-Dice computations from scratch, directly from gene lists
 ?pbtGeneLists
@@ -144,15 +145,15 @@ equiv.atlas.sanger
 getTable(equiv.atlas.sanger)
 getPvalue(equiv.atlas.sanger)
 
-equivTestSorensen(badConti)
-equivTestSorensen(incompleteConti)
+try(equivTestSorensen(badConti), TRUE)
+try(equivTestSorensen(incompleteConti), TRUE)
 equivTestSorensen(contiAsVector)
 equivTestSorensen(contiAsVector.mat)
 set.seed(123)
 equivTestSorensen(contiAsVector.mat, boot = TRUE)
 equivTestSorensen(contiAsVectorLen3)
-set.seed(123)
-equivTestSorensen(contiAsVectorLen3, boot = TRUE)
+
+try(equivTestSorensen(contiAsVectorLen3, boot = TRUE), TRUE)
 
 equivTestSorensen(allOncoGeneLists[[2]], allOncoGeneLists[[4]],
                   listNames = names(allOncoGeneLists)[c(2,4)],
@@ -160,11 +161,15 @@ equivTestSorensen(allOncoGeneLists[[2]], allOncoGeneLists[[4]],
                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 
 set.seed(123)
-equivTestSorensen(allOncoGeneLists[[2]], allOncoGeneLists[[4]],
-                  listNames = names(allOncoGeneLists)[c(2,4)],
-                  boot = TRUE,
-                  onto = "BP", GOLevel = 5,
-                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+bootTest <- equivTestSorensen(allOncoGeneLists[[2]], allOncoGeneLists[[4]],
+                              listNames = names(allOncoGeneLists)[c(2,4)],
+                              boot = TRUE,
+                              onto = "BP", GOLevel = 5,
+                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# Warnings are issued, not all bootstrap tables are adequate for
+# Sorensen-Dice computations:
+getNboot(bootTest)
+
 
 allTests <- equivTestSorensen(allOncoGeneLists,
                               onto = "BP", GOLevel = 5,
@@ -173,33 +178,16 @@ getPvalue(allTests)
 p.adjust(getPvalue(allTests), method = "holm")
 
 set.seed(123)
-equivTestSorensen(allOncoGeneLists,
-                  boot = TRUE,
-                  onto = "BP", GOLevel = 5,
-                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+allBootTests <- equivTestSorensen(allOncoGeneLists,
+                                  boot = TRUE,
+                                  onto = "BP", GOLevel = 5,
+                                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# Warnings are issued for the same reason:
+getNboot(allBootTests)
 
 set.seed(123)
-allEquivTestSorensen(allOncoGeneLists,
-                     boot = TRUE,
-                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                     ontos = c("BP", "MF"), GOLevels = 4:5)
-
-
-# Additional computations from other gene data:
-?pbtGeneLists
-duppSorensen(pbtGeneLists,
-             boot = TRUE,
-             onto = "BP", GOLevel = 5,
-             geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-
-duppSorensen(pbtGeneLists[["KT1.1"]], pbtGeneLists[["ENDAT"]],
-             boot = TRUE,
-             listNames = names(pbtGeneLists)[c(2,4)],
-             onto = "BP", GOLevel = 5,
-             geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-
-tab <- buildEnrichTable(pbtGeneLists[["KT1.1"]], pbtGeneLists[["ENDAT"]],
-                        listNames = names(pbtGeneLists)[c(2,4)],
-                        onto = "BP", GOLevel = 5,
-                        geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+allBootTests_CC_MF_lev4to5 <- allEquivTestSorensen(allOncoGeneLists,
+                                                   boot = TRUE,
+                                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+                                                   ontos = c("CC", "MF"), GOLevels = 4:5)
 

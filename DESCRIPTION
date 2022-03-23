@@ -2,7 +2,7 @@ Package: goSorensen
 Type: Package
 Title: Statistical inference based on the Sorensen-Dice dissimilarity
         and the Gene Ontology (GO)
-Version: 1.0.1
+Version: 1.0.2
 Author: Jordi Ocana, Pablo Flores, Alexandre Sanchez-Pla, Miquel Salicru
 Maintainer: Jordi Ocana <jocana@ub.edu>
 Description: This package implements inferential methods to compare gene lists (in this first 
@@ -15,7 +15,7 @@ Suggests:
     knitr,
     rmarkdown
 Depends:
-    R (>= 3.0.0),
+    R (>= 3.5.0),
     devtools,
     GO.db,
     org.Hs.eg.db,

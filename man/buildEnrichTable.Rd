@@ -79,9 +79,6 @@ list 2 (TRUE, FALSE)".
 \description{
 Creates a 2x2 enrichment contingency table from two gene lists
 }
-\details{
-
-}
 \section{Methods (by class)}{
 \itemize{
 \item \code{default}: S3 default method
@@ -105,9 +102,11 @@ vog.VS.Wald <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]], allOncoGeneLis
 vog.VS.Wald
 # Incomplete 2x2 table due to zero frequencies (no annotated items for list IRITD5):
 buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
-                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db", onto = "MF", GOLevel = 7)
+                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+                 onto = "MF", GOLevel = 7)
 buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
                  check.table = FALSE,
-                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db", onto = "MF", GOLevel = 7)
+                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+                 onto = "MF", GOLevel = 7)
 
 }

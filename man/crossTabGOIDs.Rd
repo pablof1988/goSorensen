@@ -55,10 +55,12 @@ The lists are intended to have been obtained from enrichment analyses performed 
  orgPkg ='org.Hs.eg.db'
  restrictTab <- TRUE
  crossTabbedGOIdsRestricted <- crossTabGOIDs (GO1 = GOIDs1, GO2 = GOIDs2, onto = anOnto,
- GOLevel =GOLev, listNames=names4lists, geneList1 = gl1, geneList2 = gl2, orgPackage =orgPkg, restricted = restrictTab)
+ GOLevel =GOLev, listNames=names4lists, geneList1 = gl1, geneList2 = gl2,
+ orgPackage =orgPkg, restricted = restrictTab)
  show(crossTabbedGOIdsRestricted)
  restrictTab <- FALSE
  crossTabbedGOIdsUnrestricted <- crossTabGOIDs (GO1 = GOIDs1, GO2 = GOIDs2, onto = anOnto,
- GOLevel =GOLev, listNames=names4lists, geneList1 = gl1, geneList2 = gl2, orgPackage =orgPkg, restricted = restrictTab)
+ GOLevel =GOLev, listNames=names4lists, geneList1 = gl1, geneList2 = gl2,
+ orgPackage =orgPkg, restricted = restrictTab)
  show(crossTabbedGOIdsUnrestricted)
 }

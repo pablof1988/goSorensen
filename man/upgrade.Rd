@@ -38,7 +38,7 @@ of enrichment frequencies in 'x', obtain again the result of the equivalence tes
 
 \examples{
 # Result of the equivalence test between gene lists 'waldman' and 'atlas', in dataset
-'allOncoGeneLists', at level 4 of the BP ontology:
+# 'allOncoGeneLists', at level 4 of the BP ontology:
 waldman_atlas.BP.4
 class(waldman_atlas.BP.4)
 # This may correspond to the result of code like:

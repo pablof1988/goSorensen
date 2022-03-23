@@ -7,7 +7,7 @@
 \alias{nice2x2Table.numeric}
 \title{Checks for validity data representing an enrichment contingency table generated from two gene lists}
 \usage{
-nice2x2Table(x, ...)
+nice2x2Table(x)
 
 \method{nice2x2Table}{table}(x)
 

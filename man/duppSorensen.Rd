@@ -92,6 +92,8 @@ represent a 2x2 contingency table. This checking is performed by means of functi
 \code{nice2x2Table}.}
 
 \item{y}{an object of class "character" representing a vector of gene identifiers.}
+
+\item{listNames}{character(2), names of both gene lists to be compared (only for the character interface)}
 }
 \value{
 In the "table", "matrix", "numeric" and "character" interfaces, the value of the Upper limit of the confidence
@@ -183,7 +185,6 @@ duppSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
              listNames = names(pbtGeneLists)[c(2,4)],
              onto = "BP", GOLevel = 5,
              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-duppSorensen(pbtBP5.IRITD3vsKT1)
 # (Quite time consuming:)
 duppSorensen(pbtGeneLists,
              onto = "BP", GOLevel = 5,

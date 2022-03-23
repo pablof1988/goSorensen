@@ -26,11 +26,20 @@ states that d >= d0, and the alternative that d < d0.}
 
 \item{conf.level}{confidence level of the one-sided confidence interval, a value between 0 and 1.}
 
+\item{boot}{boolean. If TRUE, the confidence interval and the test p-value are computed by means
+of a bootstrap approach instead of the asymptotic normal approach. Defaults to FALSE.}
+
+\item{nboot}{numeric, number of bootstrap replicates. Ignored if \code{boot == FALSE}. Defaults to 10000.}
+
+\item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
+represent a 2x2 contingency table. This checking is performed by means of function
+\code{nice2x2Table}.}
+
 \item{ontos}{"character", GO ontologies to analyse. Defaults to \code{c("BP", "CC", "MF")}.}
 
 \item{GOLevels}{"integer", GO levels to analyse inside each of these GO ontologies.}
 
-\item{...}{extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.}
+\item{...}{extra parameters for function \code{buildEnrichTable}.}
 }
 \value{
 An object of class "AllEquivSDhtest". It is a list with as many components as GO ontologies have been analysed.
@@ -43,13 +52,12 @@ in argument \code{x}.
 Iterate \code{equivTestSorensen} along the specified GO ontologies and GO levels
 }
 \examples{
-library(equivStandardTest)
 # Gene universe:
 data(humanEntrezIDs)
 # Gene lists to be explored for enrichment:
 data(pbtGeneLists)
 allEquivTestSorensen(pbtGeneLists,
-                    geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                    ontos = c("MF", "BP"), GOLevels = 4:6)
+                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+                     ontos = c("MF", "BP"), GOLevels = 4:6)
 
 }

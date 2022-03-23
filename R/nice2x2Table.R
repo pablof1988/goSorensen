@@ -1,8 +1,6 @@
 #' Checks for validity data representing an enrichment contingency table generated from two gene lists
 #'
 #' @param x either an object of class "table", "matrix" or "numeric".
-# @param n total number of enriched GO nodes. Only required (sometimes) on the "numeric" interface,
-# see the details section.
 #'
 #' @return boolean, TRUE if \code{x} nicely represents a 2x2 contingency table
 #' interpretable as the cross-tabulation of the enriched GO items in two gene lists:
@@ -58,7 +56,7 @@
 
 #'
 #' @export
-nice2x2Table <- function(x, ...) {
+nice2x2Table <- function(x) {
   UseMethod("nice2x2Table")
 }
 

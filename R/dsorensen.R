@@ -2,10 +2,9 @@
 #' @param x either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
 #' or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.
 #' @param y an object of class "character" representing a vector of gene identifiers.
-# @param n total number of enriched GO items. Only required (sometimes) on the "numeric" interface,
-# see the details section.
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table, by means of function \code{nice2x2Table}.
+#' @param listNames character(2), names of both gene lists to be compared (only for the character interface)
 #' @param ... extra parameters for function \code{buildEnrichTable}.
 #'
 #' @return In the "table", "matrix", "numeric" and "character" interfaces, the value of the Sorensen-Dice
@@ -41,13 +40,6 @@
 #' \eqn{(n_{11}, n_{01}, n_{10})}{%
 #' (n_11, n_01, n_10)}, always in this order and discarding extra values if necessary.
 #' The result is correct, regardless the frequencies are absolute or relative.
-# If \code{1 <= length(x) <= 2}, \code{x[1]} must correspond to \eqn{n_{11}}{%
-# n_11}, and a possible extra second value is ignored.
-# Then, if \code{X[1]} is an absolute frequency, the value of argument \code{n} must
-# be provided and must correspond to
-# \eqn{(n_{11} + n_{01} + n_{10})}{%
-# (n_11 + n_01 + n_10)}. To provide \code{n} is not necessary if \code{X[1]} corresponds to a
-# relative frequency
 #'
 #' If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 #' dissimilarity between lists \code{x} and \code{y} is computed, after summarizing these gene lists
@@ -133,22 +125,6 @@ dSorensen.numeric <- function(x, check.table = TRUE){
       print(x)
       stop("Inadequate contingency table")}
   }
-  # if (length(x) >= 3) {
-  #   result <- (x[2] + x[3]) / (2 * x[1] + x[2] + x[3])
-  # } else {
-  #   if (x[1] < 1) {
-  #     result <- (1 - x[1]) / (1 + x[1])
-  #   } else {
-  #     if (missing(n)) {
-  #       stop("Argument 'n' required for numeric 'x' of length <= 2 representing absolute frequencies")
-  #     }
-  #     if (x[1] > n) {
-  #       stop("Invalid value for argument 'n', it must be n_11 + n_10 + n_01")
-  #     }
-  #     p11 <- x[1] / n
-  #     result <- (1 - p11) / (1 + p11)
-  #   }
-  # }
   result <- result <- (x[2] + x[3]) / (2 * x[1] + x[2] + x[3])
   names(result) <- NULL
   return(result)
@@ -160,11 +136,11 @@ dSorensen.character <- function(x, y,
                                 listNames = c("gene.list1", "gene.list2"),
                                 check.table = TRUE,
                                 ...){
-  tab <- buildEnrichTable(x, y, listNames, check.table, ...)
+  tab <- buildEnrichTable(x, y, listNames,
+                          check.table, ...)
   # Typical ... arguments:
   # geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db",
   # onto = onto, GOLevel = ontoLevel,
-  # tab <- nice2x2Table.table(tab, listNames)
   result <- (tab[2] + tab[3]) / (2 * tab[1] + tab[2] + tab[3])
   if (is.null(listNames)) {
     names(result) <- NULL
@@ -183,7 +159,8 @@ dSorensen.list <- function(x, check.table = TRUE, ...){
   for (iLst1 in 2:numLists) {
     for (iLst2 in 1:(iLst1-1)) {
       result[iLst1, iLst2] <- dSorensen.character(x[[iLst1]], x[[iLst2]], check.table = check.table,
-                                                  listNames = NULL, ...)
+                                                  listNames = NULL,
+                                                  ...)
     }
   }
   result[upper.tri(result)] <- t(result)[upper.tri(result)]

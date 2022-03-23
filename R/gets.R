@@ -8,16 +8,17 @@
 #' @param GOLevel numeric, a vector with one or more GO levels to access.
 #' @param simplify logical, if TRUE the result is simplified, e.g., returning a vector instead
 #' of a matrix.
+#' @param listNames character(2), the names of a pair of gene lists.
 #' @examples
 #' # Result of the equivalence test between gene lists 'waldman' and 'atlas', in dataset
-#' 'allOncoGeneLists', at level 4 of the BP ontology:
+#' # 'allOncoGeneLists', at level 4 of the BP ontology:
 #' waldman_atlas.BP.4
 #' class(waldman_atlas.BP.4)
 #' # This may correspond to the result of code like:
-#' # waldman_atlas.BP.4 <- equivTestSorensen(allOncoGeneLists[["waldman"]],
-#' # allOncoGeneLists[["atlas"]],
-#' # geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' # onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
+#' # waldman_atlas.BP.4 <- equivTestSorensen(
+#' #   allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
+#' #   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#' #   onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
 #' getPvalue(waldman_atlas.BP.4)
 #' getDissimilarity(waldman_atlas.BP.4)
 #' getUpper(waldman_atlas.BP.4)
@@ -55,7 +56,8 @@
 #' getTable(cancerEquivSorensen, GOLevel = "level 6")
 #' getTable(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
 #' getTable(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
-#' getTable(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", listNames = c("waldman", "sanger"))
+#' getTable(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
+#'          listNames = c("waldman", "sanger"))
 #'
 #' # p-values:
 #' getPvalue(cancerEquivSorensen)
@@ -65,7 +67,8 @@
 #' getPvalue(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
 #' getPvalue(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
 #' getPvalue(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", simplify = FALSE)
-#' getPvalue(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", listNames = c("waldman", "sanger"))
+#' getPvalue(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
+#'           listNames = c("waldman", "sanger"))
 #' getPvalue(cancerEquivSorensen$BP$`level 4`)
 #'
 #' # Estimated Sorensen-Dice dissimilarity:
@@ -77,7 +80,7 @@
 #' getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
 #' getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", simplify = FALSE)
 #' getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
-#' listNames = c("waldman", "sanger"))
+#'                  listNames = c("waldman", "sanger"))
 #' getDissimilarity(cancerEquivSorensen$BP$`level 4`)
 #'
 #' # Upper confidence limits for the Sorensen-Dice dissimilarity:
@@ -89,7 +92,7 @@
 #' getUpper(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
 #' getUpper(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", simplify = FALSE)
 #' getUpper(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
-#' listNames = c("waldman", "sanger"))
+#'          listNames = c("waldman", "sanger"))
 #' getUpper(cancerEquivSorensen$BP$`level 4`)
 #'
 #' # Standard error of the Sorensen-Dice dissimilarity estimate:
@@ -100,12 +103,11 @@
 #' getSE(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
 #' getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
 #' getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", simplify = FALSE)
-#' getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
-#' listNames = c("waldman", "sanger"))
+#' getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", listNames = c("waldman", "sanger"))
 #' getSE(cancerEquivSorensen$BP$`level 4`)
 #'
 #'
-#' Acces to Sorensen-Dice asymptotic test enrichment 2x2 contingency table
+#' # Acces to Sorensen-Dice asymptotic test enrichment 2x2 contingency table
 #'
 #' @export
 getTable <- function(x, ...) {
@@ -307,7 +309,7 @@ getDissimilarity.equivSDhtestList <- function(x, simplify = TRUE) {
 #' @describeIn getDissimilarity S3 method for class "AllEquivSDhtest"
 #' @export
 getDissimilarity.AllEquivSDhtest <- function(x, onto, GOLevel, listNames,
-                                     simplify = TRUE) {
+                                             simplify = TRUE) {
   if (missing(onto)) {
     onto <- names(x)
   }

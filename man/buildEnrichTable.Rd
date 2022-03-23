@@ -50,7 +50,11 @@ which will originate the cross-tabulated enrichment frequencies.}
 
 \item{geneUniverse}{character vector containing all genes from where geneLists have been extracted.}
 
+\item{orgPackg}{A string with the name of the annotation package.}
+
 \item{onto}{string describing the ontology. Either "BP", "MF" or "CC".}
+
+\item{GOLevel}{An integer, the GO ontology level.}
 
 \item{restricted}{Boolean variable to decide how tabulation of GOIDs is performed. Defaults to FALSE.
 Unrestricted tabulation crosses _all_ GO Terms located at the level indicated by `GOLev`
@@ -65,10 +69,6 @@ appears as being enriched.}
 \item{pvalCutoff}{A numeric value. Defaults to 0.05.}
 
 \item{qvalCutoff}{A numeric value. Defaults to 0.01.}
-
-\item{orgPackage}{A string with the name of the annotation package.}
-
-\item{GOLev}{An integer, the GO ontology level.}
 }
 \value{
 an object of class "table" representing a 2x2 contingency table
@@ -87,7 +87,6 @@ Creates a 2x2 enrichment contingency table from two gene lists
 }}
 
 \examples{
-
 # Gene universe:
 data(humanEntrezIDs)
 # Gene lists to be explored for enrichment:
@@ -102,11 +101,9 @@ vog.VS.Wald <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]], allOncoGeneLis
 vog.VS.Wald
 # Incomplete 2x2 table due to zero frequencies (no annotated items for list IRITD5):
 buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
-                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                 onto = "MF", GOLevel = 7)
+                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db", onto = "MF", GOLevel = 7)
 buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
                  check.table = FALSE,
-                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                 onto = "MF", GOLevel = 7)
+                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db", onto = "MF", GOLevel = 7)
 
 }

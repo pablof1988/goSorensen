@@ -83,6 +83,8 @@ represent a 2x2 contingency table. This checking is performed by means of functi
 \code{nice2x2Table}.}
 
 \item{y}{an object of class "character" representing a list of gene identifiers.}
+
+\item{listNames}{character(2), names of both gene lists to be compared (only for the character interface)}
 }
 \value{
 For all interfaces (except for the "list" interface) the result is a list of class "equivSDhtest" which
@@ -191,7 +193,7 @@ equivTestSorensen(c(56, 1, 30, 47))
 equivTestSorensen(c(56, 1, 30, 47), boot = TRUE)
 equivTestSorensen(c(56, 1, 30))
 # Error: all frequencies are needed for bootstrap:
-equivTestSorensen(c(56, 1, 30), boot = TRUE)
+try(equivTestSorensen(c(56, 1, 30), boot = TRUE), TRUE)
 }
 \seealso{
 \code{\link{nice2x2Table}} for checking and reformatting data,

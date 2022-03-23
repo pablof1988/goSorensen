@@ -15,10 +15,10 @@
 #' waldman_atlas.BP.4
 #' class(waldman_atlas.BP.4)
 #' # This may correspond to the result of code like:
-#' # waldman_atlas.BP.4 <- equivTestSorensen(allOncoGeneLists[["waldman"]],
-#' # allOncoGeneLists[["atlas"]],
-#' # geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' # onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
+#' # waldman_atlas.BP.4 <- equivTestSorensen(
+#' #   allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
+#' #   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#' #   onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
 #' upgrade(waldman_atlas.BP.4, d0 = 1/(1 + 10/9)) # d0 = 0.4737
 #' upgrade(waldman_atlas.BP.4, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
 #' upgrade(waldman_atlas.BP.4, d0 = 1/(1 + 2*1.25), conf.level = 0.99)

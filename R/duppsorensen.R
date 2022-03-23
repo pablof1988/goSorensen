@@ -3,8 +3,6 @@
 #' @param x either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
 #' or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.
 #' @param y an object of class "character" representing a vector of gene identifiers.
-# @param n numeric. It is ignored except sometimes in the "table", "matrix" or "numeric" interfaces,
-# see the details section for more information.
 #' @param dis Sorensen-Dice dissimilarity value. Only required to speed computations if this value
 #' is known in advance.
 #' @param se standard error estimate of the sample dissimilarity. Only required to speed computations
@@ -19,6 +17,7 @@
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table. This checking is performed by means of function
 #' \code{nice2x2Table}.
+#' @param listNames character(2), names of both gene lists to be compared (only for the character interface)
 #' @param ... additional arguments for function \code{buildEnrichTable}.
 #'
 #' @return In the "table", "matrix", "numeric" and "character" interfaces, the value of the Upper limit of the confidence
@@ -45,23 +44,11 @@
 #' '10' to items enriched in the first list but not enriched in the second one and '00' corresponds
 #' to those GO items non enriched in both gene lists, i.e., to the double negatives, a value which
 #' is ignored in the computations, except if \code{boot == TRUE}.
-# The result is correct, regardless the frequencies being absolute or relative
-# but in this second case (relative frequencies), the value of
-# argument \code{n} must be provided and must correspond to the total number of enriched
-# GO items, i.e., to the sum of absolute frequencies
-# \eqn{n_{10} + n_{01} + n_{11}}{%
-# n_10 + n_01 + n_11.}
 #'
 #' In the "numeric" interface, if \code{length(x) >= 4}, the values are interpreted
 #' as
 #' \eqn{(n_{11}, n_{01}, n_{10}), n_{00})}{%
 #' (n_11, n_01, n_10, n_00)}, always in this order and discarding extra values if necessary.
-# If \code{1 <= length(x) <= 2}, \code{x[1]} must correspond to \eqn{n_{11}}{%
-# n_11}, and a possible extra second
-# value is ignored. Then, the value of argument \code{n} must be provided and must
-# correspond to the sum of absolute frequencies
-# \eqn{(n_{11} + n_{01} + n_{10})}{%
-# (n_11 + n_01 + n_10)}.
 #'
 #' Arguments \code{dis}, \code{se} and \code{z.conf.level} are not required. If known in advance (e.g., as
 #' a consequence of previous computations with the same data), providing its value may speed the computations.
@@ -111,7 +98,6 @@
 #'              listNames = names(pbtGeneLists)[c(2,4)],
 #'              onto = "BP", GOLevel = 5,
 #'              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-#' duppSorensen(pbtBP5.IRITD3vsKT1)
 #' # (Quite time consuming:)
 #' duppSorensen(pbtGeneLists,
 #'              onto = "BP", GOLevel = 5,
@@ -125,7 +111,7 @@ duppSorensen <- function(x, ...) {
 
 #' @describeIn duppSorensen S3 method for class "table"
 #' @export
-duppSorensen.table <- function(x, #n,
+duppSorensen.table <- function(x,
                                dis = dSorensen.table(x, check.table = FALSE),
                                se = seSorensen.table(x, check.table = FALSE),
                                conf.level = 0.95, z.conf.level = qnorm(1 - conf.level),
@@ -163,7 +149,7 @@ duppSorensen.table <- function(x, #n,
 
 #' @describeIn duppSorensen S3 method for class "matrix"
 #' @export
-duppSorensen.matrix <- function(x, #n,
+duppSorensen.matrix <- function(x,
                                 dis = dSorensen.matrix(x, check.table = FALSE),
                                 se = seSorensen.matrix(x, check.table = FALSE),
                                 conf.level = 0.95, z.conf.level = qnorm(1 - conf.level),

@@ -33,23 +33,11 @@
 #' '10' to items enriched in the first list but not enriched in the second one and '00' corresponds
 #' to those GO items non enriched in both gene lists, i.e., to the double negatives, a value which
 #' is ignored in the computations.
-# The result is correct, regardless the frequencies being absolute or relative
-# but in this second case (relative frequencies), the value of
-# argument \code{n} must be provided and must correspond to the total number of enriched
-# GO items, i.e., to the sum of absolute frequencies
-# \eqn{n_{11} + n_{01} + n_{10}}{%
-# n_11 + n_01 + n_10.}
 #'
 #' In the "numeric" interface, if \code{length(x) >= 3}, the values are interpreted
 #' as
 #' \eqn{(n_{11}, n_{01}, n_{10})}{%
-#' (n_11, n_01, n_10)}, always in this order and discarding extra values if necessary.
-# If \code{1 <= length(x) <= 2}, \code{x[1]} must correspond to \eqn{n_{11}}{%
-# n_11}, and a possible extra second value is ignored.
-# Then, the value of argument \code{n} must be provided and must
-# correspond to the sum of absolute frequencies
-# \eqn{(n_{11} + n_{01} + n_{10})}{%
-# (n_11 + n_01 + n_10)}.
+#' (n_11, n_01, n_10)}, always in this order.
 #'
 #' If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 #' standard error for the dissimilarity between lists \code{x} and \code{y} is computed, after summarizing
@@ -85,7 +73,7 @@
 #' pbtBP5.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
 #'                           listNames = names(pbtGeneLists)[c(2,4)],
 #'                           onto = "BP", GOLevel = 5,
-#'                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db"))
+#'                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #' seSorensen(pbtBP5.IRITD3vsKT1)
 #'
 #' # (Quite time consuming:)
@@ -100,7 +88,7 @@ seSorensen <- function(x, ...) {
 
 #' @describeIn seSorensen S3 method for class "table"
 #' @export
-seSorensen.table <- function(x, #n,
+seSorensen.table <- function(x,
                              check.table = TRUE) {
   if (check.table){
     if (!nice2x2Table.table(x)) {
@@ -108,17 +96,6 @@ seSorensen.table <- function(x, #n,
       stop("Inadequate table to compute the standard error")
     }
   }
-  # x <- x[1:3]
-  # rel.freqs <- all(abs(x - round(x)) > .Machine$double.eps)
-  # if (missing(n)) {
-  #   if (rel.freqs) {
-  #     stop("Argument 'n' required with relative frequencies to compute standard error")
-  #   }
-  #   n <- sum(x)
-  #   p11 <- x[1] / n
-  # } else {
-  #   p11 <- x[1] / sum(x)
-  # }
   n <- sum(x[1:3])
   p11 <- x[1] / n
   p11plus <- 1 + p11
@@ -127,24 +104,13 @@ seSorensen.table <- function(x, #n,
 
 #' @describeIn seSorensen S3 method for class "matrix"
 #' @export
-seSorensen.matrix <- function(x, n, check.table = TRUE) {
+seSorensen.matrix <- function(x, check.table = TRUE) {
   if (check.table){
     if (!nice2x2Table.matrix(x)) {
       print(x)
       stop("Inadequate table to compute the standard error")
     }
   }
-  # x <- x[1:3]
-  # rel.freqs <- all(abs(x - round(x)) > .Machine$double.eps)
-  # if (missing(n)) {
-  #   if (rel.freqs) {
-  #     stop("Argument 'n' required with relative frequencies to compute standard error")
-  #   }
-  #   n <- sum(x)
-  #   p11 <- x[1] / n
-  # } else {
-  #   p11 <- x[1] / sum(x)
-  # }
   n <- sum(x[1:3])
   p11 <- x[1] / n
   p11plus <- 1 + p11
@@ -160,37 +126,6 @@ seSorensen.numeric <- function(x, check.table = TRUE) {
       stop("Inadequate table to compute the standard error")
     }
   }
-  # len <- length(x)
-  # if (len == 2) {
-  #   x <- x[1]
-  #   len <- 1
-  # } else {
-  #   if (len >= 4) {
-  #     x <- x[1:3]
-  #     len <- 3
-  #   }
-  # }
-  # rel.freqs <- all(abs(x - round(x)) > .Machine$double.eps)
-  # if (len == 1) {
-  #   if (missing(n)) {
-  #     stop("Argument 'n' required if length(x) <= 2 to compute standard error")
-  #   }
-  #   if (rel.freqs) {
-  #     p11 <- x
-  #   } else {
-  #     p11 <- x[1] / n
-  #   }
-  # } else {
-  #   if (rel.freqs) {
-  #     if (missing(n)) {
-  #       stop("Argument 'n' required with relative frequencies to compute standard error")
-  #     }
-  #     p11 <- x[1]
-  #   } else {
-  #     n <- sum(x)
-  #     p11 <- x[1] / n
-  #   }
-  # }
   n <- sum(x[1:3])
   p11 <- x[1] / n
   p11plus <- 1 + p11

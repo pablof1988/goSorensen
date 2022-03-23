@@ -6,8 +6,6 @@
 #' @param x either an object of class "table", "matrix", "numeric", "character" or "list".
 #' See the details section for more information.
 #' @param y an object of class "character" representing a list of gene identifiers.
-# @param n "numeric". It is ignored except sometimes in the "table", "matrix" or "numeric"
-# interfaces, see the details section for more information.
 #' @param d0 equivalence threshold for the Sorensen-Dice dissimilarity, d.
 #' The null hypothesis states that d >= d0, i.e., inequivalence between the compared
 #' gene lists and the alternative that d < d0, i.e., equivalence or dissimilarity
@@ -19,6 +17,7 @@
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table. This checking is performed by means of function
 #' \code{nice2x2Table}.
+#' @param listNames character(2), names of both gene lists to be compared (only for the character interface)
 #' @param ... extra parameters for function \code{buildEnrichTable}.
 #'
 #' @return
@@ -61,23 +60,11 @@
 #' '10' to items enriched in the first list but not enriched in the second one and '00' corresponds
 #' to those GO items non enriched in both gene lists, i.e., to the double negatives, a value which
 #' is ignored in the computations, except if \code{boot == TRUE}.
-# The result is correct, regardless the frequencies being absolute or relative
-# but in this second case (relative frequencies), the value of
-# argument \code{n} must be provided and must correspond to the total number of enriched
-# GO items, i.e., to the sum of absolute frequencies
-# \eqn{n_{10} + n_{01} + n_{11}}{%
-# n_10 + n_01 + n_11.}
 #'
 #' In the "numeric" interface, if \code{length(x) >= 4}, the values are interpreted
 #' as
 #' \eqn{(n_{11}, n_{01}, n_{10}, n_{00})}{%
 #' (n_11, n_01, n_10, n_00)}, always in this order and discarding extra values if necessary.
-# If \code{1 <= length(x) <= 2}, \code{x[1]} must correspond to \eqn{n_{11}}{%
-# n_11}, and a possible extra second
-# value is ignored. Then, the value of argument \code{n} must be provided and must
-# correspond to the sum of absolute frequencies
-# \eqn{(n_{11} + n_{01} + n_{10})}{%
-# (n_11 + n_01 + n_10)}.
 #'
 #' If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 #' equivalence test is performed between lists \code{x} and \code{y}, after internally summarizing these
@@ -134,7 +121,7 @@
 #' equivTestSorensen(c(56, 1, 30, 47), boot = TRUE)
 #' equivTestSorensen(c(56, 1, 30))
 #' # Error: all frequencies are needed for bootstrap:
-#' equivTestSorensen(c(56, 1, 30), boot = TRUE)
+#' try(equivTestSorensen(c(56, 1, 30), boot = TRUE), TRUE)
 
 
 #' @export
@@ -144,7 +131,7 @@ equivTestSorensen <- function(x, ...) {
 
 #' @describeIn equivTestSorensen S3 method for class "table"
 #' @export
-equivTestSorensen.table <- function(x, #n,
+equivTestSorensen.table <- function(x,
                                     d0 = 1 / (1 + 1.25),
                                     conf.level = 0.95,
                                     boot = FALSE, nboot = 10000,
@@ -216,7 +203,7 @@ equivTestSorensen.table <- function(x, #n,
 
 #' @describeIn equivTestSorensen S3 method for class "matrix"
 #' @export
-equivTestSorensen.matrix <- function(x, #n,
+equivTestSorensen.matrix <- function(x,
                                      d0 = 1 / (1 + 1.25),
                                      conf.level = 0.95,
                                      boot = FALSE, nboot = 10000,
@@ -272,9 +259,6 @@ equivTestSorensen.matrix <- function(x, #n,
     attr(conf.int, "conf.level") <- conf.level
     names(conf.int) <- c("confidence interval", "dUpper")
   }
-  # if (!missing(n)) {
-  #   attr(x, "n") <- n
-  # }
   result <- list(statistic = stat, p.value = p.val,
                  conf.int = conf.int,
                  estimate = d,
@@ -289,7 +273,7 @@ equivTestSorensen.matrix <- function(x, #n,
 
 #' @describeIn equivTestSorensen S3 method for class "numeric"
 #' @export
-equivTestSorensen.numeric <- function(x, #n,
+equivTestSorensen.numeric <- function(x,
                                       d0 = 1 / (1 + 1.25),
                                       conf.level = 0.95,
                                       boot = FALSE, nboot = 10000,
@@ -350,9 +334,6 @@ equivTestSorensen.numeric <- function(x, #n,
     attr(conf.int, "conf.level") <- conf.level
     names(conf.int) <- c("confidence interval", "dUpper")
   }
-  # if (!missing(n)) {
-  #   attr(x, "n") <- n
-  # }
   result <- list(statistic = stat, p.value = p.val,
                  conf.int = conf.int,
                  estimate = d,
@@ -415,9 +396,15 @@ equivTestSorensen.list <- function(x, d0 = 1 / (1 + 1.25),
 #' @param d0 equivalence threshold for the population Sorensen-Dice dissimilarity, d. The null hypothesis
 #' states that d >= d0, and the alternative that d < d0.
 #' @param conf.level confidence level of the one-sided confidence interval, a value between 0 and 1.
+#' @param boot boolean. If TRUE, the confidence interval and the test p-value are computed by means
+#' of a bootstrap approach instead of the asymptotic normal approach. Defaults to FALSE.
+#' @param nboot numeric, number of bootstrap replicates. Ignored if \code{boot == FALSE}. Defaults to 10000.
+#' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
+#' represent a 2x2 contingency table. This checking is performed by means of function
+#' \code{nice2x2Table}.
 #' @param ontos "character", GO ontologies to analyse. Defaults to \code{c("BP", "CC", "MF")}.
 #' @param GOLevels "integer", GO levels to analyse inside each of these GO ontologies.
-#' @param ... extra parameters for function \code{crossTabGOIDs4GeneLists} in package \code{equivStandardTest}.
+#' @param ... extra parameters for function \code{buildEnrichTable}.
 #'
 #' @return
 #' An object of class "AllEquivSDhtest". It is a list with as many components as GO ontologies have been analysed.
@@ -427,14 +414,13 @@ equivTestSorensen.list <- function(x, d0 = 1 / (1 + 1.25),
 #' in argument \code{x}.
 #'
 #' @examples
-#' library(equivStandardTest)
 #' # Gene universe:
 #' data(humanEntrezIDs)
 #' # Gene lists to be explored for enrichment:
 #' data(pbtGeneLists)
 #' allEquivTestSorensen(pbtGeneLists,
-#'                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#'                     ontos = c("MF", "BP"), GOLevels = 4:6)
+#'                      geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#'                      ontos = c("MF", "BP"), GOLevels = 4:6)
 #'
 #' @export
 allEquivTestSorensen <- function(x, d0 = 1 / (1 + 1.25), conf.level = 0.95,

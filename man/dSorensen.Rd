@@ -37,6 +37,8 @@ or a "character" (a set of gene identifiers) or "list" object. See the details s
 represent a 2x2 contingency table, by means of function \code{nice2x2Table}.}
 
 \item{y}{an object of class "character" representing a vector of gene identifiers.}
+
+\item{listNames}{character(2), names of both gene lists to be compared (only for the character interface)}
 }
 \value{
 In the "table", "matrix", "numeric" and "character" interfaces, the value of the Sorensen-Dice

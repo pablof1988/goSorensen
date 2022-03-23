@@ -13,7 +13,7 @@ seSorensen(x, ...)
 
 \method{seSorensen}{table}(x, check.table = TRUE)
 
-\method{seSorensen}{matrix}(x, n, check.table = TRUE)
+\method{seSorensen}{matrix}(x, check.table = TRUE)
 
 \method{seSorensen}{numeric}(x, check.table = TRUE)
 
@@ -72,7 +72,7 @@ is ignored in the computations.
 In the "numeric" interface, if \code{length(x) >= 3}, the values are interpreted
 as
 \eqn{(n_{11}, n_{01}, n_{10})}{%
-(n_11, n_01, n_10)}, always in this order and discarding extra values if necessary.
+(n_11, n_01, n_10)}, always in this order.
 
 If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 standard error for the dissimilarity between lists \code{x} and \code{y} is computed, after summarizing
@@ -116,7 +116,7 @@ seSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
 pbtBP5.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
                           listNames = names(pbtGeneLists)[c(2,4)],
                           onto = "BP", GOLevel = 5,
-                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db"))
+                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 seSorensen(pbtBP5.IRITD3vsKT1)
 
 # (Quite time consuming:)

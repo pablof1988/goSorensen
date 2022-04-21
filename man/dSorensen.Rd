@@ -11,11 +11,11 @@
 \usage{
 dSorensen(x, ...)
 
-\method{dSorensen}{table}(x, check.table = TRUE)
+\method{dSorensen}{table}(x, listNames = NULL, check.table = TRUE, ...)
 
-\method{dSorensen}{matrix}(x, check.table = TRUE)
+\method{dSorensen}{matrix}(x, listNames = NULL, check.table = TRUE, ...)
 
-\method{dSorensen}{numeric}(x, check.table = TRUE)
+\method{dSorensen}{numeric}(x, listNames = NULL, check.table = TRUE, ...)
 
 \method{dSorensen}{character}(
   x,
@@ -25,7 +25,7 @@ dSorensen(x, ...)
   ...
 )
 
-\method{dSorensen}{list}(x, check.table = TRUE, ...)
+\method{dSorensen}{list}(x, ...)
 }
 \arguments{
 \item{x}{either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
@@ -33,12 +33,12 @@ or a "character" (a set of gene identifiers) or "list" object. See the details s
 
 \item{...}{extra parameters for function \code{buildEnrichTable}.}
 
+\item{listNames}{character(2), names of both gene lists to be compared. Defaults to NULL.}
+
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table, by means of function \code{nice2x2Table}.}
 
 \item{y}{an object of class "character" representing a vector of gene identifiers.}
-
-\item{listNames}{character(2), names of both gene lists to be compared (only for the character interface)}
 }
 \value{
 In the "table", "matrix", "numeric" and "character" interfaces, the value of the Sorensen-Dice
@@ -100,7 +100,7 @@ gene lists are computed.
 }}
 
 \examples{
-# Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
+# Gene lists 'atlas' and 'sanger' in 'allOncoGeneLists' dataset. Table of joint enrichment
 # of GO items in ontology BP at level 3.
 ?tab_atlas.sanger_BP3
 tab_atlas.sanger_BP3
@@ -121,18 +121,19 @@ dSorensen(conti3)
 # Sorensen-Dice dissimilarity from scratch, directly from two gene lists:
 ?pbtGeneLists
 # (Time consuming, building the table requires many enrichment tests:)
-dSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
-          listNames = names(pbtGeneLists)[c(2,4)],
-          onto = "BP", GOLevel = 5,
-          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+equivTestSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
+                  listNames = names(pbtGeneLists)[c(2,4)],
+                  onto = "CC", GOLevel = 3,
+                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Essentially, the above code makes the same as:
-pbtBP5.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
-                          onto = "BP", GOLevel = 5,
-                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-dSorensen(pbtBP5.IRITD3vsKT1)
+tab.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
+                                    listNames = names(pbtGeneLists)[c(2,4)],
+                                    onto = "CC", GOLevel = 3,
+                                    geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+dSorensen(tab.IRITD3vsKT1)
 # (Quite time consuming, all pairwise dissimilarities:)
 dSorensen(pbtGeneLists,
-          onto = "BP", GOLevel = 5,
+          onto = "CC", GOLevel = 3,
           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 }
 \seealso{

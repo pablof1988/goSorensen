@@ -1,3 +1,5 @@
+#' @importFrom stats fisher.test
+
 extractGOIDs <- function (enriched) {
   as.character(as.data.frame(enriched)$ID)
 }
@@ -86,6 +88,6 @@ stdTest4GeneLists <- function (genelist1, genelist2, geneUniverse, orgPackg, ont
   crossTabbedGOIDs4GeneLists <- crossTabGOIDs (GO1 = GOIDs1, GO2 = GOIDs2, onto = onto, GOLevel =GOLevel,
                                             geneList1=genelist1, geneList2=genelist2, orgPackage = orgPackg,
                                             restricted = restricted)
-  fisher.test (crossTabbedGOIDs4GeneLists, alt="g")
+  fisher.test (crossTabbedGOIDs4GeneLists, alternative = "greater")
 }
 

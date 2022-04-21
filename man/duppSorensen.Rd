@@ -19,7 +19,9 @@ duppSorensen(x, ...)
   z.conf.level = qnorm(1 - conf.level),
   boot = FALSE,
   nboot = 10000,
-  check.table = TRUE
+  listNames = NULL,
+  check.table = TRUE,
+  ...
 )
 
 \method{duppSorensen}{matrix}(
@@ -30,7 +32,9 @@ duppSorensen(x, ...)
   z.conf.level = qnorm(1 - conf.level),
   boot = FALSE,
   nboot = 10000,
-  check.table = TRUE
+  listNames = NULL,
+  check.table = TRUE,
+  ...
 )
 
 \method{duppSorensen}{numeric}(
@@ -41,7 +45,9 @@ duppSorensen(x, ...)
   z.conf.level = qnorm(1 - conf.level),
   boot = FALSE,
   nboot = 10000,
-  check.table = TRUE
+  listNames = NULL,
+  check.table = TRUE,
+  ...
 )
 
 \method{duppSorensen}{character}(
@@ -50,7 +56,7 @@ duppSorensen(x, ...)
   conf.level = 0.95,
   boot = FALSE,
   nboot = 10000,
-  listNames = c("gene.list1", "gene.list2"),
+  listNames = NULL,
   check.table = TRUE,
   ...
 )
@@ -87,13 +93,13 @@ approach instead of the asymptotic normal approach. Defaults to FALSE.}
 
 \item{nboot}{numeric, number of bootstrap replicates. Ignored if \code{boot == FALSE}. Defaults to 10000.}
 
+\item{listNames}{character(2), names of both gene lists to be compared (only for the character interface)}
+
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table. This checking is performed by means of function
 \code{nice2x2Table}.}
 
 \item{y}{an object of class "character" representing a vector of gene identifiers.}
-
-\item{listNames}{character(2), names of both gene lists to be compared (only for the character interface)}
 }
 \value{
 In the "table", "matrix", "numeric" and "character" interfaces, the value of the Upper limit of the confidence
@@ -146,8 +152,7 @@ Alternatively, if \code{boot == TRUE}, a bootstrap quantile is internally comput
 If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 confidence interval for the dissimilarity between lists \code{x} and \code{y} is computed, after summarizing
 these gene lists as a 2x2 contingency table of joint enrichment. This last task is performed by function
-\code{\link{buildEnrichTable}} which itself calls function \code{crossTabGOIDs4GeneLists} at package
-\code{equivStandardTest}. In general, the argument \code{...} provides extra information for this last
+\code{\link{buildEnrichTable}}. In general, the argument \code{...} provides extra information for this last
 function, like p and q cut-off values to stablish enrichment.
 
 In the "list" interface, the argument must be a list of "character" vectors, each one
@@ -183,11 +188,11 @@ duppSorensen(c(56, 1, 30))
 # (Time consuming:)
 duppSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
              listNames = names(pbtGeneLists)[c(2,4)],
-             onto = "BP", GOLevel = 5,
+             onto = "CC", GOLevel = 5,
              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # (Quite time consuming:)
 duppSorensen(pbtGeneLists,
-             onto = "BP", GOLevel = 5,
+             onto = "CC", GOLevel = 5,
              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 
 }

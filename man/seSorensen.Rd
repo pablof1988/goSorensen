@@ -11,11 +11,11 @@
 \usage{
 seSorensen(x, ...)
 
-\method{seSorensen}{table}(x, check.table = TRUE)
+\method{seSorensen}{table}(x, listNames = NULL, check.table = TRUE, ...)
 
-\method{seSorensen}{matrix}(x, check.table = TRUE)
+\method{seSorensen}{matrix}(x, listNames = NULL, check.table = TRUE, ...)
 
-\method{seSorensen}{numeric}(x, check.table = TRUE)
+\method{seSorensen}{numeric}(x, listNames = NULL, check.table = TRUE, ...)
 
 \method{seSorensen}{character}(
   x,
@@ -32,6 +32,8 @@ seSorensen(x, ...)
 or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.}
 
 \item{...}{extra parameters for function \code{buildEnrichTable}.}
+
+\item{listNames}{character(2), names of both gene lists being compared (only for the character interface)}
 
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table. This checking is performed by means of function
@@ -110,18 +112,19 @@ seSorensen(c(56, 1, 30))
 # (Time consuming:)
 seSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
            listNames = names(pbtGeneLists)[c(2,4)],
-           onto = "BP", GOLevel = 5,
+           onto = "CC", GOLevel = 5,
            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Essentially, the above code makes the same as:
-pbtBP5.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
-                          listNames = names(pbtGeneLists)[c(2,4)],
-                          onto = "BP", GOLevel = 5,
-                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-seSorensen(pbtBP5.IRITD3vsKT1)
+tab.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
+                                    listNames = names(pbtGeneLists)[c(2,4)],
+                                    onto = "CC", GOLevel = 5,
+                                    geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+tab.IRITD3vsKT1
+seSorensen(tab.IRITD3vsKT1)
 
-# (Quite time consuming:)
+# All pairwise standard errors (quite time consuming):
 seSorensen(pbtGeneLists,
-           onto = "BP", GOLevel = 5,
+           onto = "CC", GOLevel = 5,
            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 
 }

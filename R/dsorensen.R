@@ -4,7 +4,7 @@
 #' @param y an object of class "character" representing a vector of gene identifiers.
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table, by means of function \code{nice2x2Table}.
-#' @param listNames character(2), names of both gene lists to be compared (only for the character interface)
+#' @param listNames character(2), names of both gene lists to be compared. Defaults to NULL.
 #' @param ... extra parameters for function \code{buildEnrichTable}.
 #'
 #' @return In the "table", "matrix", "numeric" and "character" interfaces, the value of the Sorensen-Dice
@@ -55,7 +55,7 @@
 #' of the dissimilarity, \code{\link{equivTestSorensen}} for an equivalence test.
 #'
 #' @examples
-#' # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
+#' # Gene lists 'atlas' and 'sanger' in 'allOncoGeneLists' dataset. Table of joint enrichment
 #' # of GO items in ontology BP at level 3.
 #' ?tab_atlas.sanger_BP3
 #' tab_atlas.sanger_BP3
@@ -76,18 +76,19 @@
 #' # Sorensen-Dice dissimilarity from scratch, directly from two gene lists:
 #' ?pbtGeneLists
 #' # (Time consuming, building the table requires many enrichment tests:)
-#' dSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
-#'           listNames = names(pbtGeneLists)[c(2,4)],
-#'           onto = "BP", GOLevel = 5,
-#'           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+#' equivTestSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
+#'                   listNames = names(pbtGeneLists)[c(2,4)],
+#'                   onto = "CC", GOLevel = 3,
+#'                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #' # Essentially, the above code makes the same as:
-#' pbtBP5.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
-#'                           onto = "BP", GOLevel = 5,
-#'                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-#' dSorensen(pbtBP5.IRITD3vsKT1)
+#' tab.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
+#'                                     listNames = names(pbtGeneLists)[c(2,4)],
+#'                                     onto = "CC", GOLevel = 3,
+#'                                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+#' dSorensen(tab.IRITD3vsKT1)
 #' # (Quite time consuming, all pairwise dissimilarities:)
 #' dSorensen(pbtGeneLists,
-#'           onto = "BP", GOLevel = 5,
+#'           onto = "CC", GOLevel = 3,
 #'           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 
 #' @export
@@ -97,36 +98,52 @@ dSorensen <- function(x, ...) {
 
 #' @describeIn dSorensen S3 method for class "table"
 #' @export
-dSorensen.table <- function(x, check.table = TRUE){
+dSorensen.table <- function(x, listNames = NULL, check.table = TRUE, ...){
   if (check.table){
     if (!nice2x2Table.table(x)) {
       print(x)
       stop("Inadequate contingency table")}
   }
-  return((x[2] + x[3]) / (2 * x[1] + x[2] + x[3]))
+  result <- (x[2] + x[3]) / (2 * x[1] + x[2] + x[3])
+  if (is.null(listNames)) {
+    names(result) <- NULL
+  } else {
+    names(result) <- paste("Sorensen-Dice disimilarity ", listNames[1], ",", listNames[2], sep = "")
+  }
+  return(result)
 }
 
 #' @describeIn dSorensen S3 method for class "matrix"
 #' @export
-dSorensen.matrix <- function(x, check.table = TRUE){
+dSorensen.matrix <- function(x, listNames = NULL, check.table = TRUE, ...){
   if (check.table){
     if (!nice2x2Table.matrix(x)) {
       print(x)
       stop("Inadequate contingency table")}
   }
-  return((x[2] + x[3]) / (2 * x[1] + x[2] + x[3]))
+  result <- (x[2] + x[3]) / (2 * x[1] + x[2] + x[3])
+  if (is.null(listNames)) {
+    names(result) <- NULL
+  } else {
+    names(result) <- paste("Sorensen-Dice disimilarity ", listNames[1], ",", listNames[2], sep = "")
+  }
+  return(result)
 }
 
 #' @describeIn dSorensen S3 method for class "numeric"
 #' @export
-dSorensen.numeric <- function(x, check.table = TRUE){
+dSorensen.numeric <- function(x, listNames = NULL, check.table = TRUE, ...){
   if (check.table){
     if (!nice2x2Table.numeric(x)) {
       print(x)
       stop("Inadequate contingency table")}
   }
-  result <- result <- (x[2] + x[3]) / (2 * x[1] + x[2] + x[3])
-  names(result) <- NULL
+  result <- (x[2] + x[3]) / (2 * x[1] + x[2] + x[3])
+  if (is.null(listNames)) {
+    names(result) <- NULL
+  } else {
+    names(result) <- paste("Sorensen-Dice disimilarity ", listNames[1], ",", listNames[2], sep = "")
+  }
   return(result)
 }
 
@@ -134,10 +151,8 @@ dSorensen.numeric <- function(x, check.table = TRUE){
 #' @export
 dSorensen.character <- function(x, y,
                                 listNames = c("gene.list1", "gene.list2"),
-                                check.table = TRUE,
-                                ...){
-  tab <- buildEnrichTable(x, y, listNames,
-                          check.table, ...)
+                                check.table = TRUE, ...){
+  tab <- buildEnrichTable(x, y, listNames, check.table, ...)
   # Typical ... arguments:
   # geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db",
   # onto = onto, GOLevel = ontoLevel,
@@ -152,14 +167,15 @@ dSorensen.character <- function(x, y,
 
 #' @describeIn dSorensen S3 method for class "list"
 #' @export
-dSorensen.list <- function(x, check.table = TRUE, ...){
+dSorensen.list <- function(x, # check.table = TRUE,
+                           ...){
   numLists <- length(x)
   lstNams <- names(x)
   result <- matrix(0.0, ncol = numLists, nrow = numLists)
   for (iLst1 in 2:numLists) {
     for (iLst2 in 1:(iLst1-1)) {
-      result[iLst1, iLst2] <- dSorensen.character(x[[iLst1]], x[[iLst2]], check.table = check.table,
-                                                  listNames = NULL,
+      result[iLst1, iLst2] <- dSorensen.character(x[[iLst1]], x[[iLst2]], listNames = NULL,
+                                                  # check.table = check.table,
                                                   ...)
     }
   }

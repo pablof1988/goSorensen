@@ -100,20 +100,21 @@
 #' data(humanEntrezIDs)
 #' # Gene lists to be explored for enrichment:
 #' pbtGeneLists
-#' IRITD3VS5.MF4 <- buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
+#' IRITD3vs5.CC5 <- buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
 #'                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#'                                   onto = "MF", GOLevel = 4)
-#' equivTestSorensen(IRITD3VS5.MF4)
-#' equivTestSorensen(IRITD3VS5.MF4, boot = TRUE)
+#'                                   onto = "CC", GOLevel = 5)
+#' IRITD3vs5.CC5
+#' equivTestSorensen(IRITD3vs5.CC5)
+#' equivTestSorensen(IRITD3vs5.CC5, boot = TRUE)
 #'
 #' # Perform these computations in a single step:
 #' equivTestSorensen(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
 #'                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#'                   onto = "MF", GOLevel = 4)
+#'                   onto = "CC", GOLevel = 5)
 #' # All pairwise equivalence tests:
 #' equivTestSorensen(pbtGeneLists,
 #'                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#'                   onto = "MF", GOLevel = 4)
+#'                   onto = "CC", GOLevel = 5)
 #'
 #'
 #' # Equivalence test on a contingency table represented as a numeric vector:
@@ -123,7 +124,7 @@
 #' # Error: all frequencies are needed for bootstrap:
 #' try(equivTestSorensen(c(56, 1, 30), boot = TRUE), TRUE)
 
-
+#' @importFrom stats pnorm qnorm quantile rmultinom
 #' @export
 equivTestSorensen <- function(x, ...) {
   UseMethod("equivTestSorensen")
@@ -135,7 +136,7 @@ equivTestSorensen.table <- function(x,
                                     d0 = 1 / (1 + 1.25),
                                     conf.level = 0.95,
                                     boot = FALSE, nboot = 10000,
-                                    check.table = TRUE){
+                                    check.table = TRUE, ...){
   data.name <- deparse(substitute(x))
   if (check.table){
     if (!nice2x2Table.table(x)) {
@@ -143,23 +144,19 @@ equivTestSorensen.table <- function(x,
       stop("Inadequate table to compute the standard error")
     }
   }
-  se <- seSorensen.table(x, FALSE)
-  d <- dSorensen.table(x)
+  se <- seSorensen.table(x, check.table = FALSE)
+  d <- dSorensen.table(x, check.table = FALSE)
   names(d) <- "Sorensen dissimilarity"
   names(se) <- "standard error"
   attr(d, "se") <- se
   names(d0) <- "equivalence limit d0"
-  if ((se == 0.0) || !is.finite(se)) {
-    stat <- Inf
-    names(stat) <- "(d - d0) / se"
-    p.val <- 1.0
-    names(p.val) <- "p-value"
-    meth <- "No test performed due to null or not finite standard error"
-    conf.int <- c(0.0, 1.0)
-    names(conf.int) <- c("confidence interval", "dUpper")
+  stat <- (d - d0) / se
+  names(stat) <- "(d - d0) / se"
+  if (!is.finite(stat)) {
+    p.val <- NA
+    meth <- "No test performed due not finite (d - d0) / se statistic"
+    conf.int <- c(0.0, NA)
   } else {
-    stat <- (d - d0) / se
-    names(stat) <- "(d - d0) / se"
     if (boot) {
       n <- sum(x)
       pTab <- x / n
@@ -181,12 +178,12 @@ equivTestSorensen.table <- function(x,
         p.val <- pnorm(stat)
         meth <- "Normal asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
     }
-    names(p.val) <- "p-value"
     du <- d - z.conf.level * se
     conf.int <- c(0, min(1, du))
-    attr(conf.int, "conf.level") <- conf.level
-    names(conf.int) <- c("confidence interval", "dUpper")
   }
+  names(p.val) <- "p-value"
+  attr(conf.int, "conf.level") <- conf.level
+  names(conf.int) <- c("confidence interval", "dUpper")
   result <- list(statistic = stat,
                  p.value = p.val,
                  conf.int = conf.int,
@@ -197,6 +194,7 @@ equivTestSorensen.table <- function(x,
                  method = meth,
                  data.name = data.name,
                  enrichTab = x)
+  attr(result, "check.table") <- check.table
   class(result) <- c("equivSDhtest", "htest")
   return(result)
 }
@@ -207,7 +205,7 @@ equivTestSorensen.matrix <- function(x,
                                      d0 = 1 / (1 + 1.25),
                                      conf.level = 0.95,
                                      boot = FALSE, nboot = 10000,
-                                     check.table = TRUE){
+                                     check.table = TRUE, ...){
   data.name <- deparse(substitute(x))
   if (check.table){
     if (!nice2x2Table.matrix(x)) {
@@ -215,23 +213,19 @@ equivTestSorensen.matrix <- function(x,
       stop("Inadequate table to compute the standard error")
     }
   }
-  se <- seSorensen.matrix(x, FALSE)
-  d <- dSorensen.matrix(x)
+  se <- seSorensen.matrix(x, check.table = FALSE)
+  d <- dSorensen.matrix(x, check.table = FALSE)
   names(d) <- "Sorensen dissimilarity"
-  names(d0) <- "equivalence limit d0"
   names(se) <- "standard error"
   attr(d, "se") <- se
-  if ((se == 0.0) || !is.finite(se)) {
-    stat <- Inf
-    names(stat) <- "(d - d0) / se"
-    p.val <- 1.0
-    names(p.val) <- "p-value"
-    meth <- "No test performed due to null or not finite standard error"
-    conf.int <- c(0.0, 1.0)
-    names(conf.int) <- c("confidence interval", "dUpper")
+  names(d0) <- "equivalence limit d0"
+  stat <- (d - d0) / se
+  names(stat) <- "(d - d0) / se"
+  if (!is.finite(stat)) {
+    p.val <- NA
+    meth <- "No test performed due not finite (d - d0) / se statistic"
+    conf.int <- c(0.0, NA)
   } else {
-    stat <- (d - d0) / se
-    names(stat) <- "(d - d0) / se"
     if (boot) {
       n <- sum(x)
       pTab <- x / n
@@ -253,20 +247,23 @@ equivTestSorensen.matrix <- function(x,
       p.val <- pnorm(stat)
       meth <- "Normal asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
     }
-    names(p.val) <- "p-value"
     du <- d - z.conf.level * se
     conf.int <- c(0, min(1, du))
-    attr(conf.int, "conf.level") <- conf.level
-    names(conf.int) <- c("confidence interval", "dUpper")
   }
-  result <- list(statistic = stat, p.value = p.val,
+  names(p.val) <- "p-value"
+  attr(conf.int, "conf.level") <- conf.level
+  names(conf.int) <- c("confidence interval", "dUpper")
+  result <- list(statistic = stat,
+                 p.value = p.val,
                  conf.int = conf.int,
                  estimate = d,
-                 null.value = d0, stderr = se,
+                 null.value = d0,
+                 stderr = se,
                  alternative = "less",
                  method = meth,
                  data.name = data.name,
                  enrichTab = x)
+  attr(result, "check.table") <- check.table
   class(result) <- c("equivSDhtest", "htest")
   return(result)
 }
@@ -277,7 +274,7 @@ equivTestSorensen.numeric <- function(x,
                                       d0 = 1 / (1 + 1.25),
                                       conf.level = 0.95,
                                       boot = FALSE, nboot = 10000,
-                                      check.table = TRUE){
+                                      check.table = TRUE, ...){
   data.name <- deparse(substitute(x))
   if (check.table){
     if (!nice2x2Table.numeric(x)) {
@@ -285,23 +282,19 @@ equivTestSorensen.numeric <- function(x,
       stop("Inadequate table to compute the standard error")
     }
   }
-  se <- seSorensen.numeric(x, FALSE)
-  d <- dSorensen.numeric(x, FALSE)
+  se <- seSorensen.matrix(x, check.table = FALSE)
+  d <- dSorensen.matrix(x, check.table = FALSE)
   names(d) <- "Sorensen dissimilarity"
-  names(d0) <- "equivalence limit d0"
   names(se) <- "standard error"
   attr(d, "se") <- se
-  if ((se == 0.0) || !is.finite(se)) {
-    stat <- Inf
-    names(stat) <- "(d - d0) / se"
-    p.val <- 1.0
-    names(p.val) <- "p-value"
-    meth <- "No test performed due to null or not finite standard error"
-    conf.int <- c(0.0, 1.0)
-    names(conf.int) <- c("confidence interval", "dUpper")
+  names(d0) <- "equivalence limit d0"
+  stat <- (d - d0) / se
+  names(stat) <- "(d - d0) / se"
+  if (!is.finite(stat)) {
+    p.val <- NA
+    meth <- "No test performed due not finite (d - d0) / se statistic"
+    conf.int <- c(0.0, NA)
   } else {
-    stat <- (d - d0) / se
-    names(stat) <- "(d - d0) / se"
     if (boot) {
       if (length(x) < 4) {
         print(x)
@@ -328,22 +321,26 @@ equivTestSorensen.numeric <- function(x,
       p.val <- pnorm(stat)
       meth <- "Normal asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
     }
-    names(p.val) <- "p-value"
     du <- d - z.conf.level * se
     conf.int <- c(0, min(1, du))
-    attr(conf.int, "conf.level") <- conf.level
-    names(conf.int) <- c("confidence interval", "dUpper")
   }
-  result <- list(statistic = stat, p.value = p.val,
+  names(p.val) <- "p-value"
+  attr(conf.int, "conf.level") <- conf.level
+  names(conf.int) <- c("confidence interval", "dUpper")
+  result <- list(statistic = stat,
+                 p.value = p.val,
                  conf.int = conf.int,
                  estimate = d,
-                 null.value = d0, stderr = se,
+                 null.value = d0,
+                 stderr = se,
                  alternative = "less",
                  method = meth,
                  data.name = data.name,
                  enrichTab = x)
+  attr(result, "check.table") <- check.table
   class(result) <- c("equivSDhtest", "htest")
   return(result)
+
 }
 
 #' @describeIn equivTestSorensen S3 method for class "character"
@@ -354,13 +351,13 @@ equivTestSorensen.character <- function(x, y, d0 = 1 / (1 + 1.25),
                                         listNames = c("gene.list1", "gene.list2"),
                                         check.table = TRUE,
                                         ...){
-  tab <- buildEnrichTable(x, y, listNames, check.table, ...)
+  tab <- buildEnrichTable(x, y, listNames, check.table = FALSE, ...)
   # Typical ... arguments:
   # geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db",
   # onto = onto, GOLevel = ontoLevel,
   return(equivTestSorensen.table(tab, d0 = d0,
                                  boot = boot, nboot = nboot,
-                                 conf.level = conf.level, check.table = FALSE))
+                                 conf.level = conf.level, check.table = check.table))
 }
 
 #' @describeIn equivTestSorensen S3 method for class "list"

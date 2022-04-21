@@ -130,13 +130,16 @@ allPairDiss <- dSorensen(pbtGeneLists,
                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 allPairDiss
 
-seSorensen(pbtGeneLists,
-           onto = "BP", GOLevel = 5,
-           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-
-duppSorensen(pbtGeneLists,
-             onto = "BP", GOLevel = 5,
-             geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# Similarly, to obtain all pairwise...
+# standard errors:
+# seSorensen(pbtGeneLists,
+#            onto = "BP", GOLevel = 5,
+#            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+#
+# upper confidence interval limits:
+# duppSorensen(pbtGeneLists,
+#              onto = "BP", GOLevel = 5,
+#              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 
 # Equivalence test, H0: d >= d0 vs  H1: d < d0 (d0 = 0.4444)
 ?equivTestSorensen
@@ -174,6 +177,7 @@ getNboot(bootTest)
 allTests <- equivTestSorensen(allOncoGeneLists,
                               onto = "BP", GOLevel = 5,
                               geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+getPvalue(allTests, simplify = FALSE)
 getPvalue(allTests)
 p.adjust(getPvalue(allTests), method = "holm")
 
@@ -190,4 +194,4 @@ allBootTests_CC_MF_lev4to5 <- allEquivTestSorensen(allOncoGeneLists,
                                                    boot = TRUE,
                                                    geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
                                                    ontos = c("CC", "MF"), GOLevels = 4:5)
-
+getNboot(allBootTests_CC_MF_lev4to5)

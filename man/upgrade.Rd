@@ -23,9 +23,11 @@ The test(s) will be recomputed according to these parameters, or according to de
 for non-specified parameters}
 }
 \description{
-Recompute the test (or tests) from an object of class "equivSDhtest", "equivSDhtestList" or "AllEquivSDhtest"
-(i.e.,the output of functions "equivTestSorensen" or "allEquivTestSorensen"). Using the same table or tables
-of enrichment frequencies in 'x', obtain again the result of the equivalence test.
+Recompute the test (or tests) from an object of class "equivSDhtest", "equivSDhtestList" or
+"AllEquivSDhtest" (i.e.,the output of functions "equivTestSorensen" or "allEquivTestSorensen").
+Using the same table or tables of enrichment frequencies in 'x', obtain again the result of the
+equivalence test for new values of any of the parameters \code{d0} or \code{conf.level} or
+\code{boot} or \code{nboot} or \code{check.table}.
 }
 \section{Methods (by class)}{
 \itemize{

@@ -67,8 +67,7 @@
 #' If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 #' confidence interval for the dissimilarity between lists \code{x} and \code{y} is computed, after summarizing
 #' these gene lists as a 2x2 contingency table of joint enrichment. This last task is performed by function
-#' \code{\link{buildEnrichTable}} which itself calls function \code{crossTabGOIDs4GeneLists} at package
-#' \code{equivStandardTest}. In general, the argument \code{...} provides extra information for this last
+#' \code{\link{buildEnrichTable}}. In general, the argument \code{...} provides extra information for this last
 #' function, like p and q cut-off values to stablish enrichment.
 #'
 #' In the "list" interface, the argument must be a list of "character" vectors, each one
@@ -96,13 +95,14 @@
 #' # (Time consuming:)
 #' duppSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
 #'              listNames = names(pbtGeneLists)[c(2,4)],
-#'              onto = "BP", GOLevel = 5,
+#'              onto = "CC", GOLevel = 5,
 #'              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #' # (Quite time consuming:)
 #' duppSorensen(pbtGeneLists,
-#'              onto = "BP", GOLevel = 5,
+#'              onto = "CC", GOLevel = 5,
 #'              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #'
+#' @importFrom stats qnorm quantile rmultinom
 
 #' @export
 duppSorensen <- function(x, ...) {
@@ -116,15 +116,15 @@ duppSorensen.table <- function(x,
                                se = seSorensen.table(x, check.table = FALSE),
                                conf.level = 0.95, z.conf.level = qnorm(1 - conf.level),
                                boot = FALSE, nboot = 10000,
-                               check.table = TRUE){
+                               listNames = NULL, check.table = TRUE, ...){
   if (check.table){
     if (!nice2x2Table(x)) {
       print(x)
       stop("Inadequate contingency table")}
   }
-  if ((se == 0.0) || !is.finite(se)) {
-    warning("Null or not finite standard error")
-    return(1.0)
+  if ((se == 0.0) || !is.finite(dis) || !is.finite(se)) {
+    warning("Null standard error or not finite dissimilarity or standard error")
+    return(NA)
   }
   if (boot) {
     n <- sum(x)
@@ -139,11 +139,15 @@ duppSorensen.table <- function(x,
     }
     z.conf.level <- quantile(tStats, probs = 1 - conf.level)
   }
-  result <- dis - z.conf.level * se
+  result <- min(dis - z.conf.level * se, 1.0)
   if (boot) {
     attr(result, "nboot") <- length(tStats)
   }
-  names(result) <- NULL
+  if (is.null(listNames)) {
+    names(result) <- NULL
+  } else {
+    names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
+  }
   return(result)
 }
 
@@ -154,15 +158,15 @@ duppSorensen.matrix <- function(x,
                                 se = seSorensen.matrix(x, check.table = FALSE),
                                 conf.level = 0.95, z.conf.level = qnorm(1 - conf.level),
                                 boot = FALSE, nboot = 10000,
-                                check.table = TRUE){
+                                listNames = NULL, check.table = TRUE, ...){
   if (check.table){
     if (!nice2x2Table(x)) {
       print(x)
       stop("Inadequate contingency table")}
   }
-  if ((se == 0.0) || !is.finite(se)) {
-    warning("Null or not finite standard error")
-    return(1.0)
+  if ((se == 0.0) || !is.finite(dis) || !is.finite(se)) {
+    warning("Null standard error or not finite dissimilarity or standard error")
+    return(NA)
   }
   if (boot) {
     n <- sum(x)
@@ -175,11 +179,15 @@ duppSorensen.matrix <- function(x,
     }
     z.conf.level <- quantile(tStats, probs = 1 - conf.level)
   }
-  result <- dis - z.conf.level * se
+  result <- min(dis - z.conf.level * se, 1.0)
   if (boot) {
     attr(result, "nboot") <- length(tStats)
   }
-  names(result) <- NULL
+  if (is.null(listNames)) {
+    names(result) <- NULL
+  } else {
+    names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
+  }
   return(result)
 }
 
@@ -190,15 +198,15 @@ duppSorensen.numeric <- function(x,
                                  se = seSorensen.numeric(x, check.table = FALSE),
                                  conf.level = 0.95, z.conf.level = qnorm(1 - conf.level),
                                  boot = FALSE, nboot = 10000,
-                                 check.table = TRUE){
+                                 listNames = NULL, check.table = TRUE, ...){
   if (check.table){
     if (!nice2x2Table(x)) {
       print(x)
       stop("Inadequate contingency table")}
   }
-  if ((se == 0.0) || !is.finite(se)) {
-    warning("Null or not finite standard error")
-    return(1.0)
+  if ((se == 0.0) || !is.finite(dis) || !is.finite(se)) {
+    warning("Null standard error or not finite dissimilarity or standard error")
+    return(NA)
   }
   if (boot) {
     if (length(x) < 4) {
@@ -216,11 +224,15 @@ duppSorensen.numeric <- function(x,
     }
     z.conf.level <- quantile(tStats, probs = 1 - conf.level)
   }
-  result <- dis - z.conf.level * se
+  result <- min(dis - z.conf.level * se, 1.0)
   if (boot) {
     attr(result, "nboot") <- length(tStats)
   }
-  names(result) <- NULL
+  if (is.null(listNames)) {
+    names(result) <- NULL
+  } else {
+    names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
+  }
   return(result)
 }
 
@@ -229,7 +241,7 @@ duppSorensen.numeric <- function(x,
 duppSorensen.character <- function(x, y,
                                    conf.level = 0.95,
                                    boot = FALSE, nboot = 10000,
-                                   listNames = c("gene.list1", "gene.list2"), check.table = TRUE,
+                                   listNames = NULL, check.table = TRUE,
                                    ...){
   tab <- buildEnrichTable(x, y, listNames, check.table, ...)
   # Typical ... arguments:
@@ -237,12 +249,13 @@ duppSorensen.character <- function(x, y,
   # onto = onto, GOLevel = ontoLevel,
   result <- duppSorensen.table(tab,
                                conf.level = conf.level,
-                               boot = boot, nboot = nboot)
-  if (is.null(listNames)) {
-    names(result) <- NULL
-  } else {
-    names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
-  }
+                               boot = boot, nboot = nboot,
+                               listNames = listNames, check.table = check.table)
+  # if (is.null(listNames)) {
+  #   names(result) <- NULL
+  # } else {
+  #   names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
+  # }
   return(result)
 }
 
@@ -259,9 +272,8 @@ duppSorensen.list <- function(x,
     for (iLst2 in 1:(iLst1-1)) {
       result[iLst1, iLst2] <- duppSorensen.character(x[[iLst1]], x[[iLst2]],
                                                      conf.level = conf.level,
-                                                     check.table = check.table,
                                                      boot = boot, nboot = nboot,
-                                                     listNames = NULL, ...)
+                                                     listNames = NULL, check.table = check.table, ...)
     }
   }
   result[upper.tri(result)] <- t(result)[upper.tri(result)]

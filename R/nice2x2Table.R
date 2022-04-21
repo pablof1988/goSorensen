@@ -85,6 +85,10 @@ nice2x2Table.matrix <- function(x) {
     message("Negative frequencies in a contingency table")
     return(FALSE)
   }
+  if (sum(x[1:3]) == 0) {
+    message("Zero enrichment frequencies: Inadequate table for Sorensen-Dice computations")
+    return(FALSE)
+  }
   return(TRUE)
 }
 
@@ -97,6 +101,10 @@ nice2x2Table.numeric <- function(x) {
   }
   if (any(x[1:3] < 0)) {
     message("Negative frequencies in a contingency table")
+    return(FALSE)
+  }
+  if (sum(x[1:3]) == 0) {
+    message("Zero enrichment frequencies: Inadequate table for Sorensen-Dice computations")
     return(FALSE)
   }
   return(TRUE)

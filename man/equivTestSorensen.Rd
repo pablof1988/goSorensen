@@ -17,7 +17,8 @@ equivTestSorensen(x, ...)
   conf.level = 0.95,
   boot = FALSE,
   nboot = 10000,
-  check.table = TRUE
+  check.table = TRUE,
+  ...
 )
 
 \method{equivTestSorensen}{matrix}(
@@ -26,7 +27,8 @@ equivTestSorensen(x, ...)
   conf.level = 0.95,
   boot = FALSE,
   nboot = 10000,
-  check.table = TRUE
+  check.table = TRUE,
+  ...
 )
 
 \method{equivTestSorensen}{numeric}(
@@ -35,7 +37,8 @@ equivTestSorensen(x, ...)
   conf.level = 0.95,
   boot = FALSE,
   nboot = 10000,
-  check.table = TRUE
+  check.table = TRUE,
+  ...
 )
 
 \method{equivTestSorensen}{character}(
@@ -172,20 +175,21 @@ equivTestSorensen(tab_atlas.sanger_BP3)
 data(humanEntrezIDs)
 # Gene lists to be explored for enrichment:
 pbtGeneLists
-IRITD3VS5.MF4 <- buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
+IRITD3vs5.CC5 <- buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                                  onto = "MF", GOLevel = 4)
-equivTestSorensen(IRITD3VS5.MF4)
-equivTestSorensen(IRITD3VS5.MF4, boot = TRUE)
+                                  onto = "CC", GOLevel = 5)
+IRITD3vs5.CC5
+equivTestSorensen(IRITD3vs5.CC5)
+equivTestSorensen(IRITD3vs5.CC5, boot = TRUE)
 
 # Perform these computations in a single step:
 equivTestSorensen(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                  onto = "MF", GOLevel = 4)
+                  onto = "CC", GOLevel = 5)
 # All pairwise equivalence tests:
 equivTestSorensen(pbtGeneLists,
                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                  onto = "MF", GOLevel = 4)
+                  onto = "CC", GOLevel = 5)
 
 
 # Equivalence test on a contingency table represented as a numeric vector:

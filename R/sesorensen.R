@@ -6,6 +6,7 @@
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table. This checking is performed by means of function
 #' \code{nice2x2Table}.
+#' @param listNames character(2), names of both gene lists being compared (only for the character interface)
 #' @param ... extra parameters for function \code{buildEnrichTable}.
 #'
 #' @return In the "table", "matrix", "numeric" and "character" interfaces, the value of the standard error of the
@@ -67,18 +68,19 @@
 #' # (Time consuming:)
 #' seSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
 #'            listNames = names(pbtGeneLists)[c(2,4)],
-#'            onto = "BP", GOLevel = 5,
+#'            onto = "CC", GOLevel = 5,
 #'            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #' # Essentially, the above code makes the same as:
-#' pbtBP5.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
-#'                           listNames = names(pbtGeneLists)[c(2,4)],
-#'                           onto = "BP", GOLevel = 5,
-#'                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-#' seSorensen(pbtBP5.IRITD3vsKT1)
+#' tab.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
+#'                                     listNames = names(pbtGeneLists)[c(2,4)],
+#'                                     onto = "CC", GOLevel = 5,
+#'                                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+#' tab.IRITD3vsKT1
+#' seSorensen(tab.IRITD3vsKT1)
 #'
-#' # (Quite time consuming:)
+#' # All pairwise standard errors (quite time consuming):
 #' seSorensen(pbtGeneLists,
-#'            onto = "BP", GOLevel = 5,
+#'            onto = "CC", GOLevel = 5,
 #'            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #'
 #' @export
@@ -89,7 +91,7 @@ seSorensen <- function(x, ...) {
 #' @describeIn seSorensen S3 method for class "table"
 #' @export
 seSorensen.table <- function(x,
-                             check.table = TRUE) {
+                             listNames = NULL, check.table = TRUE, ...) {
   if (check.table){
     if (!nice2x2Table.table(x)) {
       print(x)
@@ -99,12 +101,18 @@ seSorensen.table <- function(x,
   n <- sum(x[1:3])
   p11 <- x[1] / n
   p11plus <- 1 + p11
-  return(2 * sqrt(p11 * (1 - p11) / (n - 1)) / (p11plus * p11plus))
+  result <- 2 * sqrt(p11 * (1 - p11) / (n - 1)) / (p11plus * p11plus)
+  if (is.null(listNames)) {
+    names(result) <- NULL
+  } else {
+    names(result) <- paste("Sorensen-Dice disimilarity standard error ", listNames[1], ",", listNames[2], sep = "")
+  }
+  return(result)
 }
 
 #' @describeIn seSorensen S3 method for class "matrix"
 #' @export
-seSorensen.matrix <- function(x, check.table = TRUE) {
+seSorensen.matrix <- function(x, listNames = NULL, check.table = TRUE, ...) {
   if (check.table){
     if (!nice2x2Table.matrix(x)) {
       print(x)
@@ -114,12 +122,18 @@ seSorensen.matrix <- function(x, check.table = TRUE) {
   n <- sum(x[1:3])
   p11 <- x[1] / n
   p11plus <- 1 + p11
-  return(2 * sqrt(p11 * (1 - p11) / (n - 1)) / (p11plus * p11plus))
+  result <- 2 * sqrt(p11 * (1 - p11) / (n - 1)) / (p11plus * p11plus)
+  if (is.null(listNames)) {
+    names(result) <- NULL
+  } else {
+    names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
+  }
+  return(result)
 }
 
 #' @describeIn seSorensen S3 method for class "numeric"
 #' @export
-seSorensen.numeric <- function(x, check.table = TRUE) {
+seSorensen.numeric <- function(x, listNames = NULL, check.table = TRUE, ...) {
   if (check.table){
     if (!nice2x2Table.numeric(x)) {
       print(x)
@@ -129,8 +143,13 @@ seSorensen.numeric <- function(x, check.table = TRUE) {
   n <- sum(x[1:3])
   p11 <- x[1] / n
   p11plus <- 1 + p11
-  return(2 * sqrt(p11 * (1 - p11) / (n - 1)) / (p11plus * p11plus))
-
+  result <- 2 * sqrt(p11 * (1 - p11) / (n - 1)) / (p11plus * p11plus)
+  if (is.null(listNames)) {
+    names(result) <- NULL
+  } else {
+    names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
+  }
+  return(result)
 }
 
 #' @describeIn seSorensen S3 method for class "character"
@@ -141,12 +160,7 @@ seSorensen.character <- function(x, y, listNames = c("gene.list1", "gene.list2")
   # Typical ... arguments:
   # geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
   # onto = onto, GOLevel = ontoLevel,
-  result <- seSorensen.table(tab, check.table = FALSE)
-  if (is.null(listNames)) {
-    names(result) <- NULL
-  } else {
-    names(result) <- paste("Sorensen-Dice disimilarity standard error ", listNames[1], ",", listNames[2], sep = "")
-  }
+  result <- seSorensen.table(tab, listNames = listNames, check.table = FALSE)
   return(result)
 }
 
@@ -159,7 +173,7 @@ seSorensen.list <- function(x, check.table = TRUE, ...){
   for (iLst1 in 2:numLists) {
     for (iLst2 in 1:(iLst1-1)) {
       result[iLst1, iLst2] <- seSorensen.character(x[[iLst1]], x[[iLst2]],
-                                                   check.table = check.table, listNames = NULL, ...)
+                                                   listNames = NULL, check.table = check.table, ...)
     }
   }
   result[upper.tri(result)] <- t(result)[upper.tri(result)]

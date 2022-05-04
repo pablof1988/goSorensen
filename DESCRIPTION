@@ -4,7 +4,7 @@ Title: Statistical inference based on the Sorensen-Dice dissimilarity
         and the Gene Ontology (GO)
 Version: 1.1.2
 Author: Jordi Ocana, Pablo Flores, Alexandre Sanchez-Pla, Miquel Salicru
-Maintainer: Jordi Ocana <jocana@ub.edu>
+Maintainer: Pablo Flores <p_flores@espoch.edu.ec>
 Description: This package implements inferential methods to compare gene lists (in this first 
     release, to prove equivalence) in terms of their biological meaning as expressed in the
     GO. The compared gene lists are characterized by cross-tabulation frequency tables of

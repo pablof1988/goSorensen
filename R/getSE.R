@@ -13,9 +13,9 @@
 #' @param simplify logical, if TRUE the result is simplified, e.g., returning a vector instead
 #' of a matrix.
 #' @param listNames character(2), the names of a pair of gene lists.
-#' @param ... Additional parameters.
+#' @param ... additional parameters.
 #'
-#' @ return A numeric value, the standard error of the Sorensen-Dice dissimilarity estimate
+#' @return A numeric value, the standard error of the Sorensen-Dice dissimilarity estimate.
 #'
 #' @examples
 #' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists

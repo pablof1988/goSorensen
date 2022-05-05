@@ -13,7 +13,7 @@
 #' @param listNames character(2), the names of a pair of gene lists.
 #' @param ... Additional parameters.
 #'
-#' @ return A numeric value, the test p-value
+#' @return A numeric value, the test p-value.
 #'
 #' @examples
 #' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists

@@ -12,6 +12,7 @@ Description: This package implements inferential methods to compare gene lists (
     enriched GO items. Dissimilarity between gene lists is evaluated using the Sorensen-Dice index.
     The fundamental guiding principle is that two gene lists are taken as similar if they share a
     great proportion of common enriched GO items.
+biocViews: Microarray, Pathways, GeneExpression, MultipleComparison, GraphAndNetwork
 Suggests: knitr, rmarkdown
 Depends: R (>= 3.5.0), devtools, GO.db, org.Hs.eg.db, goProfiles,
         clusterProfiler, stats

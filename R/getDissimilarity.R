@@ -13,7 +13,7 @@
 #' @param listNames character(2), the names of a pair of gene lists.
 #' @param ... Additional parameters.
 #'
-#' @ return A numeric value, the Sorensen-Dice dissimilarity value
+#' @return A numeric value, the Sorensen-Dice dissimilarity value.
 #'
 #' @examples
 #' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists

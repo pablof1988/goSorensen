@@ -15,6 +15,8 @@
 #' @param listNames character(2), the names of a pair of gene lists.
 #' @param ... Additional parameters.
 #'
+#' @ return A numeric value, the number of effective bootstrap replicates
+#'
 #' @examples
 #' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
 #' # 'waldman' and 'atlas', at level 4 of the BP ontology:

@@ -19,7 +19,7 @@ Depends: R (>= 3.5.0), devtools, GO.db, org.Hs.eg.db, goProfiles,
 VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8
-LazyData: true
+LazyData: false
 RoxygenNote: 7.1.2
 NeedsCompilation: no
 Packaged: 2022-04-16 10:28:45 UTC; jordi

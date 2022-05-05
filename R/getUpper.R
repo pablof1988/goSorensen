@@ -15,7 +15,7 @@
 #' @param listNames character(2), the names of a pair of gene lists.
 #' @param ... Additional parameters.
 #'
-#' @ return A numeric value, the upper limit of the one-sided confidence interval for the Sorensen-Dice
+#' @return A numeric value, the upper limit of the one-sided confidence interval for the Sorensen-Dice
 #' dissimilarity.
 #'
 #' @examples

@@ -22,6 +22,9 @@ upgrade(x, ...)
 The test(s) will be recomputed according to these parameters, or according to default values
 for non-specified parameters}
 }
+\value{
+An object of the same class than parameter \code{x}.
+}
 \description{
 Recompute the test (or tests) from an object of class "equivSDhtest", "equivSDhtestList" or
 "AllEquivSDhtest" (i.e.,the output of functions "equivTestSorensen" or "allEquivTestSorensen").

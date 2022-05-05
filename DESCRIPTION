@@ -22,5 +22,4 @@ LazyData: false
 RoxygenNote: 7.1.2
 NeedsCompilation: no
 Packaged: 2022-04-16 10:28:45 UTC; jordi
-biocViews: Annotation, GO, GeneSetEnrichment, Software, Microarray, Pathways, GeneExpression, 
-           MultipleComparison, GraphAndNetwork
+biocViews: Annotation, GO, GeneSetEnrichment, Software, Microarray, Pathways, GeneExpression, MultipleComparison, GraphAndNetwork

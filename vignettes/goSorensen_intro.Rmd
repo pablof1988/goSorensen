@@ -22,9 +22,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(goSorensen)
 ```
-```{r, eval = TRUE}
-sessionInfo()
-``
+
 The goal of **goSorensen** is to implement the equivalence test introduced in Flores, P., Salicrú, M., Sánchez-Pla, A. and Ocaña, J.(2022) "An equivalence test between features lists, based on the Sorensen - Dice index and the joint frequencies of GO node enrichment", BMC Bioinformatics. Given two gene lists, $L_1$ and $L_2$, (the data) and a given set of *n* Gene Ontology (GO) terms (the frame of reference for biological information in these lists), the test is devoted to answer the following question (quite informally stated for the moment): The dissimilarity between the biological information in both lists, is it negligible? To measure the dissimilarity we use the Sorensen-Dice index:
 
 $$

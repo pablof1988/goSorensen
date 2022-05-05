@@ -19,7 +19,7 @@ getSE(x, ...)
 \arguments{
 \item{x}{an object of class "equivSDhtest" or "equivSDhtestList" or "allEquivSDtest".}
 
-\item{...}{Additional parameters.}
+\item{...}{additional parameters.}
 
 \item{simplify}{logical, if TRUE the result is simplified, e.g., returning a vector instead
 of a matrix.}
@@ -29,6 +29,9 @@ of a matrix.}
 \item{GOLevel}{numeric, a vector with one or more GO levels to access.}
 
 \item{listNames}{character(2), the names of a pair of gene lists.}
+}
+\value{
+A numeric value, the standard error of the Sorensen-Dice dissimilarity estimate.
 }
 \description{
 Given objects representing the result(s) of one or more equivalence tests

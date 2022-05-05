@@ -29,6 +29,9 @@ of a matrix.}
 
 \item{listNames}{character(2), the names of a pair of gene lists.}
 }
+\value{
+A numeric value, the Sorensen-Dice dissimilarity value.
+}
 \description{
 Given objects representing the result(s) of one or more equivalence tests
 (classes "equivSDhtest", "equivSDhtestList" or "allEquivSDtest", i.e., the

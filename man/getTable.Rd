@@ -26,6 +26,10 @@ getTable(x, ...)
 
 \item{listNames}{character(2), the names of a pair of gene lists.}
 }
+\value{
+An object of class "table", the 2x2 enrichment contingeny table of mutual enrichment
+in two gene lists, built to perform the equivalence test based on the Sorensen-Dice dissimilarity.
+}
 \description{
 Given objects representing the result(s) of one or more equivalence tests
 (classes "equivSDhtest", "equivSDhtestList" or "allEquivSDtest", i.e., the

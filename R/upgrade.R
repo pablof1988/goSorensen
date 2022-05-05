@@ -11,7 +11,7 @@
 #' The test(s) will be recomputed according to these parameters, or according to default values
 #' for non-specified parameters
 #'
-#' @ return An object of the same class than parameter \code{x}.
+#' @return An object of the same class than parameter \code{x}.
 #'
 #' @examples
 #' # Result of the equivalence test between gene lists 'waldman' and 'atlas', in dataset

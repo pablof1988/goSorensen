@@ -11,7 +11,7 @@
 #' @param listNames character(2), the names of a pair of gene lists.
 #' @param ... Additional parameters.
 #'
-#' @ return An object of class "table", the 2x2 enrichment contingeny table of mutual enrichment
+#' @return An object of class "table", the 2x2 enrichment contingeny table of mutual enrichment
 #' in two gene lists, built to perform the equivalence test based on the Sorensen-Dice dissimilarity.
 #'
 #' @examples

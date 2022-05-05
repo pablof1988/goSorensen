@@ -14,7 +14,7 @@ Description: This package implements inferential methods to compare gene lists (
     great proportion of common enriched GO items.
 Suggests: knitr, rmarkdown
 Depends: R (>= 3.5.0), devtools, GO.db, org.Hs.eg.db, goProfiles,
-        clusterProfiler
+        clusterProfiler, stats
 VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8

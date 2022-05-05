@@ -16,7 +16,7 @@
 #' @param qvalCutoff A numeric value. Defaults to 0.01.
 #' @param ... Additional parameters for internal use (not used for the moment)
 #'
-#' @import clusterProfiler goProfiles devtools GO.db org.Hs.eg.db
+#' @import clusterProfiler goProfiles devtools GO.db org.Hs.eg.db stats
 #'
 #' @return an object of class "table" representing a 2x2 contingency table
 #' interpretable as the cross-tabulation of the enriched GO items in two gene lists:

@@ -30,7 +30,15 @@ of a matrix.}
 \item{listNames}{character(2), the names of a pair of gene lists.}
 }
 \value{
-A numeric value, the Sorensen-Dice dissimilarity value.
+When \code{x} is an object of class "equivSDhtest" (i.e., the result of a single
+equivalence test), the returned value is a single numeric value, the Sorensen-Dice
+dissimilarity. For an object of class "equivSDhtestList" (i.e. all pairwise tests for a
+set of gene lists), if \code{simplify = TRUE} (the default), the resulting value is a vector
+with the dissimilarities in all those tests, or the symmetric matrix of all dissimilarities
+if \code{simplify = TRUE}. If \code{x} is an object of class "allEquivSDtest" (i.e., the
+test iterated along GO ontologies and levels), the preceding result is returned in the form
+of a list along the ontologies, levels and pairs of gene lists specified by the arguments
+\code{onto, GOlevel} and \code{listNames} (or all present in \code{x} for missing arguments).
 }
 \description{
 Given objects representing the result(s) of one or more equivalence tests

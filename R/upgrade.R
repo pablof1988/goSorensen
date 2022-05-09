@@ -6,10 +6,9 @@
 #' equivalence test for new values of any of the parameters \code{d0} or \code{conf.level} or
 #' \code{boot} or \code{nboot} or \code{check.table}.
 #'
-#' @param x an object of class "equivSDhtest", "equivSDhtestList" or "AllEquivSDhtest"
-#' @param ... any valid parameters for function "equivTestSorensen" for its interface "table".
-#' The test(s) will be recomputed according to these parameters, or according to default values
-#' for non-specified parameters
+#' @param x an object of class "equivSDhtest", "equivSDhtestList" or "AllEquivSDhtest".
+#' @param ... any valid parameters for function "equivTestSorensen" for its interface "table",
+#' to recompute the test(s) according to these parameters.
 #'
 #' @return An object of the same class than parameter \code{x}.
 #'

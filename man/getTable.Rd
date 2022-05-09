@@ -29,6 +29,18 @@ getTable(x, ...)
 \value{
 An object of class "table", the 2x2 enrichment contingeny table of mutual enrichment
 in two gene lists, built to perform the equivalence test based on the Sorensen-Dice dissimilarity.
+
+When \code{x} is an object of class "equivSDhtest" (i.e., the result of a single
+equivalence test), the returned value is an object of class "table", the 2x2 enrichment
+contingeny table of mutual enrichment in two gene lists, built to perform the equivalence test
+based on the Sorensen-Dice dissimilarity.
+For an object of class "equivSDhtestList" (i.e. all pairwise tests for a
+set of gene lists), the resulting value is a list with all the tables built in all those
+tests. If \code{x} is an object of class "allEquivSDtest"
+(i.e., the test iterated along GO ontologies and levels), the preceding result is returned
+as a list along the ontologies, levels and pairs of gene lists specified by the arguments
+\code{onto, GOlevel} and \code{listNames} (or all ontologies, levels or pairs of gene lists
+present in \code{x} if one or more of these arguments are missing).
 }
 \description{
 Given objects representing the result(s) of one or more equivalence tests

@@ -16,11 +16,10 @@ upgrade(x, ...)
 \method{upgrade}{AllEquivSDhtest}(x, ...)
 }
 \arguments{
-\item{x}{an object of class "equivSDhtest", "equivSDhtestList" or "AllEquivSDhtest"}
+\item{x}{an object of class "equivSDhtest", "equivSDhtestList" or "AllEquivSDhtest".}
 
-\item{...}{any valid parameters for function "equivTestSorensen" for its interface "table".
-The test(s) will be recomputed according to these parameters, or according to default values
-for non-specified parameters}
+\item{...}{any valid parameters for function "equivTestSorensen" for its interface "table",
+to recompute the test(s) according to these parameters.}
 }
 \value{
 An object of the same class than parameter \code{x}.

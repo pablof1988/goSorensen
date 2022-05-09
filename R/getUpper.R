@@ -17,6 +17,17 @@
 #'
 #' @return A numeric value, the upper limit of the one-sided confidence interval for the Sorensen-Dice
 #' dissimilarity.
+#' @return When \code{x} is an object of class "equivSDhtest" (i.e., the result of a single
+#' equivalence test), the returned value is a single numeric value, the upper limit of the
+#' one-sided confidence interval for the Sorensen-Dice dissimilarity.
+#' For an object of class "equivSDhtestList" (i.e. all pairwise tests for a
+#' set of gene lists), if \code{simplify = TRUE} (the default), the resulting value is a vector
+#' with the upper limit of the one-sided confidence intervals in all those tests, or the symmetric
+#' matrix of all these values if \code{simplify = TRUE}. If \code{x} is an object of class
+#' "allEquivSDtest" (i.e., the test iterated along GO ontologies and levels), the preceding result
+#' is returned in the form of a list along the ontologies, levels and pairs of gene lists specified
+#' by the arguments \code{onto, GOlevel} and \code{listNames} (or all present in \code{x} for
+#' missing arguments).
 #'
 #' @examples
 #' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
@@ -116,9 +127,9 @@ getUpper.AllEquivSDhtest <- function(x, onto, GOLevel, listNames,
         namsMat <- c(names(x[[ionto]][[ilev]][[1]])[1], namsList1)
         resList1 <- sapply(namsList1, function(ilist1) {
           namsList2 <- names(x[[ionto]][[ilev]][[ilist1]])
-          resList2 <- sapply(namsList2, function(ilist2) {
+          resList2 <- vapply(namsList2, function(ilist2) {
             return(x[[ionto]][[ilev]][[ilist1]][[ilist2]]$conf.int[2])
-          })
+          }, FUN.VALUE = 0.0)
           names(resList2) <- namsList2
           return(resList2)
         })

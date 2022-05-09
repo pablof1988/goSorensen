@@ -31,7 +31,16 @@ of a matrix.}
 \item{listNames}{character(2), the names of a pair of gene lists.}
 }
 \value{
-A numeric value, the number of effective bootstrap replicates.
+When \code{x} is an object of class "equivSDhtest" (i.e., the result of a single
+equivalence test), the returned value is a single numeric value, the number of effective
+bootstrap replicates, or \code{NA} if bootstrapping has not been performed.
+For an object of class "equivSDhtestList" (i.e. all pairwise tests for a
+set of gene lists), if \code{simplify = TRUE} (the default), the resulting value is a vector
+with the number of effective bootstrap replicates in all those tests, or the symmetric matrix
+of all these values if \code{simplify = TRUE}. If \code{x} is an object of class "allEquivSDtest"
+(i.e., the test iterated along GO ontologies and levels), the preceding result is returned in
+the form of a list along the ontologies, levels and pairs of gene lists specified by the arguments
+\code{onto, GOlevel} and \code{listNames} (or all present in \code{x} for missing arguments).
 }
 \description{
 Given objects representing the result(s) of one or more equivalence tests
@@ -67,16 +76,6 @@ boot.waldman_atlas.BP.4 <- upgrade(waldman_atlas.BP.4, boot = TRUE)
 
 getNboot(waldman_atlas.BP.4)
 getNboot(boot.waldman_atlas.BP.4)
-
-getDissimilarity(waldman_atlas.BP.4)
-getSE(waldman_atlas.BP.4)
-getTable(waldman_atlas.BP.4)
-getUpper(waldman_atlas.BP.4)
-getDissimilarity(boot.waldman_atlas.BP.4)
-getSE(boot.waldman_atlas.BP.4)
-getTable(boot.waldman_atlas.BP.4)
-getUpper(boot.waldman_atlas.BP.4)
-
 
 # All pairwise equivalence tests at level 4 of the BP ontology
 BP.4

@@ -3,9 +3,6 @@ Type: Package
 Title: Statistical inference based on the Sorensen-Dice dissimilarity
         and the Gene Ontology (GO)
 Version: 0.99.0
-Author: Pablo Flores, Jordi Ocana, Alexandre Sanchez-Pla, Miquel Salicru
-Authors@R: person("Pablo", "Flores", email = "p_flores@espoch.edu.ec", role = c("aut", "cre"))
-Maintainer: Pablo Flores <p_flores@espoch.edu.ec>
 Description: This package implements inferential methods to compare gene lists (in this first 
     release, to prove equivalence) in terms of their biological meaning as expressed in the
     GO. The compared gene lists are characterized by cross-tabulation frequency tables of
@@ -23,3 +20,8 @@ RoxygenNote: 7.1.2
 NeedsCompilation: no
 Packaged: 2022-04-16 10:28:45 UTC; jordi
 biocViews: Annotation, GO, GeneSetEnrichment, Software, Microarray, Pathways, GeneExpression, MultipleComparison, GraphAndNetwork
+Authors@R: 
+  c(person("Pablo", "Flores", role = c("aut", "cre"), email = "p_flores@espoch.edu.ec"),
+    person("Jordi", "Ocana", role = c("aut", "ctb")),
+    person("Alexandre", "Sanchez-Pla", role = "ctb"),
+	person("Miquel", "Salicru", role = "ctb"))

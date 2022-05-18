@@ -94,27 +94,37 @@
 #' # of GO items in ontology BP at level 3.
 #' tab_atlas.sanger_BP3
 #' equivTestSorensen(tab_atlas.sanger_BP3)
+#' # Bootstrap test:
+#' equivTestSorensen(tab_atlas.sanger_BP3, boot = TRUE)
 #'
-#' # Building enrichment contingency tables from scratch
+#' # Equivalence tests from scratch, directly from gene lists:
+#' # (These examples may be considerably time consuming due to many enrichment
+#' # tests to build the contingency tables of mutual enrichment)
+#' # ?pbtGeneLists
 #' # Gene universe:
-#' data(humanEntrezIDs)
-#' # Gene lists to be explored for enrichment:
-#' pbtGeneLists
-#' IRITD3vs5.CC5 <- buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
-#'                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#'                                   onto = "CC", GOLevel = 5)
-#' IRITD3vs5.CC5
-#' equivTestSorensen(IRITD3vs5.CC5)
-#' equivTestSorensen(IRITD3vs5.CC5, boot = TRUE)
+#' # data(humanEntrezIDs)
+#' # equivTestSorensen(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
+#' #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#' #                   onto = "CC", GOLevel = 5)
+#' # Bootstrap instead of normal approximation test:
+#' # equivTestSorensen(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
+#' #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#' #                   onto = "CC", GOLevel = 5,
+#' #                   boot = TRUE)
 #'
-#' # Perform these computations in a single step:
-#' equivTestSorensen(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
-#'                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#'                   onto = "CC", GOLevel = 5)
+#' # Essentially, the above code makes:
+#' # IRITD3vs5.CC5 <- buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
+#' #                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#' #                                   onto = "CC", GOLevel = 5)
+#' # IRITD3vs5.CC5
+#' # equivTestSorensen(IRITD3vs5.CC5)
+#' # equivTestSorensen(IRITD3vs5.CC5, boot = TRUE)
+#' # (Note that building first the contingency table may be advantageous to save time!)
+#'
 #' # All pairwise equivalence tests:
-#' equivTestSorensen(pbtGeneLists,
-#'                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#'                   onto = "CC", GOLevel = 5)
+#' # equivTestSorensen(pbtGeneLists,
+#' #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#' #                   onto = "CC", GOLevel = 5)
 #'
 #'
 #' # Equivalence test on a contingency table represented as a numeric vector:
@@ -292,7 +302,7 @@ equivTestSorensen.numeric <- function(x,
   names(stat) <- "(d - d0) / se"
   if (!is.finite(stat)) {
     p.val <- NA
-    meth <- "No test performed due not finite (d - d0) / se statistic"
+    meth <- "No test performed due non finite (d - d0) / se statistic"
     conf.int <- c(0.0, NA)
   } else {
     if (boot) {
@@ -411,13 +421,15 @@ equivTestSorensen.list <- function(x, d0 = 1 / (1 + 1.25),
 #' in argument \code{x}.
 #'
 #' @examples
+#' # This example is extremely time consuming, it scans two GO ontologies and three
+#' # GO levels inside them to perform the equivalence test.
 #' # Gene universe:
-#' data(humanEntrezIDs)
+#' # data(humanEntrezIDs)
 #' # Gene lists to be explored for enrichment:
-#' data(pbtGeneLists)
-#' allEquivTestSorensen(pbtGeneLists,
-#'                      geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#'                      ontos = c("MF", "BP"), GOLevels = 4:6)
+#' # data(pbtGeneLists)
+#' # allEquivTestSorensen(pbtGeneLists,
+#' #                      geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#' #                      ontos = c("MF", "BP"), GOLevels = 4:6)
 #'
 #' @export
 allEquivTestSorensen <- function(x, d0 = 1 / (1 + 1.25), conf.level = 0.95,

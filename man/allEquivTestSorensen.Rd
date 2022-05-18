@@ -52,12 +52,14 @@ in argument \code{x}.
 Iterate \code{equivTestSorensen} along the specified GO ontologies and GO levels
 }
 \examples{
+# This example is extremely time consuming, it scans two GO ontologies and three
+# GO levels inside them to perform the equivalence test.
 # Gene universe:
-data(humanEntrezIDs)
+# data(humanEntrezIDs)
 # Gene lists to be explored for enrichment:
-data(pbtGeneLists)
-allEquivTestSorensen(pbtGeneLists,
-                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                     ontos = c("MF", "BP"), GOLevels = 4:6)
+# data(pbtGeneLists)
+# allEquivTestSorensen(pbtGeneLists,
+#                      geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#                      ontos = c("MF", "BP"), GOLevels = 4:6)
 
 }

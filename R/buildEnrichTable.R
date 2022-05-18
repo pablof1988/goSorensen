@@ -36,22 +36,26 @@
 #' data(humanEntrezIDs)
 #' # Gene lists to be explored for enrichment:
 #' ?allOncoGeneLists
-#' vog.VS.Wald <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]], allOncoGeneLists[["sanger"]],
+#' # Table of mutual GO node enrichment between gene lists Vogelstein and sanger,
+#' # for ontology MF at GO level 6 (only first 50 genes, to improve speed).
+#' vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]][1:50],
+#'                                 allOncoGeneLists[["sanger"]][1:50],
 #'                                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#'                                 onto = "MF", GOLevel = 5, listNames = c("Vogelstein", "sanger"))
-#' vog.VS.Wald
-#'
-#' ?pbtGeneLists
-#' # Inadequate table for Sorensen-Dice computations (no enrichment):
-#' # (Results may vary with future versions of the GO)
-#' buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
-#'                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#'                  onto = "MF", GOLevel = 10)
-#' buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
-#'                  check.table = FALSE,
-#'                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#'                  onto = "MF", GOLevel = 10)
-#'
+#'                                 onto = "MF", GOLevel = 6, listNames = c("Vogelstein", "sanger"))
+#' vog.VS.sang
+#' # This is an inadequate table for Sorensen-Dice computations:
+#' equivTestSorensen(vog.VS.sang)
+#' # This sometimes happens, due too small gene lists or due to poor incidence
+#' # of enrichment.
+#' #
+#' # In fact, the complete gene lists generate a much interesting contingency table:
+#' # vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]],
+#' #                                 allOncoGeneLists[["sanger"]],
+#' #                                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#' #                                 onto = "MF", GOLevel = 6, listNames = c("Vogelstein", "sanger"))
+#' # vog.VS.sang
+#' # equivTestSorensen(vog.VS.sang)
+
 #' @export
 buildEnrichTable <- function(x, ...) {
   UseMethod("buildEnrichTable")

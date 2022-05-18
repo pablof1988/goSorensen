@@ -119,22 +119,24 @@ conti3 <- c(56, 1, 30)
 dSorensen(conti3)
 
 # Sorensen-Dice dissimilarity from scratch, directly from two gene lists:
-?pbtGeneLists
+# (These examples may be considerably time consuming due to many enrichment 
+# tests to build the contingency tables of mutual enrichment)
+# ?pbtGeneLists
 # (Time consuming, building the table requires many enrichment tests:)
-equivTestSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
-                  listNames = names(pbtGeneLists)[c(2,4)],
-                  onto = "CC", GOLevel = 3,
-                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# dSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
+#           listNames = names(pbtGeneLists)[c(2,4)],
+#           onto = "CC", GOLevel = 3,
+#           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Essentially, the above code makes the same as:
-tab.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
-                                    listNames = names(pbtGeneLists)[c(2,4)],
-                                    onto = "CC", GOLevel = 3,
-                                    geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-dSorensen(tab.IRITD3vsKT1)
+# tab.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
+#                                     listNames = names(pbtGeneLists)[c(2,4)],
+#                                     onto = "CC", GOLevel = 3,
+#                                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# dSorensen(tab.IRITD3vsKT1)
 # (Quite time consuming, all pairwise dissimilarities:)
-dSorensen(pbtGeneLists,
-          onto = "CC", GOLevel = 3,
-          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# dSorensen(pbtGeneLists,
+#           onto = "CC", GOLevel = 3,
+#           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 }
 \seealso{
 \code{\link{nice2x2Table}} for checking data,

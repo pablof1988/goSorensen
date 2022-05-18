@@ -169,27 +169,37 @@ under the Gaussian model. The bootstrap method provides a better approximation t
 # of GO items in ontology BP at level 3.
 tab_atlas.sanger_BP3
 equivTestSorensen(tab_atlas.sanger_BP3)
+# Bootstrap test:
+equivTestSorensen(tab_atlas.sanger_BP3, boot = TRUE)
 
-# Building enrichment contingency tables from scratch
+# Equivalence tests from scratch, directly from gene lists:
+# (These examples may be considerably time consuming due to many enrichment
+# tests to build the contingency tables of mutual enrichment)
+# ?pbtGeneLists
 # Gene universe:
-data(humanEntrezIDs)
-# Gene lists to be explored for enrichment:
-pbtGeneLists
-IRITD3vs5.CC5 <- buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
-                                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                                  onto = "CC", GOLevel = 5)
-IRITD3vs5.CC5
-equivTestSorensen(IRITD3vs5.CC5)
-equivTestSorensen(IRITD3vs5.CC5, boot = TRUE)
+# data(humanEntrezIDs)
+# equivTestSorensen(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
+#                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#                   onto = "CC", GOLevel = 5)
+# Bootstrap instead of normal approximation test:
+# equivTestSorensen(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
+#                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#                   onto = "CC", GOLevel = 5,
+#                   boot = TRUE)
 
-# Perform these computations in a single step:
-equivTestSorensen(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
-                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                  onto = "CC", GOLevel = 5)
+# Essentially, the above code makes:
+# IRITD3vs5.CC5 <- buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
+#                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#                                   onto = "CC", GOLevel = 5)
+# IRITD3vs5.CC5
+# equivTestSorensen(IRITD3vs5.CC5)
+# equivTestSorensen(IRITD3vs5.CC5, boot = TRUE)
+# (Note that building first the contingency table may be advantageous to save time!)
+
 # All pairwise equivalence tests:
-equivTestSorensen(pbtGeneLists,
-                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                  onto = "CC", GOLevel = 5)
+# equivTestSorensen(pbtGeneLists,
+#                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#                   onto = "CC", GOLevel = 5)
 
 
 # Equivalence test on a contingency table represented as a numeric vector:

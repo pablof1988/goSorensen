@@ -108,24 +108,27 @@ seSorensen(tab_atlas.sanger_BP3)
 seSorensen(c(56, 1, 30, 47))
 seSorensen(c(56, 1, 30))
 
-?pbtGeneLists
-# (Time consuming:)
-seSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
-           listNames = names(pbtGeneLists)[c(2,4)],
-           onto = "CC", GOLevel = 5,
-           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# (These examples may be considerably time consuming due to many enrichment 
+# tests to build the contingency tables of mutual enrichment)
+# ?pbtGeneLists
+# Standard error of the sample Sorensen-Dice dissimilarity, directly from
+# two gene lists, from scratch:
+# seSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
+#            listNames = names(pbtGeneLists)[c(2,4)],
+#            onto = "CC", GOLevel = 5,
+#            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Essentially, the above code makes the same as:
-tab.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
-                                    listNames = names(pbtGeneLists)[c(2,4)],
-                                    onto = "CC", GOLevel = 5,
-                                    geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-tab.IRITD3vsKT1
-seSorensen(tab.IRITD3vsKT1)
+# tab.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
+#                                     listNames = names(pbtGeneLists)[c(2,4)],
+#                                     onto = "CC", GOLevel = 5,
+#                                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# tab.IRITD3vsKT1
+# seSorensen(tab.IRITD3vsKT1)
 
 # All pairwise standard errors (quite time consuming):
-seSorensen(pbtGeneLists,
-           onto = "CC", GOLevel = 5,
-           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# seSorensen(pbtGeneLists,
+#            onto = "CC", GOLevel = 5,
+#            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 
 }
 \seealso{

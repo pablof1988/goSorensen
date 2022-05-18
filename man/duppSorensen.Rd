@@ -176,24 +176,29 @@ these gene lists are computed.
 # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
 # of GO items in ontology BP at level 3.
 tab_atlas.sanger_BP3
-dSorensen(tab_atlas.sanger_BP3)
-seSorensen(tab_atlas.sanger_BP3)
 duppSorensen(tab_atlas.sanger_BP3)
+dSorensen(tab_atlas.sanger_BP3) + qnorm(0.95) * seSorensen(tab_atlas.sanger_BP3)
+# Using the bootstrap approximation instead of the normal approximation to
+# the sampling distribution of (^d - d) / se(^d):
+duppSorensen(tab_atlas.sanger_BP3, boot = TRUE)
 
 # Contingency table as a numeric vector:
 duppSorensen(c(56, 1, 30, 47))
 duppSorensen(c(56, 1, 30))
 
-?pbtGeneLists
-# (Time consuming:)
-duppSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
-             listNames = names(pbtGeneLists)[c(2,4)],
-             onto = "CC", GOLevel = 5,
-             geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# (Quite time consuming:)
-duppSorensen(pbtGeneLists,
-             onto = "CC", GOLevel = 5,
-             geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# Upper confidence limit for the Sorensen-Dice dissimilarity, from scratch, 
+# directly from two gene lists:
+# (These examples may be considerably time consuming due to many enrichment 
+# tests to build the contingency tables of mutual enrichment)
+# ?pbtGeneLists
+# duppSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
+#              listNames = names(pbtGeneLists)[c(2,4)],
+#              onto = "CC", GOLevel = 5,
+#              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# Even more time consuming (all pairwise values):
+# duppSorensen(pbtGeneLists,
+#              onto = "CC", GOLevel = 5,
+#              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 
 }
 \seealso{

@@ -57,17 +57,15 @@
 #' getNboot(boot.BP.4)
 #' getNboot(boot.BP.4, simplify = FALSE)
 #'
-#' # Equivalence test iterated over all GO ontologies and levels 3 to 10.
-#' cancerEquivSorensen
-#' class(cancerEquivSorensen)
+#' # Bootstrap equivalence test iterated over all GO ontologies and levels 3 to 10.
+#' class(boot.cancerEquivSorensen)
 #' # This may correspond to code like:
 #' # (By default, the tests are iterated over all GO ontologies and for levels 3 to 10)
 #' # cancerEquivSorensen <- allEquivTestSorensen(allOncoGeneLists,
 #' #                                             geneUniverse = humanEntrezIDs,
-#' #                                             orgPackg = "org.Hs.eg.db")
-#' boot.cancerEquivSorensen <- upgrade(cancerEquivSorensen, boot = TRUE)
+#' #                                             orgPackg = "org.Hs.eg.db",
+#' #                                             boot = TRUE)
 #'
-#' getNboot(cancerEquivSorensen)
 #' getNboot(boot.cancerEquivSorensen)
 #' getNboot(boot.cancerEquivSorensen, simplify = FALSE)
 #' getNboot(boot.cancerEquivSorensen, GOLevel = "level 6")

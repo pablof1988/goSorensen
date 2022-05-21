@@ -1,3 +1,4 @@
+date()
 library(goSorensen)
 
 # A contingency table of GO terms mutual enrichment
@@ -86,6 +87,7 @@ try(duppSorensen(contiAsVectorLen3, boot = TRUE), TRUE)
 # First, the mutual GO node enrichment tables are built, then computations
 # proceed from these contingency tables.
 # Building the contingency tables is an slow process (many enrichment tests)
+
 dSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
           listNames = names(pbtGeneLists)[c(2,4)],
           onto = "BP", GOLevel = 5,
@@ -99,13 +101,13 @@ tab <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
                         listNames = names(pbtGeneLists)[c(2,4)],
                         onto = "BP", GOLevel = 5,
                         geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+
 tab
 dSorensen(tab)
 seSorensen(tab)
 duppSorensen(tab)
 set.seed(123)
 duppSorensen(tab, boot = TRUE)
-
 # Much faster than:
 # seSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
 #            listNames = names(pbtGeneLists)[c(2,4)],
@@ -158,22 +160,31 @@ equivTestSorensen(contiAsVectorLen3)
 
 try(equivTestSorensen(contiAsVectorLen3, boot = TRUE), TRUE)
 
-equivTestSorensen(allOncoGeneLists[[2]], allOncoGeneLists[[4]],
-                  listNames = names(allOncoGeneLists)[c(2,4)],
-                  onto = "BP", GOLevel = 5,
-                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+aTest <- equivTestSorensen(allOncoGeneLists[[2]], allOncoGeneLists[[4]],
+                           listNames = names(allOncoGeneLists)[c(2,4)],
+                           onto = "BP", GOLevel = 5,
+                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+aTest
 
+# To perform a bootstrap test from scratch would be even slower:
+# set.seed(123)
+# bootTest <- equivTestSorensen(allOncoGeneLists[[2]], allOncoGeneLists[[4]],
+#                               listNames = names(allOncoGeneLists)[c(2,4)],
+#                               boot = TRUE,
+#                               onto = "BP", GOLevel = 5,
+#                               geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# bootTest
+
+# It is much faster to upgrade 'aTest' to be a bootstrap test:
 set.seed(123)
-bootTest <- equivTestSorensen(allOncoGeneLists[[2]], allOncoGeneLists[[4]],
-                              listNames = names(allOncoGeneLists)[c(2,4)],
-                              boot = TRUE,
-                              onto = "BP", GOLevel = 5,
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+bootTest <- upgrade(aTest, boot = TRUE)
+bootTest
+
 # Warnings are issued, not all bootstrap tables are adequate for
-# Sorensen-Dice computations:
+# Sorensen-Dice computations. To know the number of valid bootstrap replicates:
 getNboot(bootTest)
 
-
+# To perform all pairwise tests:
 allTests <- equivTestSorensen(allOncoGeneLists,
                               onto = "BP", GOLevel = 5,
                               geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
@@ -181,17 +192,30 @@ getPvalue(allTests, simplify = FALSE)
 getPvalue(allTests)
 p.adjust(getPvalue(allTests), method = "holm")
 
-set.seed(123)
-allBootTests <- equivTestSorensen(allOncoGeneLists,
-                                  boot = TRUE,
-                                  onto = "BP", GOLevel = 5,
-                                  geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# To perform all pairwise bootstrap tests would be even more time consuming:
+# set.seed(123)
+# allBootTests <- equivTestSorensen(allOncoGeneLists,
+#                                   boot = TRUE,
+#                                   onto = "BP", GOLevel = 5,
+#                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Warnings are issued for the same reason:
-getNboot(allBootTests)
+# getNboot(allBootTests)
 
+# It is much faster to upgrade the above tests to bootstrap tests:
 set.seed(123)
-allBootTests_CC_MF_lev4to5 <- allEquivTestSorensen(allOncoGeneLists,
-                                                   boot = TRUE,
-                                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                                                   ontos = c("CC", "MF"), GOLevels = 4:5)
-getNboot(allBootTests_CC_MF_lev4to5)
+allBootTests <- upgrade(allTests, boot = TRUE)
+getPvalue(allBootTests, simplify = FALSE)
+
+# To adjust for testing multiplicity:
+p.adjust(getPvalue(allBootTests), method = "holm")
+
+# Tipically, in a real study it would be interesting to scan tests
+# along some ontologies and levels inside these ontologies:
+# (Obviously, this will be a quite slow process)
+# set.seed(123)
+# allBootTests_BP_MF_lev4to8 <- allEquivTestSorensen(allOncoGeneLists,
+#                                                    boot = TRUE,
+#                                                    geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#                                                    ontos = c("BP", "MF"), GOLevels = 4:8)
+# getPvalue(allBootTests_BP_MF_lev4to8)
+# getNboot(allBootTests_BP_MF_lev4to8)

@@ -165,12 +165,12 @@ set.seed(123)
 duppSorensen(tab, boot = TRUE)
 
 # To perform from scratch all pairwise tests is even much slower:
-allTests <- equivTestSorensen(allOncoGeneLists,
-                              onto = "BP", GOLevel = 5,
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-getPvalue(allTests, simplify = FALSE)
-getPvalue(allTests)
-p.adjust(getPvalue(allTests), method = "holm")
+#allTests <- equivTestSorensen(allOncoGeneLists,
+#                              onto = "BP", GOLevel = 5,
+#                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+#getPvalue(allTests, simplify = FALSE)
+#getPvalue(allTests)
+#p.adjust(getPvalue(allTests), method = "holm")
 
 # All pairwise bootstrap tests from scratch (even more time consuming):
 # set.seed(123)
@@ -182,9 +182,9 @@ p.adjust(getPvalue(allTests), method = "holm")
 # getNboot(allBootTests)
 
 # It is much faster to upgrade the above tests to bootstrap tests:
-set.seed(123)
-allBootTests <- upgrade(allTests, boot = TRUE)
-getPvalue(allBootTests, simplify = FALSE)
+#set.seed(123)
+#allBootTests <- upgrade(allTests, boot = TRUE)
+#getPvalue(allBootTests, simplify = FALSE)
 
 # To adjust for testing multiplicity:
 # p.adjust(getPvalue(allBootTests), method = "holm")

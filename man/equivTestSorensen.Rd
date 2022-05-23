@@ -93,17 +93,17 @@ represent a 2x2 contingency table. This checking is performed by means of functi
 For all interfaces (except for the "list" interface) the result is a list of class "equivSDhtest" which
 inherits from "htest", with the following components:
 \describe{
-  \item{statistic}{the value of the studentized statistic (dSorensen(x) - d0) / seSorensen(x)}
-  \item{p.value}{the p-value of the test}
-  \item{conf.int}{the one-sided confidence interval (0, dUpp]}
-  \item{estimate}{the Sorensen dissimilarity estimate, dSorensen(x)}
-  \item{null.value}{the value of d0}
-  \item{stderr}{the standard error of the Sorensen dissimilarity estimate, seSorensen(x),
-  used as denominator in the studentized statistic}
-  \item{alternative}{a character string describing the alternative hypothesis}
-  \item{method}{a character string describing the test}
-  \item{data.name}{a character string giving the names of the data}
-  \item{enrichTab}{the 2x2 contingency table of joint enrichment whereby the test was based}
+\item{statistic}{the value of the studentized statistic (dSorensen(x) - d0) / seSorensen(x)}
+\item{p.value}{the p-value of the test}
+\item{conf.int}{the one-sided confidence interval (0, dUpp]}
+\item{estimate}{the Sorensen dissimilarity estimate, dSorensen(x)}
+\item{null.value}{the value of d0}
+\item{stderr}{the standard error of the Sorensen dissimilarity estimate, seSorensen(x),
+used as denominator in the studentized statistic}
+\item{alternative}{a character string describing the alternative hypothesis}
+\item{method}{a character string describing the test}
+\item{data.name}{a character string giving the names of the data}
+\item{enrichTab}{the 2x2 contingency table of joint enrichment whereby the test was based}
 }
 For the "list" interface, the result is an "equivSDhtestList", a list of objects with
 all pairwise comparisons, each one being an object of "equivSDhtest" class.
@@ -115,11 +115,11 @@ normal or by a bootstrap approach.
 \details{
 This function computes either the normal asymptotic or the bootstrap equivalence
 test based on the Sorensen-Dice dissimilarity, given a 2x2 arrangement of frequencies
-(either implemented as a "table", a "matrix" or a "numeric" object):
-\tabular{rr}{
-\deqn{n_{11}} \tab \deqn{n_{10}}\cr
-\deqn{n_{01}} \tab \deqn{n_{00}}
+(either implemented as a "table", a "matrix" or a "numeric" object):\tabular{ll}{
+   n_11 \tab n_10 \cr
+   n_01 \tab n_00 \cr
 }
+
 
 The subindex '11' corresponds to those
 GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,

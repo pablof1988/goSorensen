@@ -1,4 +1,3 @@
-
 #' Creates a 2x2 enrichment contingency table from two gene lists
 #'
 #' @param x an object of class "character" (or coerzable to "character") representing a vector of gene identifiers.

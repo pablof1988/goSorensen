@@ -18,10 +18,9 @@
 #' given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
 #' or a "numeric" object):
 #' 
-#' \tabular{rr}{
-#' \deqn{n_{11}} \tab \deqn{n_{10}}\cr
-#' \deqn{n_{01}} \tab \deqn{n_{00}}
-#' }
+#' | n_11 | n_10|
+#' |------|-----|
+#' | n_01 | n_00|
 #'
 #' The subindex '11' corresponds to those
 #' GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,
@@ -46,6 +45,7 @@
 #' \code{\link{dSorensen}} for computing the Sorensen-Dice dissimilarity,
 #' \code{\link{duppSorensen}} for the upper limit of a one-sided confidence interval
 #' of the dissimilarity, \code{\link{equivTestSorensen}} for an equivalence test.
+#' @md
 #'
 #' @examples
 #' # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment

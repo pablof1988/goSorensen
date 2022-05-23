@@ -28,10 +28,9 @@
 #' given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
 #' or a "numeric" object):
 #' 
-#' \tabular{rr}{
-#' \deqn{n_{11}} \tab \deqn{n_{10}}\cr
-#' \deqn{n_{01}} \tab \deqn{n_{00}}
-#' }
+#' | n_11 | n_10|
+#' |------|-----|
+#' | n_01 | n_00|
 #'
 #' The subindex '11' corresponds to those
 #' GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,
@@ -102,6 +101,7 @@
 #' #              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #'
 #' @importFrom stats qnorm quantile rmultinom
+#' @md
 
 #' @export
 duppSorensen <- function(x, ...) {

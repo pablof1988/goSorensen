@@ -111,12 +111,11 @@ Upper limit of a one-sided confidence interval (0, dUpp] for the Sorensen-Dice d
 \details{
 This function computes the upper limit of a one-sided confidence interval for the Sorensen-Dice dissimilarity,
 given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
-or a "numeric" object):
-
-\tabular{rr}{
-\deqn{n_{11}} \tab \deqn{n_{10}}\cr
-\deqn{n_{01}} \tab \deqn{n_{00}}
+or a "numeric" object):\tabular{ll}{
+   n_11 \tab n_10 \cr
+   n_01 \tab n_00 \cr
 }
+
 
 The subindex '11' corresponds to those
 GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,

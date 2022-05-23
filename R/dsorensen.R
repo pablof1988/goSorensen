@@ -14,10 +14,9 @@
 #' Given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
 #' or a "numeric" object):
 #'
-#' \tabular{rr}{
-#' \deqn{n_{11}} \tab \deqn{n_{10}}\cr
-#' \deqn{n_{01}} \tab \deqn{n_{00}}
-#' }
+#' | n_11 | n_10|
+#' |------|-----|
+#' | n_01 | n_00|
 #' 
 #' this function computes the Sorensen-Dice dissimilarity
 #' \deqn{\frac{n_{10} + n_{01}}{2 n_{11} + n_{10} + n_{01}}.}{{%
@@ -86,6 +85,7 @@
 #' # dSorensen(pbtGeneLists,
 #' #           onto = "CC", GOLevel = 3,
 #' #           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+#' @md
 
 #' @export
 dSorensen <- function(x, ...) {

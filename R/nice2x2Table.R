@@ -14,10 +14,9 @@
 #' In the "table" and "matrix" interfaces, the input parameter \code{x} must correspond
 #' to a two-dimensional array:
 #' 
-#' \tabular{rr}{
-#' \deqn{n_{11}} \tab \deqn{n_{10}}\cr
-#' \deqn{n_{01}} \tab \deqn{n_{00}}
-#' }
+#' | n_11 | n_10|
+#' |------|-----|
+#' | n_01 | n_00|
 #' 
 #' These values are interpreted (always in this order) as n11: number of GO items enriched in both lists,
 #' n01: GO items enriched in the second list but not in the first one, n10: items not enriched in the second
@@ -26,6 +25,7 @@
 #'
 #' In the "numeric" interface, the input \code{x} must correspond to a numeric of length
 #' 3 or more, in the same order as before.
+#' @md
 #'
 #' @examples
 #' conti <- as.table(matrix(c(27, 36, 12, 501, 43, 15, 0, 0, 0), nrow = 3, ncol = 3,

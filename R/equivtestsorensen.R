@@ -43,10 +43,10 @@
 #' This function computes either the normal asymptotic or the bootstrap equivalence
 #' test based on the Sorensen-Dice dissimilarity, given a 2x2 arrangement of frequencies
 #' (either implemented as a "table", a "matrix" or a "numeric" object):
-#' \tabular{rr}{
-#' \deqn{n_{11}} \tab \deqn{n_{10}}\cr
-#' \deqn{n_{01}} \tab \deqn{n_{00}}
-#' }
+#' 
+#' | n_11 | n_10|
+#' |------|-----|
+#' | n_01 | n_00|
 #'
 #' The subindex '11' corresponds to those
 #' GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,
@@ -126,6 +126,7 @@
 #' equivTestSorensen(c(56, 1, 30))
 #' # Error: all frequencies are needed for bootstrap:
 #' try(equivTestSorensen(c(56, 1, 30), boot = TRUE), TRUE)
+#' @md
 
 #' @importFrom stats pnorm qnorm quantile rmultinom
 #' @export
@@ -429,8 +430,7 @@ allEquivTestSorensen <- function(x, d0 = 1 / (1 + 1.25), conf.level = 0.95,
                                  boot = FALSE, nboot = 10000, check.table = TRUE,
                                  ontos = c("BP", "CC", "MF"),
                                  GOLevels = 3:10,
-                                 ...)
-{
+                                 ...){
   allOntos <- lapply(ontos, function(onto) {
     thisOnto <- lapply(GOLevels, function(lev) {
       cat("========================================================\n")

@@ -13,17 +13,12 @@
 #' @details
 #' In the "table" and "matrix" interfaces, the input parameter \code{x} must correspond
 #' to a two-dimensional array:
-#' \deqn{
-#'  \tabular{rr}{
-#'   n_{11} \tab n_{01} \cr
-#'   n_{10} \tab n_{00},
-#'  }
-#' }{}
-#'
-#'\tabular{rr}{
-#' n_11 \tab n_01 \cr
-#' n_10 \tab n_00,
-#'}
+#' 
+#' \tabular{rr}{
+#' \deqn{n_{11}} \tab \deqn{n_{10}}\cr
+#' \deqn{n_{01}} \tab \deqn{n_{00}}
+#' }
+#' 
 #' These values are interpreted (always in this order) as n11: number of GO items enriched in both lists,
 #' n01: GO items enriched in the second list but not in the first one, n10: items not enriched in the second
 #' list but enriched in the first one and double negatives, n00.

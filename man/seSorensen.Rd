@@ -53,16 +53,10 @@ Standard error of the sample Sorensen-Dice dissimilarity, asymptotic approach
 This function computes the standard error estimate of the sample Sorensen-Dice dissimilarity,
 given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
 or a "numeric" object):
-\deqn{
- \tabular{rr}{
-  n_{11} \tab n_{10} \cr
-  n_{01} \tab n_{00},
- }
-}{}
 
 \tabular{rr}{
-n_11 \tab n_10 \cr
-n_01 \tab n_00,
+\deqn{n_{11}} \tab \deqn{n_{10}}\cr
+\deqn{n_{01}} \tab \deqn{n_{00}}
 }
 
 The subindex '11' corresponds to those

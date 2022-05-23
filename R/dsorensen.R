@@ -13,18 +13,12 @@
 #' @details
 #' Given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
 #' or a "numeric" object):
-#' \deqn{
-#'  \tabular{rr}{
-#'   n_{11} \tab n_{01} \cr
-#'   n_{10} \tab n_{00},
-#'  }
-#' }{}
 #'
-#'\tabular{rr}{
-#' n_11 \tab n_01 \cr
-#' n_10 \tab n_00,
-#'}
-#'
+#' \tabular{rr}{
+#' \deqn{n_{11}} \tab \deqn{n_{10}}\cr
+#' \deqn{n_{01}} \tab \deqn{n_{00}}
+#' }
+#' 
 #' this function computes the Sorensen-Dice dissimilarity
 #' \deqn{\frac{n_{10} + n_{01}}{2 n_{11} + n_{10} + n_{01}}.}{{%
 #' n_10 + n_01}/{2 n_11 + n_10 + n_01}.}

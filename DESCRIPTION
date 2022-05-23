@@ -2,7 +2,7 @@ Package: goSorensen
 Type: Package
 Title: Statistical inference based on the Sorensen-Dice dissimilarity
         and the Gene Ontology (GO)
-Version: 0.99.5
+Version: 0.99.6
 Description: This package implements inferential methods to compare gene lists (in this first 
     release, to prove equivalence) in terms of their biological meaning as expressed in the
     GO. The compared gene lists are characterized by cross-tabulation frequency tables of
@@ -21,7 +21,7 @@ VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 NeedsCompilation: no
 Packaged: 2022-04-16 10:28:45 UTC; jordi
 biocViews: Annotation, GO, GeneSetEnrichment, Software, Microarray, Pathways, GeneExpression, MultipleComparison, GraphAndNetwork

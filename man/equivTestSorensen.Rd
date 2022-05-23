@@ -116,16 +116,9 @@ normal or by a bootstrap approach.
 This function computes either the normal asymptotic or the bootstrap equivalence
 test based on the Sorensen-Dice dissimilarity, given a 2x2 arrangement of frequencies
 (either implemented as a "table", a "matrix" or a "numeric" object):
-\deqn{
- \tabular{rr}{
-  n_{11} \tab n_{10} \cr
-  n_{01} \tab n_{00},
- }
-}{}
-
 \tabular{rr}{
-n_11 \tab n_10 \cr
-n_01 \tab n_00,
+\deqn{n_{11}} \tab \deqn{n_{10}}\cr
+\deqn{n_{01}} \tab \deqn{n_{00}}
 }
 
 The subindex '11' corresponds to those

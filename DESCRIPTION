@@ -10,19 +10,19 @@ Description: This package implements inferential methods to compare gene lists (
     The fundamental guiding principle is that two gene lists are taken as similar if they share a
     great proportion of common enriched GO items.
 Authors@R: 
-  c(person("Pablo", "Flores", role = c("aut", "cre"), email = "p_flores@espoch.edu.ec"),
-    person("Jordi", "Ocana", role = c("aut", "ctb")),
-    person("Alexandre", "Sanchez-Pla", role = "ctb"),
-	person("Miquel", "Salicru", role = "ctb"))
+  c(person("Pablo", "Flores", role = c("aut", "cre"), email = "p_flores@espoch.edu.ec", comment = c(ORCID = "0000-0002-7156-8547")),
+    person("Jordi", "Ocana", role = c("aut", "ctb"), comment = c(ORCID = "0000-0002-4736-699")),
+    person("Alexandre", "Sanchez-Pla", role = "ctb", comment = c(ORCID = "0000-0002-8673-7737")),
+	person("Miquel", "Salicru", role = "ctb", comment = c(ORCID = "0000-0001-9644-5626")))
 Suggests: knitr, rmarkdown
 Depends: R (>= 4.2.0), devtools, GO.db, org.Hs.eg.db, goProfiles,
         stats, clusterProfiler
 VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8
-LazyData: true
+LazyData: false
 RoxygenNote: 7.2.0
 NeedsCompilation: no
 Packaged: 2022-04-16 10:28:45 UTC; jordi
-biocViews: Annotation, GO, GeneSetEnrichment, Software, Microarray, Pathways, GeneExpression, MultipleComparison, GraphAndNetwork
+biocViews: Annotation, GO, GeneSetEnrichment, Software, Microarray, Pathways, GeneExpression, MultipleComparison, GraphAndNetwork, Reactome, Clustering, KEGG
 

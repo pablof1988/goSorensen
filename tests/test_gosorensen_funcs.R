@@ -102,20 +102,13 @@ try(equivTestSorensen(contiAsVectorLen3, boot = TRUE), TRUE)
 # First, the mutual GO node enrichment tables are built, then computations
 # proceed from these contingency tables.
 # Building the contingency tables is a slow process (many enrichment tests)
-normTest <- equivTestSorensen(allOncoGeneLists[["atlas"]], allOncoGeneLists[["sanger"]],
+normTest <- equivTestSorensen(allOncoGeneLists[["atlas"]], 
+                              allOncoGeneLists[["sanger"]],
                               listNames = c("atlas", "sanger"),
                               onto = "BP", GOLevel = 5,
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+                              geneUniverse = humanEntrezIDs, 
+                              orgPackg = "org.Hs.eg.db")
 normTest
-
-# To perform a bootstrap test from scratch would be even slower:
-# set.seed(123)
-# bootTest <- equivTestSorensen(allOncoGeneLists[["atlas"]], allOncoGeneLists[["sanger"]],
-#                               listNames = c("atlas", "sanger"),
-#                               boot = TRUE,
-#                               onto = "BP", GOLevel = 5,
-#                               geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# bootTest
 
 # It is much faster to upgrade 'normTest' to be a bootstrap test:
 set.seed(123)
@@ -124,36 +117,15 @@ bootTest
 # To know the number of valid bootstrap replicates:
 getNboot(bootTest)
 
-# There are similar methods for dSorensen, seSorensen, duppSorensen, etc. to
-# compute directly from a pair of gene lists.
-# They are quite slow for the same reason as before (many enrichment tests).
-# dSorensen(allOncoGeneLists[["atlas"]], allOncoGeneLists[["sanger"]],
-#           listNames = c("atlas", "sanger"),
-#           onto = "BP", GOLevel = 5,
-#           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# seSorensen(allOncoGeneLists[["atlas"]], allOncoGeneLists[["sanger"]],
-#            listNames = c("atlas", "sanger"),
-#            onto = "BP", GOLevel = 5,
-#            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-#
-# duppSorensen(allOncoGeneLists[["atlas"]], allOncoGeneLists[["sanger"]],
-#              listNames = c("atlas", "sanger"),
-#              onto = "BP", GOLevel = 5,
-#              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-#
-# duppSorensen(allOncoGeneLists[["atlas"]], allOncoGeneLists[["sanger"]],
-#              boot = TRUE,
-#              listNames = c("atlas", "sanger"),
-#              onto = "BP", GOLevel = 5,
-#              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# etc.
 
 # To save time, build the contingency table first, and then compute from it:
 ?buildEnrichTable
-tab <- buildEnrichTable(allOncoGeneLists[["atlas"]], allOncoGeneLists[["sanger"]],
+tab <- buildEnrichTable(allOncoGeneLists[["atlas"]], 
+                        allOncoGeneLists[["sanger"]],
                         listNames = c("atlas", "sanger"),
                         onto = "BP", GOLevel = 5,
-                        geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+                        geneUniverse = humanEntrezIDs, 
+                        orgPackg = "org.Hs.eg.db")
 
 tab
 equivTestSorensen(tab)
@@ -163,59 +135,3 @@ seSorensen(tab)
 duppSorensen(tab)
 set.seed(123)
 duppSorensen(tab, boot = TRUE)
-
-# To perform from scratch all pairwise tests is even much slower:
-#allTests <- equivTestSorensen(allOncoGeneLists,
-#                              onto = "BP", GOLevel = 5,
-#                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-#getPvalue(allTests, simplify = FALSE)
-#getPvalue(allTests)
-#p.adjust(getPvalue(allTests), method = "holm")
-
-# All pairwise bootstrap tests from scratch (even more time consuming):
-# set.seed(123)
-# allBootTests <- equivTestSorensen(allOncoGeneLists,
-#                                   boot = TRUE,
-#                                   onto = "BP", GOLevel = 5,
-#                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# Warnings are issued (not all bootstrap replicates may conduct to finite statistics):
-# getNboot(allBootTests)
-
-# It is much faster to upgrade the above tests to bootstrap tests:
-#set.seed(123)
-#allBootTests <- upgrade(allTests, boot = TRUE)
-#getPvalue(allBootTests, simplify = FALSE)
-
-# To adjust for testing multiplicity:
-# p.adjust(getPvalue(allBootTests), method = "holm")
-
-
-
-# Obviously, building all pairwise contingency tables is even much slower
-# allPairDiss <- dSorensen(allOncoGeneLists,
-#                          onto = "BP", GOLevel = 5,
-#                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# allPairDiss
-
-# Similarly, to obtain all pairwise...
-# Standard errors:
-# seSorensen(allOncoGeneLists,
-#            onto = "BP", GOLevel = 5,
-#            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-#
-# Upper confidence interval limits:
-# duppSorensen(allOncoGeneLists,
-#              onto = "BP", GOLevel = 5,
-#              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# etc.
-
-# Tipically, in a real study it would be interesting to scan tests
-# along some ontologies and levels inside these ontologies:
-# (which obviously will be a quite slow process)
-# set.seed(123)
-# allBootTests_BP_MF_lev4to8 <- allEquivTestSorensen(allOncoGeneLists,
-#                                                    boot = TRUE,
-#                                                    geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#                                                    ontos = c("BP", "MF"), GOLevels = 4:8)
-# getPvalue(allBootTests_BP_MF_lev4to8)
-# getNboot(allBootTests_BP_MF_lev4to8)

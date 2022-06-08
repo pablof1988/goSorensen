@@ -42,6 +42,8 @@ Function `equivTestSorensen` performs the equivalence test. One possibility is t
 # It is a "list" object of length 7. Each one of its elements is a "character"
 # with the gene identifiers of a gene list related to cancer. These gene lists
 # were taken from http://www.bushmanlab.org/links/genelists.
+data("allOncoGeneLists")
+data("humanEntrezIDs")
 length(allOncoGeneLists)
 sapply(allOncoGeneLists, length)
 # First 20 gene identifiers of gene lists Vogelstein and sanger:

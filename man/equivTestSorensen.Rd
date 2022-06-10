@@ -160,6 +160,7 @@ under the Gaussian model. The bootstrap method provides a better approximation t
 \examples{
 # Gene lists 'atlas' and 'sanger' in 'allOncoGeneLists' dataset. Table of joint enrichment
 # of GO items in ontology BP at level 3.
+data(tab_atlas.sanger_BP3)
 tab_atlas.sanger_BP3
 equivTestSorensen(tab_atlas.sanger_BP3)
 # Bootstrap test:
@@ -168,6 +169,7 @@ equivTestSorensen(tab_atlas.sanger_BP3, boot = TRUE)
 # Equivalence tests from scratch, directly from gene lists:
 # (These examples may be considerably time consuming due to many enrichment
 # tests to build the contingency tables of mutual enrichment)
+# data(pbtGeneLists)
 # ?pbtGeneLists
 # Gene universe:
 # data(humanEntrezIDs)

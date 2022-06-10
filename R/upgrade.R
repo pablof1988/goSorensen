@@ -15,7 +15,10 @@
 #' @examples
 #' # Result of the equivalence test between gene lists 'waldman' and 'atlas', in dataset
 #' # 'allOncoGeneLists', at level 4 of the BP ontology:
+#' data(waldman_atlas.BP.4)
 #' waldman_atlas.BP.4
+#' # Gene universe:
+#' data(humanEntrezIDs)
 #' class(waldman_atlas.BP.4)
 #' # This may correspond to the result of code like:
 #' # waldman_atlas.BP.4 <- equivTestSorensen(
@@ -27,6 +30,7 @@
 #' upgrade(waldman_atlas.BP.4, d0 = 1/(1 + 2*1.25), conf.level = 0.99)
 #'
 #' # All pairwise equivalence tests at level 4 of the BP ontology
+#' data(BP.4)
 #' BP.4
 #' class(BP.4)
 #' # This may correspond to a call like:
@@ -35,6 +39,7 @@
 #' #                           onto = "BP", GOLevel = 4)
 #' upgrade(BP.4, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
 #'
+#' data(cancerEquivSorensen)
 #' cancerEquivSorensen
 #' class(cancerEquivSorensen)
 #' upgrade(cancerEquivSorensen, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857

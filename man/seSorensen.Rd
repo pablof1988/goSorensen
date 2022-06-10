@@ -93,6 +93,7 @@ of the dissimilarity between these gene lists are computed.
 \examples{
 # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
 # of GO items in ontology BP at level 3.
+data(tab_atlas.sanger_BP3)
 tab_atlas.sanger_BP3
 dSorensen(tab_atlas.sanger_BP3)
 seSorensen(tab_atlas.sanger_BP3)
@@ -103,6 +104,7 @@ seSorensen(c(56, 1, 30))
 
 # (These examples may be considerably time consuming due to many enrichment 
 # tests to build the contingency tables of mutual enrichment)
+# data(pbtGeneLists)
 # ?pbtGeneLists
 # Standard error of the sample Sorensen-Dice dissimilarity, directly from
 # two gene lists, from scratch:

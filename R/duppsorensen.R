@@ -75,7 +75,10 @@
 #' @examples
 #' # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
 #' # of GO items in ontology BP at level 3.
+#' data(tab_atlas.sanger_BP3)
 #' tab_atlas.sanger_BP3
+#' # Gene universe:
+#' data(humanEntrezIDs)
 #' duppSorensen(tab_atlas.sanger_BP3)
 #' dSorensen(tab_atlas.sanger_BP3) + qnorm(0.95) * seSorensen(tab_atlas.sanger_BP3)
 #' # Using the bootstrap approximation instead of the normal approximation to

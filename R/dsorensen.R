@@ -50,8 +50,11 @@
 #' @examples
 #' # Gene lists 'atlas' and 'sanger' in 'allOncoGeneLists' dataset. Table of joint enrichment
 #' # of GO items in ontology BP at level 3.
+#' data(tab_atlas.sanger_BP3)
 #' ?tab_atlas.sanger_BP3
 #' tab_atlas.sanger_BP3
+#' # Gene universe:
+#' data(humanEntrezIDs)
 #' dSorensen(tab_atlas.sanger_BP3)
 #'
 #' # Table represented as a vector:

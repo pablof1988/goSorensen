@@ -29,8 +29,11 @@
 #' @examples
 #' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
 #' # 'waldman' and 'atlas', at level 4 of the BP ontology:
+#' data(waldman_atlas.BP.4)
 #' waldman_atlas.BP.4
 #' class(waldman_atlas.BP.4)
+#' # Gene universe:
+#' data(humanEntrezIDs)
 #' # This may correspond to the result of code like:
 #' # waldman_atlas.BP.4 <- equivTestSorensen(
 #' #   allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
@@ -46,6 +49,7 @@
 #' getNboot(boot.waldman_atlas.BP.4)
 #'
 #' # All pairwise equivalence tests at level 4 of the BP ontology
+#' data(BP.4)
 #' BP.4
 #' class(BP.4)
 #' # This may correspond to a call like:
@@ -58,6 +62,7 @@
 #' getNboot(boot.BP.4, simplify = FALSE)
 #'
 #' # Bootstrap equivalence test iterated over all GO ontologies and levels 3 to 10.
+#' data(boot.cancerEquivSorensen)
 #' class(boot.cancerEquivSorensen)
 #' # This may correspond to code like:
 #' # (By default, the tests are iterated over all GO ontologies and for levels 3 to 10)

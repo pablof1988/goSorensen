@@ -2,6 +2,7 @@ library(goSorensen)
 
 # A contingency table of GO terms mutual enrichment
 # between gene lists "atlas" and "sanger":
+data(tab_atlas.sanger_BP3)
 tab_atlas.sanger_BP3
 ?tab_atlas.sanger_BP3
 class(tab_atlas.sanger_BP3)
@@ -98,7 +99,10 @@ equivTestSorensen(contiAsVectorLen3)
 try(equivTestSorensen(contiAsVectorLen3, boot = TRUE), TRUE)
 
 # Sorensen-Dice computations from scratch, directly from gene lists
+data(allOncoGeneLists)
 ?allOncoGeneLists
+# Gene universe:
+data(humanEntrezIDs)
 # First, the mutual GO node enrichment tables are built, then computations
 # proceed from these contingency tables.
 # Building the contingency tables is a slow process (many enrichment tests)

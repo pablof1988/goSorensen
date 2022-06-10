@@ -32,6 +32,7 @@
 #' # Gene universe:
 #' data(humanEntrezIDs)
 #' # Gene lists to be explored for enrichment:
+#' data(allOncoGeneLists)
 #' ?allOncoGeneLists
 #' # Table of mutual GO node enrichment between gene lists Vogelstein and sanger,
 #' # for ontology MF at GO level 6 (only first 50 genes, to improve speed).

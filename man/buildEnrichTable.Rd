@@ -64,9 +64,9 @@ See the details section.}
 
 \item{pAdjustMeth}{string describing the adjust method, either "BH", "BY" or "Bonf", defaults to 'BH'.}
 
-\item{pvalCutoff}{A numeric value. Defaults to 0.05.}
+\item{pvalCutoff}{A numeric value. Defaults to 0.01.}
 
-\item{qvalCutoff}{A numeric value. Defaults to 0.01.}
+\item{qvalCutoff}{A numeric value. Defaults to 0.05.}
 }
 \value{
 an object of class "table" representing a 2x2 contingency table
@@ -96,6 +96,7 @@ appears as being enriched.
 # Gene universe:
 data(humanEntrezIDs)
 # Gene lists to be explored for enrichment:
+data(allOncoGeneLists)
 ?allOncoGeneLists
 # Table of mutual GO node enrichment between gene lists Vogelstein and sanger,
 # for ontology MF at GO level 6 (only first 50 genes, to improve speed).

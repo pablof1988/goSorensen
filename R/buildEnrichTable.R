@@ -11,11 +11,9 @@
 #' @param restricted Boolean variable to decide how tabulation of GOIDs is performed. Defaults to FALSE.
 #' See the details section.
 #' @param pAdjustMeth string describing the adjust method, either "BH", "BY" or "Bonf", defaults to 'BH'.
-#' @param pvalCutoff A numeric value. Defaults to 0.05.
-#' @param qvalCutoff A numeric value. Defaults to 0.01.
+#' @param pvalCutoff A numeric value. Defaults to 0.01.
+#' @param qvalCutoff A numeric value. Defaults to 0.05.
 #' @param ... Additional parameters for internal use (not used for the moment)
-#'
-#' @import clusterProfiler goProfiles devtools GO.db org.Hs.eg.db
 #'
 #' @return an object of class "table" representing a 2x2 contingency table
 #' interpretable as the cross-tabulation of the enriched GO items in two gene lists:
@@ -78,8 +76,8 @@ buildEnrichTable.default <- function(x, y,
 #' @export
 buildEnrichTable.character <- function(x, y, listNames = c("gene.list1", "gene.list2"),
                                        check.table = TRUE, geneUniverse, orgPackg, onto, GOLevel,
-                                       restricted =FALSE,
-                                       pAdjustMeth="BH", pvalCutoff=0.01, qvalCutoff=0.05, ...) {
+                                       restricted = FALSE,
+                                       pAdjustMeth = "BH", pvalCutoff = 0.01, qvalCutoff = 0.05, ...) {
   tab <- crossTabGOIDs4GeneLists (genelist1 = x, genelist2 = y,
                                   geneUniverse, orgPackg, onto, GOLevel,
                                   restricted,

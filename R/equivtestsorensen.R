@@ -375,7 +375,7 @@ equivTestSorensen.list <- function(x, d0 = 1 / (1 + 1.25),
   numLists <- length(x)
   lstNams <- names(x)
   equivTests <- lapply(seq.int(2, numLists), function(iLst1) {
-    oneVsOthers <- lapply(se.int(1, iLst1-1), function(iLst2) {
+    oneVsOthers <- lapply(seq.int(1, iLst1-1), function(iLst2) {
       return(equivTestSorensen.character(x[[iLst1]], x[[iLst2]],
                                          d0 = d0, conf.level = conf.level,
                                          boot = boot, nboot = nboot,

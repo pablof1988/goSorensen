@@ -10,4 +10,5 @@
 #'
 #' @format An object of class "equivSDhtest" inheriting from class "list".
 #' @source \url{http://www.bushmanlab.org/links/genelists}
+#' @usage data(waldman_atlas.BP.4)
 "waldman_atlas.BP.4"

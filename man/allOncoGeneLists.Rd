@@ -12,7 +12,7 @@ of gene identifiers.
 \url{http://www.bushmanlab.org/links/genelists}
 }
 \usage{
-allOncoGeneLists
+data(allOncoGeneLists)
 }
 \description{
 An object of class "list" of length 7. Each one of its elements is a "character" vector

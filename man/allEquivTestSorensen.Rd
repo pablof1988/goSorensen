@@ -12,7 +12,7 @@ allEquivTestSorensen(
   nboot = 10000,
   check.table = TRUE,
   ontos = c("BP", "CC", "MF"),
-  GOLevels = 3:10,
+  GOLevels = seq.int(3, 10),
   ...
 )
 }

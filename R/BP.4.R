@@ -1,5 +1,4 @@
 #' An example of "equivSDhtestList" object resulting from a call to 'equivSorensenTest'
-#'
 #' The result of all pairwise Sorensen-Dice equivalence tests between the gene lists in data
 #' \code{\link{allOncoGeneLists}} which is automatically charged with this package.
 #' To perform the tests, the information in these data was summarized as 2x2 contingency tables of GO items
@@ -11,4 +10,5 @@
 #' @format An object of class "equivSDhtestList" inheriting from class "list". It is a list of class "equivSDhtest"
 #' objects.
 #' @source \url{http://www.bushmanlab.org/links/genelists}
+#' @usage data(BP.4)
 "BP.4"

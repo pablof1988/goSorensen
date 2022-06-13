@@ -11,7 +11,7 @@ An object of class "equivSDhtest" inheriting from class "list".
 \url{http://www.bushmanlab.org/links/genelists}
 }
 \usage{
-waldman_atlas.BP.4
+data(waldman_atlas.BP.4)
 }
 \description{
 The Sorensen-Dice equivalence test between the gene lists "waldman" and "atlas" taken from dataset

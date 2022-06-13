@@ -10,4 +10,5 @@
 #'
 #' @format An object of class "table" representing a 2x2 contingency table.
 #' @source \url{http://www.bushmanlab.org/links/genelists}
+#' @usage data(tab_atlas.sanger_BP3)
 "tab_atlas.sanger_BP3"

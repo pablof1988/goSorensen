@@ -15,7 +15,7 @@ class "equivSDhtestList" codifying the result of all pairwise tests between thes
 lists.
 }
 \usage{
-pbtAllOntosAndLevels
+data(pbtAllOntosAndLevels)
 }
 \description{
 For each ontology and GO level, the result contains the result of all pairwise tests of equivalence between

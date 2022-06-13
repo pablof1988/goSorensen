@@ -14,7 +14,7 @@ class "equivSDhtestList" codifying the result of all pairwise tests between thes
 \url{http://www.bushmanlab.org/links/genelists}
 }
 \usage{
-cancerEquivSorensen
+data(cancerEquivSorensen)
 }
 \description{
 The Sorensen-Dice test (normal asymptotic version) performed on the cancer gene lists in data

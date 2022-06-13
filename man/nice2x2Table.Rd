@@ -60,7 +60,7 @@ conti <- as.table(matrix(c(27, 36, 12, 501, 43, 15, 0, 0, 0), nrow = 3, ncol = 3
                          dimnames = list(c("a1","a2","a3"),
                                          c("b1", "b2","b3"))))
 nice2x2Table(conti)
-conti2 <- conti[1,1:min(2,ncol(conti)), drop = FALSE]
+conti2 <- conti[1,seq.int(1, min(2,ncol(conti))), drop = FALSE]
 conti2
 nice2x2Table(conti2)
 

@@ -14,7 +14,7 @@ class "equivSDhtestList" codifying the result of all pairwise tests between thes
 \url{http://www.bushmanlab.org/links/genelists}
 }
 \usage{
-boot.cancerEquivSorensen
+data(boot.cancerEquivSorensen)
 }
 \description{
 The bootstrap Sorensen-Dice test performed on the cancer gene lists in data \code{\link{allOncoGeneLists}}

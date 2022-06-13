@@ -11,7 +11,7 @@ An object of class "table" representing a 2x2 contingency table.
 \url{http://www.bushmanlab.org/links/genelists}
 }
 \usage{
-tab_atlas.sanger_BP3
+data(tab_atlas.sanger_BP3)
 }
 \description{
 From the "Cancer gene list" of Bushman Lab, a collection of gene lists related with cancer,

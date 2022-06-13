@@ -24,5 +24,5 @@
 #' class(pbtAllOntosAndLevels$BP$`level 4`$KT1)
 #' class(pbtAllOntosAndLevels$BP$`level 4`$KT1$IRITD5)
 #' pbtAllOntosAndLevels$BP$`level 4`$KT1$IRITD5
-
+#' @usage data(pbtAllOntosAndLevels)
 "pbtAllOntosAndLevels"

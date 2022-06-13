@@ -14,4 +14,5 @@
 #' are named as "Level 3" to "Level 10". For each combination of ontology and level, there is an object of
 #' class "equivSDhtestList" codifying the result of all pairwise tests between these cancer gene lists.
 #' @source \url{http://www.bushmanlab.org/links/genelists}
+#' @usage data(cancerEquivSorensen)
 "cancerEquivSorensen"

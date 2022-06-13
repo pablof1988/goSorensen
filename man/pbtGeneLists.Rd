@@ -12,7 +12,7 @@ of gene identifiers.
 \url{https://www.ualberta.ca/medicine/institutes-centres-groups/atagc/research/gene-lists.html}
 }
 \usage{
-pbtGeneLists
+data(pbtGeneLists)
 }
 \description{
 An object of class "list" of length 5. A non up-to-date subset of the University of Alberta pathogenesis-based

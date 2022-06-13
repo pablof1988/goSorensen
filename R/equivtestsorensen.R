@@ -374,8 +374,8 @@ equivTestSorensen.list <- function(x, d0 = 1 / (1 + 1.25),
                                    ...){
   numLists <- length(x)
   lstNams <- names(x)
-  equivTests <- lapply(2:numLists, function(iLst1) {
-    oneVsOthers <- lapply(1:(iLst1-1), function(iLst2) {
+  equivTests <- lapply(seq.int(2, numLists), function(iLst1) {
+    oneVsOthers <- lapply(se.int(1, iLst1-1), function(iLst2) {
       return(equivTestSorensen.character(x[[iLst1]], x[[iLst2]],
                                          d0 = d0, conf.level = conf.level,
                                          boot = boot, nboot = nboot,
@@ -383,10 +383,10 @@ equivTestSorensen.list <- function(x, d0 = 1 / (1 + 1.25),
                                          listNames = c(lstNams[iLst1], lstNams[iLst2]),
                                          ...))
     })
-    names(oneVsOthers) <- lstNams[1:(iLst1-1)]
+    names(oneVsOthers) <- lstNams[seq.int(1, iLst1-1)]
     return(oneVsOthers)
   })
-  names(equivTests) <- lstNams[2:numLists]
+  names(equivTests) <- lstNams[seq.int(2, numLists)]
   class(equivTests) <- c("equivSDhtestList", "list")
   return(equivTests)
 }
@@ -431,7 +431,7 @@ equivTestSorensen.list <- function(x, d0 = 1 / (1 + 1.25),
 allEquivTestSorensen <- function(x, d0 = 1 / (1 + 1.25), conf.level = 0.95,
                                  boot = FALSE, nboot = 10000, check.table = TRUE,
                                  ontos = c("BP", "CC", "MF"),
-                                 GOLevels = 3:10,
+                                 GOLevels = seq.int(3, 10),
                                  ...){
   allOntos <- lapply(ontos, function(onto) {
     thisOnto <- lapply(GOLevels, function(lev) {

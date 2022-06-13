@@ -36,8 +36,8 @@
 #' ?allOncoGeneLists
 #' # Table of mutual GO node enrichment between gene lists Vogelstein and sanger,
 #' # for ontology MF at GO level 6 (only first 50 genes, to improve speed).
-#' vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]][1:50],
-#'                                 allOncoGeneLists[["sanger"]][1:50],
+#' vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]][seq.int(1, 50)],
+#'                                 allOncoGeneLists[["sanger"]][seq.int(1, 50)],
 #'                                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #'                                 onto = "MF", GOLevel = 6, listNames = c("Vogelstein", "sanger"))
 #' vog.VS.sang
@@ -91,7 +91,7 @@ buildEnrichTable.character <- function(x, y, listNames = c("gene.list1", "gene.l
     if (!nice2x2Table.table(tab)) {
       print(tab)
       stop("Inadequate GO terms enrichment contingency table")}
-    if (sum(tab[1:3]) == 0) {
+    if (sum(tab[seq.int(1, 3)]) == 0) {
       warning("Zero enrichment frequencies: Inadequate table for Sorensen-Dice computations")
     }
 

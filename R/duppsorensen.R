@@ -270,8 +270,8 @@ duppSorensen.list <- function(x,
   numLists <- length(x)
   lstNams <- names(x)
   result <- matrix(0.0, ncol = numLists, nrow = numLists)
-  for (iLst1 in 2:numLists) {
-    for (iLst2 in 1:(iLst1-1)) {
+  for (iLst1 in seq.int(2, numLists)) {
+    for (iLst2 in seq.int(1, iLst1-1)) {
       result[iLst1, iLst2] <- duppSorensen.character(x[[iLst1]], x[[iLst2]],
                                                      conf.level = conf.level,
                                                      boot = boot, nboot = nboot,

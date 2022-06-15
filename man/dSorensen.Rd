@@ -25,7 +25,7 @@ dSorensen(x, ...)
   ...
 )
 
-\method{dSorensen}{list}(x, ...)
+\method{dSorensen}{list}(x, check.table = TRUE, ...)
 }
 \arguments{
 \item{x}{either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,

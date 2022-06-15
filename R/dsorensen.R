@@ -166,19 +166,29 @@ dSorensen.character <- function(x, y,
 
 #' @describeIn dSorensen S3 method for class "list"
 #' @export
-dSorensen.list <- function(x, # check.table = TRUE,
+dSorensen.list <- function(x, check.table = TRUE,
                            ...){
   numLists <- length(x)
   lstNams <- names(x)
   result <- matrix(0.0, ncol = numLists, nrow = numLists)
-  for (iLst1 in seq.int(2, numLists)) {
-    for (iLst2 in seq.int(1, iLst1-1)) {
-      result[iLst1, iLst2] <- dSorensen.character(x[[iLst1]], x[[iLst2]], listNames = NULL,
-                                                  # check.table = check.table,
-                                                  ...)
-    }
-  }
-  result[upper.tri(result)] <- t(result)[upper.tri(result)]
+  # for (iLst1 in seq.int(2, numLists)) {
+  #   for (iLst2 in seq.int(1, iLst1-1)) {
+  #     result[iLst1, iLst2] <- dSorensen.character(x[[iLst1]], x[[iLst2]], listNames = NULL,
+  #                                                 # check.table = check.table,
+  #                                                 ...)
+  #   }
+  # }
+  # result[upper.tri(result)] <- t(result)[upper.tri(result)]
+  result <- matrix(0.0, ncol = numLists, nrow = numLists)
+  result[upper.tri(result)] <- unlist(
+    sapply(seq.int(2, numLists), function(iLst1) {
+      vapply(seq.int(1, iLst1-1), function(iLst2) {
+        dSorensen.character(x[[iLst1]], x[[iLst2]], listNames = NULL,
+                            check.table = check.table, ...)
+      }, FUN.VALUE = 0.0, ...)
+    }, ...)
+  )
+  result[lower.tri(result)] <- t(result)[lower.tri(result)]
   colnames(result) <- lstNams
   rownames(result) <- lstNams
   return(result)

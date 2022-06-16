@@ -188,3 +188,4 @@ seSorensen.list <- function(x, check.table = TRUE, ...){
   rownames(result) <- lstNams
   return(result)
 }
+

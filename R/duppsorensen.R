@@ -253,11 +253,6 @@ duppSorensen.character <- function(x, y,
                                conf.level = conf.level,
                                boot = boot, nboot = nboot,
                                listNames = listNames, check.table = check.table)
-  # if (is.null(listNames)) {
-  #   names(result) <- NULL
-  # } else {
-  #   names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
-  # }
   return(result)
 }
 
@@ -270,15 +265,26 @@ duppSorensen.list <- function(x,
   numLists <- length(x)
   lstNams <- names(x)
   result <- matrix(0.0, ncol = numLists, nrow = numLists)
-  for (iLst1 in seq.int(2, numLists)) {
-    for (iLst2 in seq.int(1, iLst1-1)) {
-      result[iLst1, iLst2] <- duppSorensen.character(x[[iLst1]], x[[iLst2]],
-                                                     conf.level = conf.level,
-                                                     boot = boot, nboot = nboot,
-                                                     listNames = NULL, check.table = check.table, ...)
-    }
-  }
-  result[upper.tri(result)] <- t(result)[upper.tri(result)]
+  # for (iLst1 in seq.int(2, numLists)) {
+  #   for (iLst2 in seq.int(1, iLst1-1)) {
+  #     result[iLst1, iLst2] <- duppSorensen.character(x[[iLst1]], x[[iLst2]],
+  #                                                    conf.level = conf.level,
+  #                                                    boot = boot, nboot = nboot,
+  #                                                    listNames = NULL, check.table = check.table, ...)
+  #   }
+  # }
+  # result[upper.tri(result)] <- t(result)[upper.tri(result)]
+  result[upper.tri(result)] <- unlist(
+    sapply(seq.int(2, numLists), function(iLst1, ...) {
+      vapply(seq.int(1, iLst1-1), function(iLst2, ...) {
+        duppSorensen.character(x[[iLst1]], x[[iLst2]],
+                               conf.level = conf.level,
+                               boot = boot, nboot = nboot,
+                               listNames = NULL, check.table = check.table, ...)
+      }, FUN.VALUE = 0.0, ...)
+    }, ...)
+  )
+  result[lower.tri(result)] <- t(result)[lower.tri(result)]
   colnames(result) <- lstNams
   rownames(result) <- lstNams
   return(result)

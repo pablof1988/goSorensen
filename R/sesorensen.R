@@ -97,7 +97,7 @@ seSorensen.table <- function(x,
       stop("Inadequate table to compute the standard error")
     }
   }
-  n <- sum(x[seq.int(1, 3)])
+  n <- sum(x[seq_len(3)])
   p11 <- x[1] / n
   p11plus <- 1 + p11
   result <- 2 * sqrt(p11 * (1 - p11) / (n - 1)) / (p11plus * p11plus)
@@ -118,7 +118,7 @@ seSorensen.matrix <- function(x, listNames = NULL, check.table = TRUE, ...) {
       stop("Inadequate table to compute the standard error")
     }
   }
-  n <- sum(x[seq.int(1, 3)])
+  n <- sum(x[seq_len(3)])
   p11 <- x[1] / n
   p11plus <- 1 + p11
   result <- 2 * sqrt(p11 * (1 - p11) / (n - 1)) / (p11plus * p11plus)
@@ -139,7 +139,7 @@ seSorensen.numeric <- function(x, listNames = NULL, check.table = TRUE, ...) {
       stop("Inadequate table to compute the standard error")
     }
   }
-  n <- sum(x[seq.int(1, 3)])
+  n <- sum(x[seq_len(3)])
   p11 <- x[1] / n
   p11plus <- 1 + p11
   result <- 2 * sqrt(p11 * (1 - p11) / (n - 1)) / (p11plus * p11plus)
@@ -170,7 +170,7 @@ seSorensen.list <- function(x, check.table = TRUE, ...){
   lstNams <- names(x)
   result <- matrix(0.0, ncol = numLists, nrow = numLists)
   # for (iLst1 in seq.int(2, numLists)) {
-  #   for (iLst2 in seq.int(1, iLst1-1)) {
+  #   for (iLst2 in seq_len(iLst1-1)) {
   #     result[iLst1, iLst2] <- seSorensen.character(x[[iLst1]], x[[iLst2]],
   #                                                  listNames = NULL, check.table = check.table, ...)
   #   }
@@ -178,7 +178,7 @@ seSorensen.list <- function(x, check.table = TRUE, ...){
   # result[upper.tri(result)] <- t(result)[upper.tri(result)]
   result[upper.tri(result)] <- unlist(
     sapply(seq.int(2, numLists), function(iLst1, ...) {
-      vapply(seq.int(1, iLst1-1), function(iLst2, ...) {
+      vapply(seq_len(iLst1-1), function(iLst2, ...) {
         seSorensen.character(x[[iLst1]], x[[iLst2]],
                              listNames = NULL, check.table = check.table, ...)
       }, FUN.VALUE = 0.0, ...)

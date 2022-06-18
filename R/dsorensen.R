@@ -173,7 +173,7 @@ dSorensen.list <- function(x, check.table = TRUE,
   result <- matrix(0.0, ncol = numLists, nrow = numLists)
   result[upper.tri(result)] <- unlist(
     sapply(seq.int(2, numLists), function(iLst1, ...) {
-      vapply(seq.int(1, iLst1-1), function(iLst2, ...) {
+      vapply(seq_len(iLst1-1), function(iLst2, ...) {
         dSorensen.character(x[[iLst1]], x[[iLst2]], listNames = NULL,
                             check.table = check.table, ...)
       }, FUN.VALUE = 0.0, ...)

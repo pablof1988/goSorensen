@@ -32,7 +32,7 @@
 #'                          dimnames = list(c("a1","a2","a3"),
 #'                                          c("b1", "b2","b3"))))
 #' nice2x2Table(conti)
-#' conti2 <- conti[1,seq.int(1, min(2,ncol(conti))), drop = FALSE]
+#' conti2 <- conti[1,seq_len(min(2,ncol(conti))), drop = FALSE]
 #' conti2
 #' nice2x2Table(conti2)
 #'
@@ -62,7 +62,7 @@ nice2x2Table.table <- function(x) {
     message("Not a 2x2 contingency table")
     return(FALSE)
   }
-  if (any(x[seq.int(1, 3)] < 0)) {
+  if (any(x[seq_len(3)] < 0)) {
     message("Negative frequencies in a contingency table")
     return(FALSE)
   }
@@ -76,11 +76,11 @@ nice2x2Table.matrix <- function(x) {
     message("Not a 2x2 contingency table")
     return(FALSE)
   }
-  if (any(x[seq.int(1, 3)] < 0)) {
+  if (any(x[seq_len(3)] < 0)) {
     message("Negative frequencies in a contingency table")
     return(FALSE)
   }
-  if (sum(x[seq.int(1, 3)]) == 0) {
+  if (sum(x[seq_len(3)]) == 0) {
     message("Zero enrichment frequencies: Inadequate table for Sorensen-Dice computations")
     return(FALSE)
   }
@@ -94,11 +94,11 @@ nice2x2Table.numeric <- function(x) {
     message("A numeric of almost length 3 is required to codify enrichment frequencies")
     return(FALSE)
   }
-  if (any(x[seq.int(1, 3)] < 0)) {
+  if (any(x[seq_len(3)] < 0)) {
     message("Negative frequencies in a contingency table")
     return(FALSE)
   }
-  if (sum(x[seq.int(1, 3)]) == 0) {
+  if (sum(x[seq_len(3)]) == 0) {
     message("Zero enrichment frequencies: Inadequate table for Sorensen-Dice computations")
     return(FALSE)
   }

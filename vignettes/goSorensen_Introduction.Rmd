@@ -4,7 +4,9 @@ author:
 - name: Jordi Ocaña
   email: jocana@ub.edu
   affiliation: Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona
-
+- name: Pablo Flores
+  email: p_flores@espoch.edu.ec
+  affiliation: Escuela Superior Politécnica de Chimborazo (ESPOCH), Facultad de Ciencias, Carrera de Estadística.
 package: goSorensen
 abstract: >
   This vignette provides an introduction to goSorensen [@goSorensen] package, which was built to determine equivalence between features lists. The method is based on the Sorensen–Dice index and the joint frequencies of GO term enrichment. 
@@ -16,7 +18,7 @@ output:
     toc_float: true
 bibliography: refs.bib
 vignette: >
-  %\VignetteIndexEntry{An introduction to package goSorensen}
+  %\VignetteIndexEntry{An introduction to equivalence test between feature lists using goSorensen.}
   %\VignetteEngine{knitr::rmarkdown}
   %%\VignetteKeywords{Annotation, GO, GeneSetEnrichment, Software, Microarray, Pathways, GeneExpression, MultipleComparison}
   %\VignetteEncoding{UTF-8}
@@ -81,7 +83,6 @@ It is a "list" object of length 7. Each one of its elements is a "character" wit
 Function `equivTestSorensen` performs the equivalence test. One possibility is to build first the mutual enrichment contingency table by means of the function `buildEnrichTable` and then to perform the equivalence test:
 
 ```{r}
-
 data("humanEntrezIDs")
 length(allOncoGeneLists)
 sapply(allOncoGeneLists, length)

@@ -100,8 +100,8 @@ data(allOncoGeneLists)
 ?allOncoGeneLists
 # Table of mutual GO node enrichment between gene lists Vogelstein and sanger,
 # for ontology MF at GO level 6 (only first 50 genes, to improve speed).
-vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]][seq.int(1, 50)],
-                                allOncoGeneLists[["sanger"]][seq.int(1, 50)],
+vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]][seq_len(50)],
+                                allOncoGeneLists[["sanger"]][seq_len(50)],
                                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
                                 onto = "MF", GOLevel = 6, listNames = c("Vogelstein", "sanger"))
 vog.VS.sang

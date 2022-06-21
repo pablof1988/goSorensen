@@ -37,6 +37,7 @@
 #' @examples
 #' # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
 #' # of GO items in ontology BP at level 3.
+#' data(tab_atlas.sanger_BP3)
 #' tab_atlas.sanger_BP3
 #' # Generate B = 100 bootstrap values of the studentized statistic:
 #' # 1) Sorensen-Dice dissimilarity for the "real" data 'tab_atlas.sanger_BP3'.
@@ -49,6 +50,8 @@
 #' # 3) 100 bootstrap studentized statistics:
 #' bootVals <- apply(xBoots, 2, boot.tStat, dis = d)
 #' bootVals
+#' 
+#' @export
 
 boot.tStat <- function(xBoot, dis) {
   nu <- sum(xBoot[1:3])

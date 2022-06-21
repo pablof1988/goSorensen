@@ -1,3 +1,5 @@
+#' completeTable
+#' 
 #' Reformats and completes (if necessary) an enrichment contingency table as is generated
 #' by function 'crossTabGOIDs4GeneLists', in order to make it appropriate for its use in
 #' package goSorensen.

@@ -4,7 +4,6 @@
 #' @param y an object of class "character" representing a vector of gene identifiers.
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table, by means of function \code{nice2x2Table}.
-#' @param listNames character(2), names of both gene lists to be compared. Defaults to NULL.
 #' @param ... extra parameters for function \code{buildEnrichTable}.
 #'
 #' @return In the "table", "matrix", "numeric" and "character" interfaces, the value of the Sorensen-Dice
@@ -97,70 +96,43 @@ dSorensen <- function(x, ...) {
 
 #' @describeIn dSorensen S3 method for class "table"
 #' @export
-dSorensen.table <- function(x, listNames = NULL, check.table = TRUE, ...){
+dSorensen.table <- function(x, check.table = TRUE, ...){
   if (check.table){
-    if (!nice2x2Table.table(x)) {
-      print(x)
-      stop("Inadequate contingency table")}
+    nice2x2Table.table(x)
   }
   result <- (x[2] + x[3]) / (2 * x[1] + x[2] + x[3])
-  if (is.null(listNames)) {
-    names(result) <- NULL
-  } else {
-    names(result) <- paste("Sorensen-Dice disimilarity ", listNames[1], ",", listNames[2], sep = "")
-  }
   return(result)
 }
 
 #' @describeIn dSorensen S3 method for class "matrix"
 #' @export
-dSorensen.matrix <- function(x, listNames = NULL, check.table = TRUE, ...){
+dSorensen.matrix <- function(x, check.table = TRUE, ...){
   if (check.table){
-    if (!nice2x2Table.matrix(x)) {
-      print(x)
-      stop("Inadequate contingency table")}
+    nice2x2Table.matrix(x)
   }
   result <- (x[2] + x[3]) / (2 * x[1] + x[2] + x[3])
-  if (is.null(listNames)) {
-    names(result) <- NULL
-  } else {
-    names(result) <- paste("Sorensen-Dice disimilarity ", listNames[1], ",", listNames[2], sep = "")
-  }
   return(result)
 }
 
 #' @describeIn dSorensen S3 method for class "numeric"
 #' @export
-dSorensen.numeric <- function(x, listNames = NULL, check.table = TRUE, ...){
+dSorensen.numeric <- function(x, check.table = TRUE, ...){
   if (check.table){
-    if (!nice2x2Table.numeric(x)) {
-      print(x)
-      stop("Inadequate contingency table")}
+    nice2x2Table.numeric(x)
   }
   result <- (x[2] + x[3]) / (2 * x[1] + x[2] + x[3])
-  if (is.null(listNames)) {
-    names(result) <- NULL
-  } else {
-    names(result) <- paste("Sorensen-Dice disimilarity ", listNames[1], ",", listNames[2], sep = "")
-  }
   return(result)
 }
 
 #' @describeIn dSorensen S3 method for class "character"
 #' @export
 dSorensen.character <- function(x, y,
-                                listNames = c("gene.list1", "gene.list2"),
                                 check.table = TRUE, ...){
-  tab <- buildEnrichTable(x, y, listNames, check.table, ...)
+  tab <- buildEnrichTable(x, y, check.table = check.table, ...)
   # Typical ... arguments:
   # geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db",
   # onto = onto, GOLevel = ontoLevel,
   result <- (tab[2] + tab[3]) / (2 * tab[1] + tab[2] + tab[3])
-  if (is.null(listNames)) {
-    names(result) <- NULL
-  } else {
-    names(result) <- paste("Sorensen-Dice disimilarity ", listNames[1], ",", listNames[2], sep = "")
-  }
   return(result)
 }
 
@@ -174,7 +146,7 @@ dSorensen.list <- function(x, check.table = TRUE,
   result[upper.tri(result)] <- unlist(
     sapply(seq.int(2, numLists), function(iLst1, ...) {
       vapply(seq_len(iLst1-1), function(iLst2, ...) {
-        dSorensen.character(x[[iLst1]], x[[iLst2]], listNames = NULL,
+        dSorensen.character(x[[iLst1]], x[[iLst2]],
                             check.table = check.table, ...)
       }, FUN.VALUE = 0.0, ...)
     }, ...)

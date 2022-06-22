@@ -17,7 +17,6 @@
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table. This checking is performed by means of function
 #' \code{nice2x2Table}.
-#' @param listNames character(2), names of both gene lists to be compared (only for the character interface)
 #' @param ... additional arguments for function \code{buildEnrichTable}.
 #'
 #' @return In the "table", "matrix", "numeric" and "character" interfaces, the value of the Upper limit of the confidence
@@ -118,14 +117,12 @@ duppSorensen.table <- function(x,
                                se = seSorensen.table(x, check.table = FALSE),
                                conf.level = 0.95, z.conf.level = qnorm(1 - conf.level),
                                boot = FALSE, nboot = 10000,
-                               listNames = NULL, check.table = TRUE, ...){
+                               # listNames = NULL, 
+                               check.table = TRUE, ...){
   if (check.table){
-    if (!nice2x2Table(x)) {
-      print(x)
-      stop("Inadequate contingency table")}
+    nice2x2Table.table(x)
   }
   if ((se == 0.0) || !is.finite(dis) || !is.finite(se)) {
-    warning("Null standard error or not finite dissimilarity or standard error")
     return(NA)
   }
   if (boot) {
@@ -134,21 +131,16 @@ duppSorensen.table <- function(x,
     bootTabs <- rmultinom(nboot, size = n, prob = pTab)
     tStats <- apply(bootTabs, 2, boot.tStat, dis = dis)
     tStats <- tStats[is.finite(tStats)]
-    if (length(tStats) < nboot) {
-      warMsg <- paste0("Non finite values generated in the bootstrap process (",
-                       length(tStats), " out of ", nboot, ")")
-      warning(warMsg)
-    }
+    len.tStats <- length(tStats)
     z.conf.level <- quantile(tStats, probs = 1 - conf.level)
   }
   result <- min(dis - z.conf.level * se, 1.0)
   if (boot) {
     attr(result, "nboot") <- length(tStats)
-  }
-  if (is.null(listNames)) {
-    names(result) <- NULL
-  } else {
-    names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
+    if (len.tStats < nboot) {
+      attr(result, "info") <- paste(len.tStats, " effective bootstrap replicates of ",
+                                    nboot, sep = "")
+    }
   }
   return(result)
 }
@@ -160,14 +152,12 @@ duppSorensen.matrix <- function(x,
                                 se = seSorensen.matrix(x, check.table = FALSE),
                                 conf.level = 0.95, z.conf.level = qnorm(1 - conf.level),
                                 boot = FALSE, nboot = 10000,
-                                listNames = NULL, check.table = TRUE, ...){
+                                # listNames = NULL, 
+                                check.table = TRUE, ...){
   if (check.table){
-    if (!nice2x2Table(x)) {
-      print(x)
-      stop("Inadequate contingency table")}
+    nice2x2Table.matrix(x)
   }
   if ((se == 0.0) || !is.finite(dis) || !is.finite(se)) {
-    warning("Null standard error or not finite dissimilarity or standard error")
     return(NA)
   }
   if (boot) {
@@ -176,19 +166,16 @@ duppSorensen.matrix <- function(x,
     bootTabs <- rmultinom(nboot, size = n, prob = pTab)
     tStats <- apply(bootTabs, 2, boot.tStat, dis = dis)
     tStats <- tStats[is.finite(tStats)]
-    if (length(tStats) < nboot) {
-      warning("Non finite values generated in the bootstrap process")
-    }
+    len.tStats <- length(tStats)
     z.conf.level <- quantile(tStats, probs = 1 - conf.level)
   }
   result <- min(dis - z.conf.level * se, 1.0)
   if (boot) {
     attr(result, "nboot") <- length(tStats)
-  }
-  if (is.null(listNames)) {
-    names(result) <- NULL
-  } else {
-    names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
+    if (len.tStats < nboot) {
+      attr(result, "info") <- paste(len.tStats, " effective bootstrap replicates of ",
+                                    nboot, sep = "")
+    }
   }
   return(result)
 }
@@ -200,40 +187,30 @@ duppSorensen.numeric <- function(x,
                                  se = seSorensen.numeric(x, check.table = FALSE),
                                  conf.level = 0.95, z.conf.level = qnorm(1 - conf.level),
                                  boot = FALSE, nboot = 10000,
-                                 listNames = NULL, check.table = TRUE, ...){
+                                 check.table = TRUE, ...){
   if (check.table){
-    if (!nice2x2Table(x)) {
-      print(x)
-      stop("Inadequate contingency table")}
+    nice2x2Table.numeric(x)
   }
   if ((se == 0.0) || !is.finite(dis) || !is.finite(se)) {
-    warning("Null standard error or not finite dissimilarity or standard error")
     return(NA)
   }
   if (boot) {
-    if (length(x) < 4) {
-      print(x)
-      message("A numeric vector of almost 4 frequencies is required to bootstrap")
-      stop()
-    }
+    stopifnot("Bootstraping requires a numeric vector of 4 frequencies" = length(x) == 4)
     n <- sum(x)
     pTab <- x / n
     bootTabs <- rmultinom(nboot, size = n, prob = pTab)
     tStats <- apply(bootTabs, 2, boot.tStat, dis = dis)
     tStats <- tStats[is.finite(tStats)]
-    if (length(tStats) < nboot) {
-      warning("Non finite values generated in the bootstrap process")
-    }
+    len.tStats <- length(tStats)
     z.conf.level <- quantile(tStats, probs = 1 - conf.level)
   }
   result <- min(dis - z.conf.level * se, 1.0)
   if (boot) {
     attr(result, "nboot") <- length(tStats)
-  }
-  if (is.null(listNames)) {
-    names(result) <- NULL
-  } else {
-    names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
+    if (len.tStats < nboot) {
+      attr(result, "info") <- paste(len.tStats, " effective bootstrap replicates of ",
+                                    nboot, sep = "")
+    }
   }
   return(result)
 }
@@ -243,16 +220,16 @@ duppSorensen.numeric <- function(x,
 duppSorensen.character <- function(x, y,
                                    conf.level = 0.95,
                                    boot = FALSE, nboot = 10000,
-                                   listNames = NULL, check.table = TRUE,
+                                   check.table = TRUE,
                                    ...){
-  tab <- buildEnrichTable(x, y, listNames, check.table, ...)
+  tab <- buildEnrichTable(x, y, check.table = check.table, ...)
   # Typical ... arguments:
   # geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db",
   # onto = onto, GOLevel = ontoLevel,
   result <- duppSorensen.table(tab,
                                conf.level = conf.level,
                                boot = boot, nboot = nboot,
-                               listNames = listNames, check.table = check.table)
+                               check.table = check.table)
   return(result)
 }
 
@@ -265,22 +242,13 @@ duppSorensen.list <- function(x,
   numLists <- length(x)
   lstNams <- names(x)
   result <- matrix(0.0, ncol = numLists, nrow = numLists)
-  # for (iLst1 in seq.int(2, numLists)) {
-  #   for (iLst2 in seq_len(iLst1-1)) {
-  #     result[iLst1, iLst2] <- duppSorensen.character(x[[iLst1]], x[[iLst2]],
-  #                                                    conf.level = conf.level,
-  #                                                    boot = boot, nboot = nboot,
-  #                                                    listNames = NULL, check.table = check.table, ...)
-  #   }
-  # }
-  # result[upper.tri(result)] <- t(result)[upper.tri(result)]
   result[upper.tri(result)] <- unlist(
     sapply(seq.int(2, numLists), function(iLst1, ...) {
       vapply(seq_len(iLst1-1), function(iLst2, ...) {
         duppSorensen.character(x[[iLst1]], x[[iLst2]],
                                conf.level = conf.level,
                                boot = boot, nboot = nboot,
-                               listNames = NULL, check.table = check.table, ...)
+                               check.table = check.table, ...)
       }, FUN.VALUE = 0.0, ...)
     }, ...)
   )

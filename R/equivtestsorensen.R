@@ -17,7 +17,6 @@
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table. This checking is performed by means of function
 #' \code{nice2x2Table}.
-#' @param listNames character(2), names of both gene lists to be compared (only for the character interface)
 #' @param ... extra parameters for function \code{buildEnrichTable}.
 #'
 #' @return
@@ -145,10 +144,7 @@ equivTestSorensen.table <- function(x,
                                     check.table = TRUE, ...){
   data.name <- deparse(substitute(x))
   if (check.table){
-    if (!nice2x2Table.table(x)) {
-      print(x)
-      stop("Inadequate table to compute the standard error")
-    }
+    nice2x2Table.table(x)
   }
   se <- seSorensen.table(x, check.table = FALSE)
   d <- dSorensen.table(x, check.table = FALSE)
@@ -170,19 +166,20 @@ equivTestSorensen.table <- function(x,
       tStats <- apply(bootTabs, 2, boot.tStat, dis = d)
       tStats <- tStats[is.finite(tStats)]
       len.tStats <- length(tStats)
-      if (len.tStats < nboot) {
-        warning("Non finite values generated in the bootstrap process")
-      }
       z.conf.level <- quantile(tStats, probs = 1 - conf.level)
       p.val <- (sum(tStats <= stat) + 1) / (len.tStats + 1)
-      meth <- paste0(
-        "Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity (nboot = ",
-        len.tStats, ")")
+      meth <- "Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+      if (len.tStats < nboot) {
+        meth <- paste(meth, "\n(", len.tStats, " effective bootstrap replicates of ",
+                      nboot, ")", sep = "")
+      } else {
+        meth <- paste(meth, "\n(", nboot, " bootstrap replicates)", sep = "")
+      }
       attr(meth, "nboot") <- len.tStats
     } else {
-        z.conf.level <- qnorm(1 - conf.level)
-        p.val <- pnorm(stat)
-        meth <- "Normal asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+      z.conf.level <- qnorm(1 - conf.level)
+      p.val <- pnorm(stat)
+      meth <- "Normal asymptotic test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
     }
     du <- d - z.conf.level * se
     conf.int <- c(0, min(1, du))
@@ -214,10 +211,7 @@ equivTestSorensen.matrix <- function(x,
                                      check.table = TRUE, ...){
   data.name <- deparse(substitute(x))
   if (check.table){
-    if (!nice2x2Table.matrix(x)) {
-      print(x)
-      stop("Inadequate table to compute the standard error")
-    }
+    nice2x2Table.matrix(x)
   }
   se <- seSorensen.matrix(x, check.table = FALSE)
   d <- dSorensen.matrix(x, check.table = FALSE)
@@ -239,14 +233,15 @@ equivTestSorensen.matrix <- function(x,
       tStats <- apply(bootTabs, 2, boot.tStat, dis = d)
       tStats <- tStats[is.finite(tStats)]
       len.tStats <- length(tStats)
-      if (len.tStats < nboot) {
-        warning("Non finite values generated in the bootstrap process")
-      }
       z.conf.level <- quantile(tStats, probs = 1 - conf.level)
       p.val <- (sum(tStats <= stat) + 1) / (len.tStats + 1)
-      meth <- paste0(
-        "Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity (nboot = ",
-        len.tStats, ")")
+      meth <- "Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+      if (len.tStats < nboot) {
+        meth <- paste(meth, "\n(", len.tStats, " effective bootstrap replicates of ",
+                      nboot, ")", sep = "")
+      } else {
+        meth <- paste(meth, "\n(", nboot, " bootstrap replicates)", sep = "")
+      }
       attr(meth, "nboot") <- len.tStats
     } else {
       z.conf.level <- qnorm(1 - conf.level)
@@ -283,10 +278,7 @@ equivTestSorensen.numeric <- function(x,
                                       check.table = TRUE, ...){
   data.name <- deparse(substitute(x))
   if (check.table){
-    if (!nice2x2Table.numeric(x)) {
-      print(x)
-      stop("Inadequate table to compute the standard error")
-    }
+    nice2x2Table.numeric(x)
   }
   se <- seSorensen.matrix(x, check.table = FALSE)
   d <- dSorensen.matrix(x, check.table = FALSE)
@@ -302,25 +294,22 @@ equivTestSorensen.numeric <- function(x,
     conf.int <- c(0.0, NA)
   } else {
     if (boot) {
-      if (length(x) < 4) {
-        print(x)
-        message("A numeric vector of almost 4 frequencies is required to bootstrap")
-        stop()
-      }
+      stopifnot("Bootstraping requires a numeric vector of 4 frequencies" = length(x) == 4)
       n <- sum(x)
       pTab <- x / n
       bootTabs <- rmultinom(nboot, size = n, prob = pTab)
       tStats <- apply(bootTabs, 2, boot.tStat, dis = d)
       tStats <- tStats[is.finite(tStats)]
       len.tStats <- length(tStats)
-      if (len.tStats < nboot) {
-        warning("Non finite values generated in the bootstrap process")
-      }
       z.conf.level <- quantile(tStats, probs = 1 - conf.level)
       p.val <- (sum(tStats <= stat) + 1) / (len.tStats + 1)
-      meth <- paste0(
-        "Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity (nboot = ",
-        len.tStats, ")")
+      meth <- "Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice dissimilarity"
+      if (len.tStats < nboot) {
+        meth <- paste(meth, "\n(", len.tStats, " effective bootstrap replicates of ",
+                      nboot, ")", sep = "")
+      } else {
+        meth <- paste(meth, "\n(", nboot, " bootstrap replicates)", sep = "")
+      }
       attr(meth, "nboot") <- len.tStats
     } else {
       z.conf.level <- qnorm(1 - conf.level)
@@ -380,7 +369,6 @@ equivTestSorensen.list <- function(x, d0 = 1 / (1 + 1.25),
                                          d0 = d0, conf.level = conf.level,
                                          boot = boot, nboot = nboot,
                                          check.table = check.table,
-                                         listNames = c(lstNams[iLst1], lstNams[iLst2]),
                                          ...))
     })
     names(oneVsOthers) <- lstNams[seq_len(iLst1-1)]

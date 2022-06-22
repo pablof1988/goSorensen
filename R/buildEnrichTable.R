@@ -88,13 +88,7 @@ buildEnrichTable.character <- function(x, y, listNames = c("gene.list1", "gene.l
   }
   tab <- tab[c(2,1),c(2,1)]
   if (check.table){
-    if (!nice2x2Table.table(tab)) {
-      print(tab)
-      stop("Inadequate GO terms enrichment contingency table")}
-    if (sum(tab[seq_len(3)]) == 0) {
-      warning("Zero enrichment frequencies: Inadequate table for Sorensen-Dice computations")
-    }
-
+    nice2x2Table.table(tab)
   }
   dimnames(tab) = list(c(TRUE, FALSE), c(TRUE, FALSE))
   names(dimnames(tab)) <- paste0("Enriched in ", listNames)

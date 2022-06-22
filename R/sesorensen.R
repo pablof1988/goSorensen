@@ -6,7 +6,6 @@
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table. This checking is performed by means of function
 #' \code{nice2x2Table}.
-#' @param listNames character(2), names of both gene lists being compared (only for the character interface)
 #' @param ... extra parameters for function \code{buildEnrichTable}.
 #'
 #' @return In the "table", "matrix", "numeric" and "character" interfaces, the value of the standard error of the
@@ -92,20 +91,12 @@ seSorensen <- function(x, ...) {
 seSorensen.table <- function(x,
                              listNames = NULL, check.table = TRUE, ...) {
   if (check.table){
-    if (!nice2x2Table.table(x)) {
-      print(x)
-      stop("Inadequate table to compute the standard error")
-    }
+    nice2x2Table.table(x)
   }
   n <- sum(x[seq_len(3)])
   p11 <- x[1] / n
   p11plus <- 1 + p11
   result <- 2 * sqrt(p11 * (1 - p11) / (n - 1)) / (p11plus * p11plus)
-  if (is.null(listNames)) {
-    names(result) <- NULL
-  } else {
-    names(result) <- paste("Sorensen-Dice disimilarity standard error ", listNames[1], ",", listNames[2], sep = "")
-  }
   return(result)
 }
 
@@ -113,53 +104,37 @@ seSorensen.table <- function(x,
 #' @export
 seSorensen.matrix <- function(x, listNames = NULL, check.table = TRUE, ...) {
   if (check.table){
-    if (!nice2x2Table.matrix(x)) {
-      print(x)
-      stop("Inadequate table to compute the standard error")
-    }
+    nice2x2Table.matrix(x)
   }
   n <- sum(x[seq_len(3)])
   p11 <- x[1] / n
   p11plus <- 1 + p11
   result <- 2 * sqrt(p11 * (1 - p11) / (n - 1)) / (p11plus * p11plus)
-  if (is.null(listNames)) {
-    names(result) <- NULL
-  } else {
-    names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
-  }
   return(result)
 }
 
 #' @describeIn seSorensen S3 method for class "numeric"
 #' @export
-seSorensen.numeric <- function(x, listNames = NULL, check.table = TRUE, ...) {
+seSorensen.numeric <- function(x, check.table = TRUE, ...) {
   if (check.table){
-    if (!nice2x2Table.numeric(x)) {
-      print(x)
-      stop("Inadequate table to compute the standard error")
-    }
+    nice2x2Table.numeric(x)
   }
   n <- sum(x[seq_len(3)])
   p11 <- x[1] / n
   p11plus <- 1 + p11
   result <- 2 * sqrt(p11 * (1 - p11) / (n - 1)) / (p11plus * p11plus)
-  if (is.null(listNames)) {
-    names(result) <- NULL
-  } else {
-    names(result) <- paste("Sorensen-Dice disimilarity upper confidence limit ", listNames[1], ",", listNames[2], sep = "")
-  }
   return(result)
 }
 
 #' @describeIn seSorensen S3 method for class "character"
 #' @export
-seSorensen.character <- function(x, y, listNames = c("gene.list1", "gene.list2"),
+seSorensen.character <- function(x, y,
                                  check.table = TRUE, ...){
-  tab <- buildEnrichTable(x, y, listNames, check.table, ...)
+  tab <- buildEnrichTable(x, y, check.table = check.table, ...)
   # Typical ... arguments:
   # geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
   # onto = onto, GOLevel = ontoLevel,
-  result <- seSorensen.table(tab, listNames = listNames, check.table = FALSE)
+  result <- seSorensen.table(tab, check.table = FALSE)
   return(result)
 }
 
@@ -169,18 +144,11 @@ seSorensen.list <- function(x, check.table = TRUE, ...){
   numLists <- length(x)
   lstNams <- names(x)
   result <- matrix(0.0, ncol = numLists, nrow = numLists)
-  # for (iLst1 in seq.int(2, numLists)) {
-  #   for (iLst2 in seq_len(iLst1-1)) {
-  #     result[iLst1, iLst2] <- seSorensen.character(x[[iLst1]], x[[iLst2]],
-  #                                                  listNames = NULL, check.table = check.table, ...)
-  #   }
-  # }
-  # result[upper.tri(result)] <- t(result)[upper.tri(result)]
   result[upper.tri(result)] <- unlist(
     sapply(seq.int(2, numLists), function(iLst1, ...) {
       vapply(seq_len(iLst1-1), function(iLst2, ...) {
         seSorensen.character(x[[iLst1]], x[[iLst2]],
-                             listNames = NULL, check.table = check.table, ...)
+                             check.table = check.table, ...)
       }, FUN.VALUE = 0.0, ...)
     }, ...)
   )

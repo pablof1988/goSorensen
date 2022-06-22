@@ -6,6 +6,7 @@
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table. This checking is performed by means of function
 #' \code{nice2x2Table}.
+#' @param listNames Character. Vector with names of lists.
 #' @param ... extra parameters for function \code{buildEnrichTable}.
 #'
 #' @return In the "table", "matrix", "numeric" and "character" interfaces, the value of the standard error of the

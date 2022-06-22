@@ -24,20 +24,26 @@ interpretable as the cross-tabulation of the enriched GO items in two gene lists
 "Number of enriched items in list 1 (TRUE, FALSE)" x "Number of enriched items in
 list 2 (TRUE, FALSE)". In this function, "nicely representing a 2x2 contingency table"
 is interpreted in terms of computing the Sorensen-Dice dissimilarity and associated
-statistics. In these computations, the double negatives n00 are ignored.
-The result is FALSE otherwise and warnings are issued.
+statistics.
+Otherwise the execution is interrupted.
 }
 \description{
 Checks for validity data representing an enrichment contingency table generated from two gene lists
 }
 \details{
 In the "table" and "matrix" interfaces, the input parameter \code{x} must correspond
-to a two-dimensional array:\tabular{ll}{
-   n_11 \tab n_10 \cr
-   n_01 \tab n_00 \cr
+to a two-dimensional array:
+\deqn{
+ \tabular{rr}{
+  n_{11} \tab n_{01} \cr
+  n_{10} \tab n_{00},
+ }
+}{}
+
+\tabular{rr}{
+n_11 \tab n_01 \cr
+n_10 \tab n_00,
 }
-
-
 These values are interpreted (always in this order) as n11: number of GO items enriched in both lists,
 n01: GO items enriched in the second list but not in the first one, n10: items not enriched in the second
 list but enriched in the first one and double negatives, n00.
@@ -59,14 +65,14 @@ In the "numeric" interface, the input \code{x} must correspond to a numeric of l
 conti <- as.table(matrix(c(27, 36, 12, 501, 43, 15, 0, 0, 0), nrow = 3, ncol = 3,
                          dimnames = list(c("a1","a2","a3"),
                                          c("b1", "b2","b3"))))
-nice2x2Table(conti)
-conti2 <- conti[1,seq_len(min(2,ncol(conti))), drop = FALSE]
+try(nice2x2Table(conti), TRUE)
+conti2 <- conti[1,seq.int(1, min(2,ncol(conti))), drop = FALSE]
 conti2
-nice2x2Table(conti2)
+try(nice2x2Table(conti2), TRUE)
 
 conti3 <- matrix(c(12, 210), ncol = 2, nrow = 1)
 conti3
-nice2x2Table(conti3)
+try(nice2x2Table(conti3), TRUE)
 
 conti4 <- c(32, 21, 81, 1439)
 nice2x2Table(conti4)
@@ -75,5 +81,10 @@ conti4.mat
 conti5 <- c(32, 21, 81)
 nice2x2Table(conti5)
 
+conti6 <- c(-12, 21, 8)
+try(nice2x2Table(conti6), TRUE)
+
+# conti7 <- c(0, 0, 0, 32)
+# nice2x2Table(conti7) # Error: All enrichment frequencies are null: Inadequate for Sorensen-Dice computations
 
 }

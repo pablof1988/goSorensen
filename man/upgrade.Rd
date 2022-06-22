@@ -65,11 +65,11 @@ class(BP.4)
 # BP.4 <- equivTestSorensen(allOncoGeneLists,
 #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #                           onto = "BP", GOLevel = 4)
-upgrade(BP.4, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
+# upgrade(BP.4, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857 # Error: nice2x2Table.table(x): Zero frequencies - Inadequate for Sorensen-Dice computations
 
 data(cancerEquivSorensen)
 cancerEquivSorensen
 class(cancerEquivSorensen)
-upgrade(cancerEquivSorensen, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
+# upgrade(cancerEquivSorensen, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857 # Error: nice2x2Table.table(x): Zero frequencies - Inadequate for Sorensen-Dice computations
 
 }

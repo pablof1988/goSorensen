@@ -19,7 +19,6 @@ duppSorensen(x, ...)
   z.conf.level = qnorm(1 - conf.level),
   boot = FALSE,
   nboot = 10000,
-  listNames = NULL,
   check.table = TRUE,
   ...
 )
@@ -32,7 +31,6 @@ duppSorensen(x, ...)
   z.conf.level = qnorm(1 - conf.level),
   boot = FALSE,
   nboot = 10000,
-  listNames = NULL,
   check.table = TRUE,
   ...
 )
@@ -45,7 +43,6 @@ duppSorensen(x, ...)
   z.conf.level = qnorm(1 - conf.level),
   boot = FALSE,
   nboot = 10000,
-  listNames = NULL,
   check.table = TRUE,
   ...
 )
@@ -56,7 +53,6 @@ duppSorensen(x, ...)
   conf.level = 0.95,
   boot = FALSE,
   nboot = 10000,
-  listNames = NULL,
   check.table = TRUE,
   ...
 )
@@ -92,8 +88,6 @@ Then, the argument \code{conf.level} is ignored.}
 approach instead of the asymptotic normal approach. Defaults to FALSE.}
 
 \item{nboot}{numeric, number of bootstrap replicates. Ignored if \code{boot == FALSE}. Defaults to 10000.}
-
-\item{listNames}{character(2), names of both gene lists to be compared (only for the character interface)}
 
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table. This checking is performed by means of function

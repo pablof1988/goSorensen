@@ -11,19 +11,13 @@
 \usage{
 dSorensen(x, ...)
 
-\method{dSorensen}{table}(x, listNames = NULL, check.table = TRUE, ...)
+\method{dSorensen}{table}(x, check.table = TRUE, ...)
 
-\method{dSorensen}{matrix}(x, listNames = NULL, check.table = TRUE, ...)
+\method{dSorensen}{matrix}(x, check.table = TRUE, ...)
 
-\method{dSorensen}{numeric}(x, listNames = NULL, check.table = TRUE, ...)
+\method{dSorensen}{numeric}(x, check.table = TRUE, ...)
 
-\method{dSorensen}{character}(
-  x,
-  y,
-  listNames = c("gene.list1", "gene.list2"),
-  check.table = TRUE,
-  ...
-)
+\method{dSorensen}{character}(x, y, check.table = TRUE, ...)
 
 \method{dSorensen}{list}(x, check.table = TRUE, ...)
 }
@@ -32,8 +26,6 @@ dSorensen(x, ...)
 or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.}
 
 \item{...}{extra parameters for function \code{buildEnrichTable}.}
-
-\item{listNames}{character(2), names of both gene lists to be compared. Defaults to NULL.}
 
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table, by means of function \code{nice2x2Table}.}

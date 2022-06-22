@@ -55,8 +55,8 @@
 #' conti6 <- c(-12, 21, 8)
 #' try(nice2x2Table(conti6), TRUE)
 #'
-#' conti7 <- c(0, 0, 0, 32)
-#' nice2x2Table(conti7)
+#' # conti7 <- c(0, 0, 0, 32)
+#' # nice2x2Table(conti7) # Error: All enrichment frequencies are null: Inadequate for Sorensen-Dice computations
 
 
 #'

@@ -39,10 +39,10 @@ badConti <- as.table(matrix(c(501, 27, 36, 12, 43, 15, 0, 0, 0),
                             nrow = 3, ncol = 3,
                             dimnames = list(c("a1","a2","a3"),
                                             c("b1", "b2","b3"))))
-nice2x2Table(badConti)
+# nice2x2Table(badConti) # Error: Not a 2x2 table
 incompleteConti <- badConti[1,1:min(2,ncol(badConti)), drop = FALSE]
 incompleteConti
-nice2x2Table(incompleteConti)
+# nice2x2Table(incompleteConti) # Error: Not a 2x2 table
 
 contiAsVector <- c(32, 21, 81, 1439)
 nice2x2Table(contiAsVector)

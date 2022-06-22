@@ -15,15 +15,9 @@ seSorensen(x, ...)
 
 \method{seSorensen}{matrix}(x, listNames = NULL, check.table = TRUE, ...)
 
-\method{seSorensen}{numeric}(x, listNames = NULL, check.table = TRUE, ...)
+\method{seSorensen}{numeric}(x, check.table = TRUE, ...)
 
-\method{seSorensen}{character}(
-  x,
-  y,
-  listNames = c("gene.list1", "gene.list2"),
-  check.table = TRUE,
-  ...
-)
+\method{seSorensen}{character}(x, y, check.table = TRUE, ...)
 
 \method{seSorensen}{list}(x, check.table = TRUE, ...)
 }
@@ -33,7 +27,7 @@ or a "character" (a set of gene identifiers) or "list" object. See the details s
 
 \item{...}{extra parameters for function \code{buildEnrichTable}.}
 
-\item{listNames}{character(2), names of both gene lists being compared (only for the character interface)}
+\item{listNames}{Character. Vector with names of lists.}
 
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table. This checking is performed by means of function

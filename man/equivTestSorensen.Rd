@@ -87,7 +87,7 @@ represent a 2x2 contingency table. This checking is performed by means of functi
 
 \item{y}{an object of class "character" representing a list of gene identifiers.}
 
-\item{listNames}{character(2), names of both gene lists to be compared (only for the character interface)}
+\item{listNames}{Character. Vector with names of lists.}
 }
 \value{
 For all interfaces (except for the "list" interface) the result is a list of class "equivSDhtest" which

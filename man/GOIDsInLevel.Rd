@@ -29,15 +29,3 @@ GOIDsInLevel(
 \description{
 This function extends getGOLevel returning only GO identifiers appearing between GO ancestors of at least one GeneList
 }
-\examples{
- data(kidneyGeneLists)
- GOLev <- 3
- anOnto <- 'BP'
- gl1 <- kidneyGeneLists[[1]]
- gl2 <- kidneyGeneLists[[2]]
- orgPkg ='org.Hs.eg.db'
- GOIDSinLevel.1 <- GOIDsInLevel (GOLev=GOLev, onto = anOnto,  restricted=FALSE)
- length(GOIDSinLevel.1)
- GOIDSinLevel.2 <- GOIDsInLevel (GOLev=GOLev, onto = anOnto,  geneList1 = gl1, geneList2 = gl2, orgPackage =orgPkg)
- length(GOIDSinLevel.2)
-}

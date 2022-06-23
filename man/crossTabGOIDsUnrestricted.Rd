@@ -23,13 +23,3 @@ This function performs a crosstabulation between two lists of enriched GOTerms
 The lists are intended to have been obtained from enrichment analyses performed
 on two gene lists
 }
-\examples{
- data(kidneyEnrichedGOIDs)
- GOIDs1 <-kidneyEnrichedGOIDs[[1]]
- GOIDs2 <-kidneyEnrichedGOIDs[[2]]
- names4lists<- names(kidneyEnrichedGOIDs)[1:2]
- anOnto <- 'BP'
- GOLev<- 3
- crossTabbedGOIds <- crossTabGOIDsUnrestricted (GO1 = GOIDs1, GO2 = GOIDs2, onto = anOnto,
- GOLev =GOLev, listNames=names4lists)
-}

@@ -43,23 +43,3 @@ it is excluded from the GO Level's terms because it is impossible that it appear
 This function performs a crosstabulation between two lists of enriched GOTerms
 The lists are intended to have been obtained from enrichment analyses performed on two gene lists
 }
-\examples{
- data(kidneyGeneLists)
- data(kidneyEnrichedGOIDs)
- GOIDs1 <-kidneyEnrichedGOIDs[[1]]
- GOIDs2 <-kidneyEnrichedGOIDs[[2]]
- names4lists<- names(kidneyEnrichedGOIDs)[1:2]
- anOnto <- 'BP'
- GOLev <- 3
- gl1 <- kidneyGeneLists[[1]]
- gl2 <- kidneyGeneLists[[2]]
- orgPkg ='org.Hs.eg.db'
- restrictTab <- TRUE
- crossTabbedGOIdsRestricted <- crossTabGOIDs (GO1 = GOIDs1, GO2 = GOIDs2, onto = anOnto,
- GOLev =GOLev, listNames=names4lists, geneList1 = gl1, geneList2 = gl2, orgPackage =orgPkg, restricted = restrictTab)
- show(crossTabbedGOIdsRestricted)
- restrictTab <- FALSE
- crossTabbedGOIdsUnrestricted <- crossTabGOIDs (GO1 = GOIDs1, GO2 = GOIDs2, onto = anOnto,
- GOLev =GOLev, listNames=names4lists, geneList1 = gl1, geneList2 = gl2, orgPackage =orgPkg, restricted = restrictTab)
- show(crossTabbedGOIdsUnrestricted)
-}

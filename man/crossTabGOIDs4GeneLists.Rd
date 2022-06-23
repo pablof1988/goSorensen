@@ -46,20 +46,3 @@ it is excluded from the GO Level's terms because it is impossible that it appear
 This function builds a cross-tabulation of enriched and non-enriched GO terms
 from two gene lists
 }
-\examples{
- data(kidneyGeneLists)
- data(humanEntrezIDs)
- gl1 <-kidneyGeneLists[[1]]
- gl2 <-kidneyGeneLists[[2]]
- anOnto <- 'BP'
- GOLev<- 3
- restricted <- FALSE
- adjMeth<- 'BH'
- pValCut <- 0.05
- qValCut <- 0.01
- crossTabFromGeneListsUnrestricted <- crossTabGOIDs4GeneLists (genelist1=gl1, genelist2=gl2,
- geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db", onto=anOnto, GOLev=GOLev, restricted=restricted)
- restricted <- TRUE
- crossTabFromGeneListsRestricted <- crossTabGOIDs4GeneLists (genelist1=gl1, genelist2=gl2,
- geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db", onto=anOnto, GOLev=GOLev, restricted=restricted)
-}

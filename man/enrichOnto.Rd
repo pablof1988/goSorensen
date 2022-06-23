@@ -32,11 +32,3 @@ enrichOnto(
 \description{
 This function performs standard tests of enrichment from a gene list
 }
-\examples{
- data(kidneyGeneLists)
- data(humanEntrezIDs)
- gl1 <-kidneyGeneLists[[1]]
- anOnto <- 'BP'
- enriched <- enrichOnto (geneL=gl1, geneUniverse=humanEntrezIDs, orgPackage='org.Hs.eg.db', onto=anOnto)
- GOIDs <- as.character(as.data.frame(enriched)$ID)
-}

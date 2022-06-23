@@ -36,14 +36,14 @@
 #' conti <- as.table(matrix(c(27, 36, 12, 501, 43, 15, 0, 0, 0), nrow = 3, ncol = 3,
 #'                          dimnames = list(c("a1","a2","a3"),
 #'                                          c("b1", "b2","b3"))))
-#' try(nice2x2Table(conti), TRUE)
+#' tryCatch(nice2x2Table(conti), error = function(e){return(e)})
 #' conti2 <- conti[1,seq.int(1, min(2,ncol(conti))), drop = FALSE]
 #' conti2
-#' try(nice2x2Table(conti2), TRUE)
+#' tryCatch(nice2x2Table(conti2), error = function(e){return(e)})
 #'
 #' conti3 <- matrix(c(12, 210), ncol = 2, nrow = 1)
 #' conti3
-#' try(nice2x2Table(conti3), TRUE)
+#' tryCatch(nice2x2Table(conti3), error = function(e){return(e)})
 #'
 #' conti4 <- c(32, 21, 81, 1439)
 #' nice2x2Table(conti4)
@@ -53,10 +53,11 @@
 #' nice2x2Table(conti5)
 #'
 #' conti6 <- c(-12, 21, 8)
-#' try(nice2x2Table(conti6), TRUE)
+#' tryCatch(nice2x2Table(conti6), error = function(e){return(e)})
 #'
-#' # conti7 <- c(0, 0, 0, 32)
-#' # nice2x2Table(conti7) # Error: All enrichment frequencies are null: Inadequate for Sorensen-Dice computations
+#' # Error: All enrichment frequencies are null: Inadequate for Sorensen-Dice computations
+#' conti7 <- c(0, 0, 0, 32)
+#' tryCatch(nice2x2Table(conti7), error = function(e){return(e)}) 
 
 
 #'

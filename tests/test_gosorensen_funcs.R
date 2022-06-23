@@ -39,10 +39,10 @@ badConti <- as.table(matrix(c(501, 27, 36, 12, 43, 15, 0, 0, 0),
                             nrow = 3, ncol = 3,
                             dimnames = list(c("a1","a2","a3"),
                                             c("b1", "b2","b3"))))
-# nice2x2Table(badConti) # Error: Not a 2x2 table
+tryCatch(nice2x2Table(badConti), error = function(e) {return(e)})
 incompleteConti <- badConti[1,1:min(2,ncol(badConti)), drop = FALSE]
 incompleteConti
-# nice2x2Table(incompleteConti) # Error: Not a 2x2 table
+tryCatch(nice2x2Table(incompleteConti), error = function(e) {return(e)})
 
 contiAsVector <- c(32, 21, 81, 1439)
 nice2x2Table(contiAsVector)
@@ -51,25 +51,26 @@ contiAsVector.mat
 contiAsVectorLen3 <- c(32, 21, 81)
 nice2x2Table(contiAsVectorLen3)
 
-try(dSorensen(badConti), TRUE)
-# Apparently it works fine, but returns a wrong value!
+tryCatch(dSorensen(badConti), error = function(e) {return(e)})
+
+# Apparently this works fine, but returns a wrong value:
 dSorensen(badConti, check.table = FALSE)
 
-try(dSorensen(incompleteConti), TRUE)
+tryCatch(dSorensen(incompleteConti), error = function(e) {return(e)})
 dSorensen(contiAsVector)
 dSorensen(contiAsVector.mat)
 dSorensen(contiAsVectorLen3)
 dSorensen(contiAsVectorLen3, check.table = FALSE)
 
-try(seSorensen(badConti), TRUE)
-try(seSorensen(incompleteConti), TRUE)
+tryCatch(seSorensen(badConti), error = function(e) {return(e)})
+tryCatch(seSorensen(incompleteConti), error = function(e) {return(e)})
 seSorensen(contiAsVector)
 seSorensen(contiAsVector.mat)
 seSorensen(contiAsVectorLen3)
 seSorensen(contiAsVectorLen3, check.table = FALSE)
 
-try(duppSorensen(badConti), TRUE)
-try(duppSorensen(incompleteConti), TRUE)
+tryCatch(duppSorensen(badConti), error = function(e) {return(e)})
+tryCatch(duppSorensen(incompleteConti), error = function(e) {return(e)})
 duppSorensen(contiAsVector)
 duppSorensen(contiAsVector.mat)
 set.seed(123)
@@ -79,7 +80,7 @@ duppSorensen(contiAsVector.mat, boot = TRUE)
 duppSorensen(contiAsVectorLen3)
 # Bootstrapping requires full contingency tables (4 values)
 set.seed(123)
-try(duppSorensen(contiAsVectorLen3, boot = TRUE), TRUE)
+tryCatch(duppSorensen(contiAsVectorLen3, boot = TRUE), error = function(e) {return(e)})
 
 # Equivalence test, H0: d >= d0 vs  H1: d < d0 (d0 = 0.4444)
 ?equivTestSorensen
@@ -88,15 +89,15 @@ equiv.atlas.sanger
 getTable(equiv.atlas.sanger)
 getPvalue(equiv.atlas.sanger)
 
-try(equivTestSorensen(badConti), TRUE)
-try(equivTestSorensen(incompleteConti), TRUE)
+tryCatch(equivTestSorensen(badConti), error = function(e) {return(e)})
+tryCatch(equivTestSorensen(incompleteConti), error = function(e) {return(e)})
 equivTestSorensen(contiAsVector)
 equivTestSorensen(contiAsVector.mat)
 set.seed(123)
 equivTestSorensen(contiAsVector.mat, boot = TRUE)
 equivTestSorensen(contiAsVectorLen3)
 
-try(equivTestSorensen(contiAsVectorLen3, boot = TRUE), TRUE)
+tryCatch(equivTestSorensen(contiAsVectorLen3, boot = TRUE), error = function(e) {return(e)})
 
 # Sorensen-Dice computations from scratch, directly from gene lists
 data(allOncoGeneLists)

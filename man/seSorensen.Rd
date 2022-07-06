@@ -7,27 +7,29 @@
 \alias{seSorensen.numeric}
 \alias{seSorensen.character}
 \alias{seSorensen.list}
+\alias{seSorensen.tableList}
 \title{Standard error of the sample Sorensen-Dice dissimilarity, asymptotic approach}
 \usage{
 seSorensen(x, ...)
 
-\method{seSorensen}{table}(x, listNames = NULL, check.table = TRUE, ...)
+\method{seSorensen}{table}(x, check.table = TRUE, ...)
 
-\method{seSorensen}{matrix}(x, listNames = NULL, check.table = TRUE, ...)
+\method{seSorensen}{matrix}(x, check.table = TRUE, ...)
 
 \method{seSorensen}{numeric}(x, check.table = TRUE, ...)
 
 \method{seSorensen}{character}(x, y, check.table = TRUE, ...)
 
 \method{seSorensen}{list}(x, check.table = TRUE, ...)
+
+\method{seSorensen}{tableList}(x, check.table = TRUE, ...)
 }
 \arguments{
 \item{x}{either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
-or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.}
+or a "character" (a set of gene identifiers) or "list" or "tableList" object.
+See the details section for more information.}
 
 \item{...}{extra parameters for function \code{buildEnrichTable}.}
-
-\item{listNames}{Character. Vector with names of lists.}
 
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table. This checking is performed by means of function
@@ -37,8 +39,9 @@ represent a 2x2 contingency table. This checking is performed by means of functi
 }
 \value{
 In the "table", "matrix", "numeric" and "character" interfaces, the value of the standard error of the
-Sorensen-Dice dissimilarity estimate. In the "list" interface, the symmetric matrix of all pairwise standard error
-dissimilarity estimates.
+Sorensen-Dice dissimilarity estimate.
+In the "list" and "tableList" interfaces, the symmetric matrix of all
+standard error dissimilarity estimates.
 }
 \description{
 Standard error of the sample Sorensen-Dice dissimilarity, asymptotic approach
@@ -46,11 +49,11 @@ Standard error of the sample Sorensen-Dice dissimilarity, asymptotic approach
 \details{
 This function computes the standard error estimate of the sample Sorensen-Dice dissimilarity,
 given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
-or a "numeric" object):\tabular{ll}{
-   n_11 \tab n_10 \cr
-   n_01 \tab n_00 \cr
+or a "numeric" object):
+\tabular{rr}{
+n11 \tab n10 \cr
+n01 \tab n00,
 }
-
 
 The subindex '11' corresponds to those
 GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,
@@ -70,6 +73,28 @@ these gene lists as a 2x2 contingency table of joint enrichment.
 In the "list" interface, the argument must be a list of "character" vectors, each one
 representing a gene list (character identifiers). Then, all pairwise standard errors
 of the dissimilarity between these gene lists are computed.
+
+If \code{x} is an object of class "tableList", the standard error of the Sorensen-Dice dissimilarity
+estimate is computed over each one of these tables.
+Given k gene lists (i.e. "character" vectors of gene identifiers) l1, l2, ..., lk,
+an object of class "tableList" (typically constructed by a call to function
+\code{\link{buildEnrichTable}}) is a list of lists of
+contingency tables t(i,j) generated from each pair of gene lists i and j, with the
+following structure:
+
+$l2
+
+$l2$l1$t(2,1)
+
+$l3
+
+$l3$l1$t(3,1), $l3$l2$t(3,2)
+
+...
+
+$lk
+
+$lk$l1$t(k,1), $lk$l2$t(k,2), ..., $lk$l(k-1)t(k,k-1)
 }
 \section{Methods (by class)}{
 \itemize{
@@ -82,6 +107,8 @@ of the dissimilarity between these gene lists are computed.
 \item \code{character}: S3 method for class "character"
 
 \item \code{list}: S3 method for class "list"
+
+\item \code{tableList}: S3 method for class "tableList"
 }}
 
 \examples{
@@ -96,19 +123,16 @@ seSorensen(tab_atlas.sanger_BP3)
 seSorensen(c(56, 1, 30, 47))
 seSorensen(c(56, 1, 30))
 
-# (These examples may be considerably time consuming due to many enrichment 
+# (These examples may be considerably time consuming due to many enrichment
 # tests to build the contingency tables of mutual enrichment)
-# data(pbtGeneLists)
 # ?pbtGeneLists
 # Standard error of the sample Sorensen-Dice dissimilarity, directly from
 # two gene lists, from scratch:
 # seSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
-#            listNames = names(pbtGeneLists)[c(2,4)],
 #            onto = "CC", GOLevel = 5,
 #            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Essentially, the above code makes the same as:
 # tab.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
-#                                     listNames = names(pbtGeneLists)[c(2,4)],
 #                                     onto = "CC", GOLevel = 5,
 #                                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # tab.IRITD3vsKT1
@@ -118,10 +142,11 @@ seSorensen(c(56, 1, 30))
 # seSorensen(pbtGeneLists,
 #            onto = "CC", GOLevel = 5,
 #            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-
 }
 \seealso{
-\code{\link{nice2x2Table}} for checking and reformatting data,
+\code{\link{buildEnrichTable}} for constructing contingency tables of mutual
+enrichment,
+\code{\link{nice2x2Table}} for checking the validity of enrichment contingency tables,
 \code{\link{dSorensen}} for computing the Sorensen-Dice dissimilarity,
 \code{\link{duppSorensen}} for the upper limit of a one-sided confidence interval
 of the dissimilarity, \code{\link{equivTestSorensen}} for an equivalence test.

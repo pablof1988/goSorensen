@@ -14,9 +14,10 @@ Authors@R:
     person("Jordi", "Ocana", role = c("aut", "ctb"), comment = c(ORCID = "0000-0002-4736-699")),
     person("Alexandre", "Sanchez-Pla", role = "ctb", comment = c(ORCID = "0000-0002-8673-7737")),
 	person("Miquel", "Salicru", role = "ctb", comment = c(ORCID = "0000-0001-9644-5626")))
-Suggests: knitr, rmarkdown
-Depends: R (>= 4.2.0), devtools, GO.db, org.Hs.eg.db, goProfiles,
-        stats, clusterProfiler
+Suggests: BiocStyle, knitr, rmarkdown
+Depends: R (>= 4.2.0)
+Imports: GO.db, org.Hs.eg.db, goProfiles,
+        stats, clusterProfiler, parallel
 VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8

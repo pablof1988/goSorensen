@@ -1,12 +1,13 @@
-#' Access to the number of initially planned bootstrap replicates in one or more equivalence test
-#' results (only in their bootstrap version)
+#' Access to the number of effective bootstrap replicates in one or more equivalence test
+#' results (only for their bootstrap version)
 #'
 #' Given objects representing the result(s) of one or more equivalence tests
 #' (classes "equivSDhtest", "equivSDhtestList" or "allEquivSDtest", i.e., the
-#' result of functions 'equivTestSorensen' and 'allEquivTestSorensen' with the parameter
-#' boot = TRUE), this function returns the number of initially planned bootstrap replicates
-#' in these equivalence tests, which may be greater than the number of finally effective or
-#' valid bootstrap replicates. See the details section for more information on this.
+#' result of functions 'equivTestSorensen' and 'allEquivTestSorensen'), this
+#' function returns the number of effective bootstrap replicates. Obviously,
+#' this only applies to calls of these functions with the parameter
+#' boot = TRUE, otherwise it returns a NA value. See the details section for
+#' further explanation.
 #'
 #' @param x an object of class "equivSDhtest" or "equivSDhtestList" or "allEquivSDtest".
 #' @param onto character, a vector with one or more of "BP", "CC" or "MF", ontologies to access.
@@ -18,11 +19,11 @@
 #' @param ... Additional parameters.
 #'
 #' @return When \code{x} is an object of class "equivSDhtest" (i.e., the result of a single
-#' equivalence test), the returned value is a single numeric value, the number of initially
-#' planned bootstrap replicates, or \code{NA} if bootstrapping has not been performed.
+#' equivalence test), the returned value is a single numeric value, the number of effective
+#' bootstrap replicates, or \code{NA} if bootstrapping has not been performed.
 #' For an object of class "equivSDhtestList" (i.e. all pairwise tests for a
 #' set of gene lists), if \code{simplify = TRUE} (the default), the resulting value is a vector
-#' with the number of initially bootstrap replicates in all those tests, or the symmetric matrix
+#' with the number of effective bootstrap replicates in all those tests, or the symmetric matrix
 #' of all these values if \code{simplify = TRUE}.
 #' If \code{x} is an object of class "allEquivSDtest"
 #' (i.e., the test iterated along GO ontologies and levels), the preceding result is returned in
@@ -33,17 +34,17 @@
 #' In the bootstrap version of the equivalence test, resampling is performed generating new
 #' bootstrap contingency tables from a multinomial distribution based on the "real", observed,
 #' frequencies of mutual enrichment.
-#' In some bootstrap iterations, the generated contingency table of mutual enrichment
+#' In some bootstrap resamples, the generated contingency table of mutual enrichment
 #' may have very low frequencies of enrichment, which makes it unable for Sorensen-Dice
 #' computations.
 #' Then, the number of effective bootstrap resamples may be lower than those initially planned.
-#' To get the number of effective bootstrap resamples use function \code{getEffNboot}.
+#' To get the number of initially planned bootstrap resamples use function \code{getNboot}.
 #'
 #' Argument \code{GOLevel} can be of class "character" or "numeric". In the first case, the GO
 #' levels must be specified like \code{"level 6"} or \code{c("level 4", "level 5", "level 6")}
 #' In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{4:6}.
 #'
-#' @seealso \code{\link{getEffNboot}}
+#'@seealso \code{\link{getNboot}}
 #'
 #' @examples
 #' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
@@ -62,7 +63,8 @@
 #' # Not a bootstrap test, first upgrade to a bootstrap test:
 #' boot.waldman_atlas.BP.4 <- upgrade(waldman_atlas.BP.4, boot = TRUE)
 #'
-#' getNboot(waldman_atlas.BP.4)
+#' getEffNboot(waldman_atlas.BP.4)
+#' getEffNboot(boot.waldman_atlas.BP.4)
 #' getNboot(boot.waldman_atlas.BP.4)
 #'
 #' # All pairwise equivalence tests at level 4 of the BP ontology
@@ -74,9 +76,10 @@
 #' #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #' #                           onto = "BP", GOLevel = 4)
 #' boot.BP.4 <- upgrade(BP.4, boot = TRUE)
-#' getNboot(BP.4)
+#' getEffNboot(BP.4)
+#' getEffNboot(boot.BP.4)
 #' getNboot(boot.BP.4)
-#' getNboot(boot.BP.4, simplify = FALSE)
+#' getEffNboot(boot.BP.4, simplify = FALSE)
 #'
 #' # Bootstrap equivalence test iterated over all GO ontologies and levels 3 to 10.
 #' # data(cancerEquivSorensen)
@@ -89,40 +92,41 @@
 #' #                                             orgPackg = "org.Hs.eg.db",
 #' #                                             boot = TRUE)
 #' # boot.cancerEquivSorensen <- upgrade(cancerEquivSorensen, boot = TRUE)
-#' # All numbers of bootstrap replicates:
-#' # getNboot(boot.cancerEquivSorensen)
-#' # getNboot(boot.cancerEquivSorensen, simplify = FALSE)
+#' # Number of effective bootstrap replicates for all tests:
+#' # getEffNboot(boot.cancerEquivSorensen)
+#' # getEffNboot(boot.cancerEquivSorensen, simplify = FALSE)
 #'
-#' # Number of bootstrap replicates for specific GO ontologies, levels or pairs of gene lists:
-#' # getNboot(boot.cancerEquivSorensen, GOLevel = "level 6")
-#' # getNboot(boot.cancerEquivSorensen, GOLevel = 6)
-#' # getNboot(boot.cancerEquivSorensen, GOLevel = 4:6)
-#' # getNboot(boot.cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
-#' # getNboot(boot.cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
-#' # getNboot(boot.cancerEquivSorensen, GOLevel = 4:6, onto = "BP")
-#' # getNboot(boot.cancerEquivSorensen, GOLevel = 4:6, onto = "BP", simplify = FALSE)
-#' # getNboot(boot.cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
-#' #          listNames = c("waldman", "sanger"))
-#' # getNboot(boot.cancerEquivSorensen$BP$`level 4`)
+#' # Number of effective bootstrap replicates for specific GO ontologies, levels or pairs
+#' # of gene lists:
+#' # getEffNboot(boot.cancerEquivSorensen, GOLevel = "level 6")
+#' # getEffNboot(boot.cancerEquivSorensen, GOLevel = 6)
+#' # getEffNboot(boot.cancerEquivSorensen, GOLevel = 4:6)
+#' # getEffNboot(boot.cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
+#' # getEffNboot(boot.cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
+#' # getEffNboot(boot.cancerEquivSorensen, GOLevel = 4:6, onto = "BP")
+#' # getEffNboot(boot.cancerEquivSorensen, GOLevel = 4:6, onto = "BP", simplify = FALSE)
+#' # getEffNboot(boot.cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
+#' #             listNames = c("waldman", "sanger"))
+#' # getEffNboot(boot.cancerEquivSorensen$BP$`level 4`)
 
 #'
 #' @export
-getNboot <- function(x, ...) {
-  UseMethod("getNboot")
+getEffNboot <- function(x, ...) {
+  UseMethod("getEffNboot")
 }
 
-#' @describeIn getNboot S3 method for class "equivSDhtest"
+#' @describeIn getEffNboot S3 method for class "equivSDhtest"
 #' @export
-getNboot.equivSDhtest <- function(x, ...) {
-  result <- attr(x, "nboot")
+getEffNboot.equivSDhtest <- function(x, ...) {
+  result <- attr(x, "eff.nboot")
   return(if (is.null(result)) NA else result)
 }
 
-#' @describeIn getNboot S3 method for class "equivSDhtestList"
+#' @describeIn getEffNboot S3 method for class "equivSDhtestList"
 #' @export
-getNboot.equivSDhtestList <- function(x, simplify = TRUE, ...) {
+getEffNboot.equivSDhtestList <- function(x, simplify = TRUE, ...) {
   result <- lapply(x, function(xi){
-    resaux <- lapply(xi, getNboot.equivSDhtest)
+    resaux <- lapply(xi, getEffNboot.equivSDhtest)
     names(resaux) <- names(xi)
     return(resaux)
   })
@@ -142,9 +146,10 @@ getNboot.equivSDhtestList <- function(x, simplify = TRUE, ...) {
   }
 }
 #'
-#' @describeIn getNboot S3 method for class "AllEquivSDhtest"
+#' @describeIn getEffNboot S3 method for class "AllEquivSDhtest"
 #' @export
-getNboot.AllEquivSDhtest <- function(x, onto, GOLevel, listNames, simplify = TRUE, ...) {
+getEffNboot.AllEquivSDhtest <- function(x, onto, GOLevel, listNames, simplify = TRUE, ...)
+{
   if (missing(onto)) {
     onto <- names(x)
   }
@@ -170,8 +175,7 @@ getNboot.AllEquivSDhtest <- function(x, onto, GOLevel, listNames, simplify = TRU
         resList1 <- sapply(namsList1, function(ilist1) {
           namsList2 <- names(x[[ionto]][[ilev]][[ilist1]])
           resList2 <- vapply(namsList2, function(ilist2) {
-            # return(attr(x[[ionto]][[ilev]][[ilist1]][[ilist2]]$method, "nboot"))
-            return(getNboot(x[[ionto]][[ilev]][[ilist1]][[ilist2]]))
+            return(getEffNboot(x[[ionto]][[ilev]][[ilist1]][[ilist2]]))
           }, FUN.VALUE = 0)
           return(resList2)
         })
@@ -187,7 +191,7 @@ getNboot.AllEquivSDhtest <- function(x, onto, GOLevel, listNames, simplify = TRU
         }
         return(resList1)
       } else {
-        return(getNboot(x[[ionto]][[ilev]][[listNames[1]]][[listNames[2]]]))
+        return(getEffNboot(x[[ionto]][[ilev]][[listNames[1]]][[listNames[2]]]))
       }
     })
     names(resLev) <- GOLevel

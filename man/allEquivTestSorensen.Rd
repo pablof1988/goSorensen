@@ -60,6 +60,6 @@ Iterate \code{equivTestSorensen} along the specified GO ontologies and GO levels
 # data(pbtGeneLists)
 # allEquivTestSorensen(pbtGeneLists,
 #                      geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#                      ontos = c("MF", "BP"), GOLevels = 4:6)
+#                      ontos = c("MF", "BP"), GOLevels = seq.int(4,6))
 
 }

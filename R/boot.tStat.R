@@ -1,5 +1,5 @@
 #' Studentized Sorensen-Dice dissimilarity statistic
-#' 
+#'
 #' Efficient computation of the studentized statistic (^dis - dis) / ^se where 'dis' stands
 #' for the "population" value of the Sorensen-Dice dissimilarity, '^dis' for its estimated
 #' value and '^se'for the estimate of the standard error of '^dis'. Internally used in
@@ -7,7 +7,7 @@
 #'
 #' @param xBoot either an object of class "table", "matrix" or "numeric" representing
 #' a 2x2 contingency table of joint enrichment.
-#' @param dis the "knwon" value of the population dissimilarity.
+#' @param dis the "known" value of the population dissimilarity.
 #'
 #' @return A numeric value, the result of computing (^dis - dis) / ^se.
 #'
@@ -34,25 +34,6 @@
 #' which was computed from 'x' (a constant, known value in the full iteration) and the
 #' values of '^dis' and '^se' are internally computed from the bootstrap data 'xBoot'.
 #'
-#' @examples
-#' # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
-#' # of GO items in ontology BP at level 3.
-#' data(tab_atlas.sanger_BP3)
-#' tab_atlas.sanger_BP3
-#' # Generate B = 100 bootstrap values of the studentized statistic:
-#' # 1) Sorensen-Dice dissimilarity for the "real" data 'tab_atlas.sanger_BP3'.
-#' d <- dSorensen(tab_atlas.sanger_BP3)
-#' # 2) 100 multinomial data resamples:
-#' size <- sum(tab_atlas.sanger_BP3)
-#' set.seed(12345)
-#' xBoots <- rmultinom(100, size, tab_atlas.sanger_BP3 / size)
-#' # Each colum of 'xBoots' corresponds to a frequencies boostrap resample:
-#' # 3) 100 bootstrap studentized statistics:
-#' bootVals <- apply(xBoots, 2, boot.tStat, dis = d)
-#' bootVals
-#' 
-#' @export
-
 boot.tStat <- function(xBoot, dis) {
   nu <- sum(xBoot[1:3])
   dBoot <- (xBoot[2] + xBoot[3]) / (nu + xBoot[1])

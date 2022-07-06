@@ -10,7 +10,7 @@ boot.tStat(xBoot, dis)
 \item{xBoot}{either an object of class "table", "matrix" or "numeric" representing
 a 2x2 contingency table of joint enrichment.}
 
-\item{dis}{the "knwon" value of the population dissimilarity.}
+\item{dis}{the "known" value of the population dissimilarity.}
 }
 \value{
 A numeric value, the result of computing (^dis - dis) / ^se.
@@ -44,22 +44,4 @@ represented in form of a 2x2 "table" or "matrix" or as a numeric vector)
 In each bootstrap iteration, the value of the "true" known 'dis' is the dissimilarity
 which was computed from 'x' (a constant, known value in the full iteration) and the
 values of '^dis' and '^se' are internally computed from the bootstrap data 'xBoot'.
-}
-\examples{
-# Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
-# of GO items in ontology BP at level 3.
-data(tab_atlas.sanger_BP3)
-tab_atlas.sanger_BP3
-# Generate B = 100 bootstrap values of the studentized statistic:
-# 1) Sorensen-Dice dissimilarity for the "real" data 'tab_atlas.sanger_BP3'.
-d <- dSorensen(tab_atlas.sanger_BP3)
-# 2) 100 multinomial data resamples:
-size <- sum(tab_atlas.sanger_BP3)
-set.seed(12345)
-xBoots <- rmultinom(100, size, tab_atlas.sanger_BP3 / size)
-# Each colum of 'xBoots' corresponds to a frequencies boostrap resample:
-# 3) 100 bootstrap studentized statistics:
-bootVals <- apply(xBoots, 2, boot.tStat, dis = d)
-bootVals
-
 }

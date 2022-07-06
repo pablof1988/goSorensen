@@ -7,6 +7,7 @@
 \alias{duppSorensen.numeric}
 \alias{duppSorensen.character}
 \alias{duppSorensen.list}
+\alias{duppSorensen.tableList}
 \title{Upper limit of a one-sided confidence interval (0, dUpp] for the Sorensen-Dice dissimilarity}
 \usage{
 duppSorensen(x, ...)
@@ -60,15 +61,25 @@ duppSorensen(x, ...)
 \method{duppSorensen}{list}(
   x,
   conf.level = 0.95,
-  check.table = TRUE,
   boot = FALSE,
   nboot = 10000,
+  check.table = TRUE,
+  ...
+)
+
+\method{duppSorensen}{tableList}(
+  x,
+  conf.level = 0.95,
+  boot = FALSE,
+  nboot = 10000,
+  check.table = TRUE,
   ...
 )
 }
 \arguments{
 \item{x}{either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
-or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.}
+or a "character" (a set of gene identifiers) or "list" or "tableList" object.
+See the details section for more information.}
 
 \item{...}{additional arguments for function \code{buildEnrichTable}.}
 
@@ -87,7 +98,8 @@ Then, the argument \code{conf.level} is ignored.}
 \item{boot}{boolean. If TRUE, \code{z.conf.level} is computed by means of a bootstrap
 approach instead of the asymptotic normal approach. Defaults to FALSE.}
 
-\item{nboot}{numeric, number of bootstrap replicates. Ignored if \code{boot == FALSE}. Defaults to 10000.}
+\item{nboot}{numeric, number of initially planned bootstrap replicates. Ignored if
+\code{boot == FALSE}. Defaults to 10000.}
 
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table. This checking is performed by means of function
@@ -96,8 +108,12 @@ represent a 2x2 contingency table. This checking is performed by means of functi
 \item{y}{an object of class "character" representing a vector of gene identifiers.}
 }
 \value{
-In the "table", "matrix", "numeric" and "character" interfaces, the value of the Upper limit of the confidence
-interval for the Sorensen-Dice dissimilarity. In the "list" interface, the symmetric matrix of all pairwise upper limits.
+In the "table", "matrix", "numeric" and "character" interfaces, the value of the Upper
+limit of the confidence interval for the Sorensen-Dice dissimilarity.
+When \code{boot == TRUE}, this result also haves a an extra attribute: "eff.nboot" which
+corresponds to the number of effective bootstrap replicats, see the details section.
+In the "list" and "tableList" interfaces, the result is the symmetric matrix
+of all pairwise upper limits.
 }
 \description{
 Upper limit of a one-sided confidence interval (0, dUpp] for the Sorensen-Dice dissimilarity
@@ -105,11 +121,12 @@ Upper limit of a one-sided confidence interval (0, dUpp] for the Sorensen-Dice d
 \details{
 This function computes the upper limit of a one-sided confidence interval for the Sorensen-Dice dissimilarity,
 given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
-or a "numeric" object):\tabular{ll}{
-   n_11 \tab n_10 \cr
-   n_01 \tab n_00 \cr
-}
+or a "numeric" object):
 
+\tabular{rr}{
+n11 \tab n01 \cr
+n10 \tab n00,
+}
 
 The subindex '11' corresponds to those
 GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,
@@ -119,7 +136,7 @@ is ignored in the computations, except if \code{boot == TRUE}.
 
 In the "numeric" interface, if \code{length(x) >= 4}, the values are interpreted
 as
-\eqn{(n_{11}, n_{01}, n_{10}), n_{00})}{%
+\eqn{(n_{11}, n_{01}, n_{10}, n_{00})}{%
 (n_11, n_01, n_10, n_00)}, always in this order and discarding extra values if necessary.
 
 Arguments \code{dis}, \code{se} and \code{z.conf.level} are not required. If known in advance (e.g., as
@@ -132,6 +149,16 @@ and ^se for the estimate of its standard error.
 In fact, the normal is its limiting distribution but, for finite samples, the true sampling
 distribution may present departures from normality (mainly with some inflation in the
 left tail).
+The bootstrap method provides a better approximation to the true sampling distribution.
+In the bootstrap approach, \code{nboot} new bootstrap contingency tables are generated from a
+multinomial distribution with parameters
+\code{size =} \eqn{n = n_{11} + n_{01} + n_{10} + n_{00}}{%
+n11 + n01 + n10 + n00} and probabilities
+\eqn{(n_{11} / n, n_{01} / n, n_{10}, n_{00} / n)}{\%}.
+Sometimes, some of these generated tables may present so low
+frequencies of enrichment that make them unable for Sorensen-Dice computations. As a consequence,
+the number of effective bootstrap samples may be lower than the number of initially planned bootstrap
+samples \code{nboot}.
 Computing in advance the value of argument \code{z.conf.level} may be a way to cope with
 these departures from normality, by means of a more adequate quantile function.
 Alternatively, if \code{boot == TRUE}, a bootstrap quantile is internally computed.
@@ -143,8 +170,29 @@ these gene lists as a 2x2 contingency table of joint enrichment. This last task 
 function, like p and q cut-off values to stablish enrichment.
 
 In the "list" interface, the argument must be a list of "character" vectors, each one
-representing a gene list (character identifiers). Then, all pairwise upper limits of the dissimilarity between
-these gene lists are computed.
+representing a gene list (character identifiers). Then, all pairwise upper limits of
+the dissimilarity between these gene lists are computed.
+
+In the "tableList" interface, the upper limits are computed over each one of these tables.
+Given gene lists (i.e. "character" vectors of gene identifiers) l1, l2, ..., lk,
+an object of class "tableList" (typically constructed by a call to function
+\code{\link{buildEnrichTable}}) is a list of lists of
+contingency tables t(i,j) generated from each pair of gene lists i and j, with the
+following structure:
+
+$l2
+
+$l2$l1$t(2,1)
+
+$l3
+
+$l3$l1$t(3,1), $l3$l2$t(3,2)
+
+...
+
+$lk
+
+$lk$l1$t(k,1), $lk$l2$t(k,2), ..., $lk$l(k-1)t(k,k-1)
 }
 \section{Methods (by class)}{
 \itemize{
@@ -157,15 +205,15 @@ these gene lists are computed.
 \item \code{character}: S3 method for class "character"
 
 \item \code{list}: S3 method for class "list"
+
+\item \code{tableList}: S3 method for class "tableList"
 }}
 
 \examples{
 # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
 # of GO items in ontology BP at level 3.
 data(tab_atlas.sanger_BP3)
-tab_atlas.sanger_BP3
-# Gene universe:
-data(humanEntrezIDs)
+?tab_atlas.sanger_BP3
 duppSorensen(tab_atlas.sanger_BP3)
 dSorensen(tab_atlas.sanger_BP3) + qnorm(0.95) * seSorensen(tab_atlas.sanger_BP3)
 # Using the bootstrap approximation instead of the normal approximation to
@@ -176,23 +224,25 @@ duppSorensen(tab_atlas.sanger_BP3, boot = TRUE)
 duppSorensen(c(56, 1, 30, 47))
 duppSorensen(c(56, 1, 30))
 
-# Upper confidence limit for the Sorensen-Dice dissimilarity, from scratch, 
+# Upper confidence limit for the Sorensen-Dice dissimilarity, from scratch,
 # directly from two gene lists:
-# (These examples may be considerably time consuming due to many enrichment 
+# (These examples may be considerably time consuming due to many enrichment
 # tests to build the contingency tables of mutual enrichment)
+# data(pbtGeneLists)
 # ?pbtGeneLists
+# data(humanEntrezIDs)
 # duppSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
-#              listNames = names(pbtGeneLists)[c(2,4)],
 #              onto = "CC", GOLevel = 5,
 #              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Even more time consuming (all pairwise values):
 # duppSorensen(pbtGeneLists,
 #              onto = "CC", GOLevel = 5,
 #              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-
 }
 \seealso{
-\code{\link{nice2x2Table}} for checking and reformatting data,
+\code{\link{buildEnrichTable}} for constructing contingency tables of mutual
+enrichment,
+\code{\link{nice2x2Table}} for checking contingency tables validity,
 \code{\link{dSorensen}} for computing the Sorensen-Dice dissimilarity,
 \code{\link{seSorensen}} for computing the standard error of the dissimilarity,
 \code{\link{equivTestSorensen}} for an equivalence test.

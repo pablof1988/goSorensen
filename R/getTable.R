@@ -7,7 +7,8 @@
 #'
 #' @param x an object of class "equivSDhtest" or "equivSDhtestList" or "allEquivSDtest".
 #' @param onto character, a vector with one or more of "BP", "CC" or "MF", ontologies to access.
-#' @param GOLevel numeric, a vector with one or more GO levels to access.
+#' @param GOLevel numeric or character, a vector with one or more GO levels to access.
+#' See the details section and the examples.
 #' @param listNames character(2), the names of a pair of gene lists.
 #' @param ... Additional parameters.
 #'
@@ -25,14 +26,17 @@
 #' \code{onto, GOlevel} and \code{listNames} (or all ontologies, levels or pairs of gene lists
 #' present in \code{x} if one or more of these arguments are missing).
 #'
+#' @details
+#' Argument \code{GOLevel} can be of class "character" or "numeric". In the first case, the GO
+#' levels must be specified like \code{"level 6"} or \code{c("level 4", "level 5", "level 6")}
+#' In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{4:6}.
+#'
 #' @examples
 #' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
 #' # 'waldman' and 'atlas', at level 4 of the BP ontology:
 #' data(waldman_atlas.BP.4)
 #' waldman_atlas.BP.4
 #' class(waldman_atlas.BP.4)
-#' # Gene universe:
-#' data(humanEntrezIDs)
 #' # This may correspond to the result of code like:
 #' # waldman_atlas.BP.4 <- equivTestSorensen(
 #' #   allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
@@ -43,7 +47,7 @@
 #'
 #' # All pairwise equivalence tests at level 4 of the BP ontology
 #' data(BP.4)
-#' BP.4
+#' ?BP.4
 #' class(BP.4)
 #' # This may correspond to a call like:
 #' # BP.4 <- equivTestSorensen(allOncoGeneLists,
@@ -53,7 +57,7 @@
 #'
 #' # Equivalence test iterated over all GO ontologies and levels 3 to 10:
 #' data(cancerEquivSorensen)
-#' cancerEquivSorensen
+#' ?cancerEquivSorensen
 #' class(cancerEquivSorensen)
 #' # This may correspond to code like:
 #' # cancerEquivSorensen <- allEquivTestSorensen(allOncoGeneLists,
@@ -64,7 +68,8 @@
 #' getTable(cancerEquivSorensen)
 #' # Contingency tables only for some GO ontologies, levels or pairs of gene lists:
 #' getTable(cancerEquivSorensen, GOLevel = "level 6")
-#' getTable(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
+#' getTable(cancerEquivSorensen, GOLevel = 6)
+#' getTable(cancerEquivSorensen, GOLevel = 4:6, listNames = c("waldman", "sanger"))
 #' getTable(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
 #' getTable(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
 #'          listNames = c("waldman", "sanger"))
@@ -103,8 +108,16 @@ getTable.AllEquivSDhtest <- function(x,
   }
   if (missing(GOLevel)) {
     GOLevel <- names(x[[1]])
+  } else {
+    if (is.numeric(GOLevel)) {
+      GOLevel <- paste0("level ", GOLevel)
+    }
   }
   allLists <- missing(listNames)
+  if (!allLists) {
+    stopifnot("'listNames' must be a 'character' of length 2" =
+                is.character(listNames) && (length(listNames) == 2))
+  }
   result <- lapply(onto, function(ionto) {
     resLev <- lapply(GOLevel, function(ilev) {
       if (allLists) {
@@ -118,23 +131,14 @@ getTable.AllEquivSDhtest <- function(x,
           return(resList2)
         })
         names(resList1) <- namsList1
-        # if (simplify) {
-        #   resList1 <- unlist(resList1, recursive = FALSE)
-        # }
         return(resList1)
       }else {
         return(x[[ionto]][[ilev]][[listNames[1]]][[listNames[2]]]$enrichTab)
       }
     })
     names(resLev) <- GOLevel
-    # if (simplify && allLists) {
-    #   resLev <- unlist(resLev, recursive = FALSE)
-    # }
     return(resLev)
   })
   names(result) <- onto
-  # if (simplify) {
-  #   result <- unlist(result, recursive = FALSE)
-  # }
   return(result)
 }

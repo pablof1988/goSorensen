@@ -1,4 +1,5 @@
 #' An example of "equivSDhtestList" object resulting from a call to 'equivSorensenTest'
+#'
 #' The result of all pairwise Sorensen-Dice equivalence tests between the gene lists in data
 #' \code{\link{allOncoGeneLists}} which is automatically charged with this package.
 #' To perform the tests, the information in these data was summarized as 2x2 contingency tables of GO items

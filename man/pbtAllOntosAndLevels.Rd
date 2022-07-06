@@ -24,6 +24,7 @@ these gene lists.
 \examples{
 # This code may help to understand the structure of these data:
 data(pbtAllOntosAndLevels)
+?pbtAllOntosAndLevels
 names(pbtAllOntosAndLevels)
 names(pbtAllOntosAndLevels$BP)
 names(pbtAllOntosAndLevels$BP$`level 4`)

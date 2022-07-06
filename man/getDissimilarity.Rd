@@ -25,7 +25,8 @@ of a matrix.}
 
 \item{onto}{character, a vector with one or more of "BP", "CC" or "MF", ontologies to access.}
 
-\item{GOLevel}{numeric, a vector with one or more GO levels to access.}
+\item{GOLevel}{numeric or character, a vector with one or more GO levels to access.
+See the details section and the examples.}
 
 \item{listNames}{character(2), the names of a pair of gene lists.}
 }
@@ -46,6 +47,11 @@ Given objects representing the result(s) of one or more equivalence tests
 result of functions 'equivTestSorensen' and 'allEquivTestSorensen')
 this function returns the estimated dissimilarities in the tests.
 }
+\details{
+Argument \code{GOLevel} can be of class "character" or "numeric". In the first case, the GO
+levels must be specified like \code{"level 6"} or \code{c("level 4", "level 5", "level 6")}
+In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{4:6}.
+}
 \section{Methods (by class)}{
 \itemize{
 \item \code{equivSDhtest}: S3 method for class "equivSDhtest"
@@ -61,8 +67,6 @@ this function returns the estimated dissimilarities in the tests.
 data(waldman_atlas.BP.4)
 waldman_atlas.BP.4
 class(waldman_atlas.BP.4)
-# Gene universe:
-data(humanEntrezIDs)
 # This may correspond to the result of code like:
 # waldman_atlas.BP.4 <- equivTestSorensen(
 #   allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
@@ -73,7 +77,7 @@ getDissimilarity(waldman_atlas.BP.4)
 
 # All pairwise equivalence tests at level 4 of the BP ontology:
 data(BP.4)
-BP.4
+?BP.4
 class(BP.4)
 # This may correspond to a call like:
 # BP.4 <- equivTestSorensen(allOncoGeneLists,
@@ -84,7 +88,7 @@ getDissimilarity(BP.4, simplify = FALSE)
 
 # Equivalence test iterated over all GO ontologies and levels 3 to 10:
 data(cancerEquivSorensen)
-cancerEquivSorensen
+?cancerEquivSorensen
 class(cancerEquivSorensen)
 # This may correspond to code like:
 # (By default, the tests are iterated over all GO ontologies and for levels 3 to 10)
@@ -94,12 +98,15 @@ class(cancerEquivSorensen)
 # All Sorensen-Dice dissimilarities:
 getDissimilarity(cancerEquivSorensen)
 getDissimilarity(cancerEquivSorensen, simplify = FALSE)
+
 # Dissimilarities only for some GO ontologies, levels or pairs of gene lists:
 getDissimilarity(cancerEquivSorensen, GOLevel = "level 6")
+getDissimilarity(cancerEquivSorensen, GOLevel = 6)
+getDissimilarity(cancerEquivSorensen, GOLevel = 4:6)
 getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
 getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
-getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
-getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP", simplify = FALSE)
+getDissimilarity(cancerEquivSorensen, GOLevel = 4:6, onto = "BP")
+getDissimilarity(cancerEquivSorensen, GOLevel = 4:6, onto = "BP", simplify = FALSE)
 getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
                  listNames = c("waldman", "sanger"))
 getDissimilarity(cancerEquivSorensen$BP$`level 4`)

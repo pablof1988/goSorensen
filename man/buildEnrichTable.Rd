@@ -4,7 +4,9 @@
 \alias{buildEnrichTable}
 \alias{buildEnrichTable.default}
 \alias{buildEnrichTable.character}
-\title{Creates a 2x2 enrichment contingency table from two gene lists}
+\alias{buildEnrichTable.list}
+\title{Creates a 2x2 enrichment contingency table from two gene lists, or all pairwise contingency
+tables for a "list" of gene lists.}
 \usage{
 buildEnrichTable(x, ...)
 
@@ -39,9 +41,28 @@ buildEnrichTable(x, ...)
   qvalCutoff = 0.05,
   ...
 )
+
+\method{buildEnrichTable}{list}(
+  x,
+  check.table = TRUE,
+  geneUniverse,
+  orgPackg,
+  onto,
+  GOLevel,
+  restricted = FALSE,
+  pAdjustMeth = "BH",
+  pvalCutoff = 0.01,
+  qvalCutoff = 0.05,
+  parallel = FALSE,
+  nOfCores = min(detectCores() - 1, length(x) - 1),
+  ...
+)
 }
 \arguments{
-\item{x}{an object of class "character" (or coerzable to "character") representing a vector of gene identifiers.}
+\item{x}{either an object of class "character" (or coerzable to "character") representing a
+vector of gene identifiers or an object of class "list". In this second case, each element
+of the list must be a "character" vector of gene identifiers. Then, all pairwise
+contingency tables between these gene lists are built.}
 
 \item{...}{Additional parameters for internal use (not used for the moment)}
 
@@ -49,7 +70,7 @@ buildEnrichTable(x, ...)
 
 \item{listNames}{a character(2) with the gene lists names originating the cross-tabulated enrichment frequencies.}
 
-\item{check.table}{boolean. The resulting table must be checked. Defaults to TRUE.}
+\item{check.table}{Logical The resulting table must be checked. Defaults to TRUE.}
 
 \item{geneUniverse}{character vector containing all genes from where geneLists have been extracted.}
 
@@ -59,7 +80,7 @@ buildEnrichTable(x, ...)
 
 \item{GOLevel}{An integer, the GO ontology level.}
 
-\item{restricted}{Boolean variable to decide how tabulation of GOIDs is performed. Defaults to FALSE.
+\item{restricted}{Logical variable to decide how tabulation of GOIDs is performed. Defaults to FALSE.
 See the details section.}
 
 \item{pAdjustMeth}{string describing the adjust method, either "BH", "BY" or "Bonf", defaults to 'BH'.}
@@ -67,15 +88,42 @@ See the details section.}
 \item{pvalCutoff}{A numeric value. Defaults to 0.01.}
 
 \item{qvalCutoff}{A numeric value. Defaults to 0.05.}
+
+\item{parallel}{Logical. Defaults to FALSE but put it at TRUE for parallel computation.}
+
+\item{nOfCores}{Number of cores for parallel computations. Only in "list" interface.}
 }
 \value{
-an object of class "table" representing a 2x2 contingency table
-interpretable as the cross-tabulation of the enriched GO items in two gene lists:
-"Number of enriched items in list 1 (TRUE, FALSE)" x "Number of enriched items in
-list 2 (TRUE, FALSE)".
+in the "character" interface, an object of class "table" is returned.
+It represents a 2x2 contingency table interpretable as the cross-tabulation of
+the enriched GO items in two gene lists: "Number of enriched items in list 1
+(TRUE, FALSE)" x "Number of enriched items in list 2 (TRUE, FALSE)".
+In the "list" interface, the result is an object of class "tableList" with all
+pairwise tables.
+Class "tableList" corresponds to objects representing all mutual enrichment contingency tables
+generated in a pairwise fashion:
+Given gene lists (i.e. "character" vectors of gene identifiers) l1, l2, ..., lk,
+an object of class "tableList" is a list of lists of
+contingency tables t(i,j) generated from each pair of gene lists i and j, with the
+following structure:
+
+$l2
+
+$l2$l1$t(2,1)
+
+$l3
+
+$l3$l1$t(3,1), $l3$l2$t(3,2)
+
+...
+
+$lk
+
+$lk$l1$t(k,1), $lk$l2$t(k,2), ..., $lk$l(k-1)t(K,k-1)
 }
 \description{
-Creates a 2x2 enrichment contingency table from two gene lists
+Creates a 2x2 enrichment contingency table from two gene lists, or all pairwise contingency
+tables for a "list" of gene lists.
 }
 \details{
 Unrestricted tabulation crosses _all_ GO Terms located at the level indicated by `GOLev`
@@ -90,6 +138,8 @@ appears as being enriched.
 \item \code{default}: S3 default method
 
 \item \code{character}: S3 method for class "character"
+
+\item \code{list}: S3 method for class "list"
 }}
 
 \examples{
@@ -100,8 +150,8 @@ data(allOncoGeneLists)
 ?allOncoGeneLists
 # Table of mutual GO node enrichment between gene lists Vogelstein and sanger,
 # for ontology MF at GO level 6 (only first 50 genes, to improve speed).
-vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]][seq_len(50)],
-                                allOncoGeneLists[["sanger"]][seq_len(50)],
+vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]][1:50],
+                                allOncoGeneLists[["sanger"]][1:50],
                                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
                                 onto = "MF", GOLevel = 6, listNames = c("Vogelstein", "sanger"))
 vog.VS.sang

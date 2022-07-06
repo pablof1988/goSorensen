@@ -7,6 +7,7 @@
 \alias{dSorensen.numeric}
 \alias{dSorensen.character}
 \alias{dSorensen.list}
+\alias{dSorensen.tableList}
 \title{Computation of the Sorensen-Dice dissimilarity}
 \usage{
 dSorensen(x, ...)
@@ -20,10 +21,13 @@ dSorensen(x, ...)
 \method{dSorensen}{character}(x, y, check.table = TRUE, ...)
 
 \method{dSorensen}{list}(x, check.table = TRUE, ...)
+
+\method{dSorensen}{tableList}(x, check.table = TRUE, ...)
 }
 \arguments{
 \item{x}{either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
-or a "character" (a set of gene identifiers) or "list" object. See the details section for more information.}
+or a "character" (a set of gene identifiers) or "list" or "tableList" object.
+See the details section for more information.}
 
 \item{...}{extra parameters for function \code{buildEnrichTable}.}
 
@@ -33,19 +37,21 @@ represent a 2x2 contingency table, by means of function \code{nice2x2Table}.}
 \item{y}{an object of class "character" representing a vector of gene identifiers.}
 }
 \value{
-In the "table", "matrix", "numeric" and "character" interfaces, the value of the Sorensen-Dice
-dissimilarity. In the "list" interface, the symmetric matrix of all pairwise dissimilarities.
+In the "table", "matrix", "numeric" and "character" interfaces, the value of the
+Sorensen-Dice dissimilarity. In the "list" and "tableList" interfaces, the symmetric matrix
+of all pairwise Sorensen-Dice dissimilarities.
 }
 \description{
 Computation of the Sorensen-Dice dissimilarity
 }
 \details{
 Given a 2x2 arrangement of frequencies (either implemented as a "table", a "matrix"
-or a "numeric" object):\tabular{ll}{
-   n_11 \tab n_10 \cr
-   n_01 \tab n_00 \cr
-}
+or a "numeric" object):
 
+\tabular{rr}{
+n11 \tab n01 \cr
+n10 \tab n00,
+}
 
 this function computes the Sorensen-Dice dissimilarity
 \deqn{\frac{n_{10} + n_{01}}{2 n_{11} + n_{10} + n_{01}}.}{{%
@@ -59,17 +65,39 @@ is ignored in the computations.
 
 In the "numeric" interface, if \code{length(x) >= 3}, the values are interpreted
 as
-\eqn{(n_{11}, n_{01}, n_{10})}{%
-(n_11, n_01, n_10)}, always in this order and discarding extra values if necessary.
-The result is correct, regardless the frequencies are absolute or relative.
+\eqn{(n_{11}, n_{01}, n_{10}, n_{00})}{%
+(n_11, n_01, n_10, n_00)}, always in this order and discarding extra values if necessary.
+The result is correct, regardless the frequencies being absolute or relative.
 
 If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
 dissimilarity between lists \code{x} and \code{y} is computed, after summarizing these gene lists
 as a 2x2 contingency table of joint enrichment.
 
-In the "list" interface, the argument must be a list of "character" vectors, each one
+If \code{x} is an object of class "list", the argument must be a list of "character" vectors, each one
 representing a gene list (character identifiers). Then, all pairwise dissimilarities between these
 gene lists are computed.
+
+If \code{x} is an object of class "tableList", the Sorensen-Dice dissimilarity is computed
+over each one of these tables.
+Given k gene lists (i.e. "character" vectors of gene identifiers) l1, l2, ..., lk,
+an object of class "tableList" (typically constructed by a call to function
+\code{\link{buildEnrichTable}}) is a list of lists of
+contingency tables t(i,j) generated from each pair of gene lists i and j, with the
+following structure:
+
+$l2
+
+$l2$l1$t(2,1)
+
+$l3
+
+$l3$l1$t(3,1), $l3$l2$t(3,2)
+
+...
+
+$lk
+
+$lk$l1$t(k,1), $lk$l2$t(k,2), ..., $lk$l(k-1)t(k,k-1)
 }
 \section{Methods (by class)}{
 \itemize{
@@ -82,16 +110,16 @@ gene lists are computed.
 \item \code{character}: S3 method for class "character"
 
 \item \code{list}: S3 method for class "list"
+
+\item \code{tableList}: S3 method for class "tableList"
 }}
 
 \examples{
 # Gene lists 'atlas' and 'sanger' in 'allOncoGeneLists' dataset. Table of joint enrichment
 # of GO items in ontology BP at level 3.
 data(tab_atlas.sanger_BP3)
-?tab_atlas.sanger_BP3
 tab_atlas.sanger_BP3
-# Gene universe:
-data(humanEntrezIDs)
+?tab_atlas.sanger_BP3
 dSorensen(tab_atlas.sanger_BP3)
 
 # Table represented as a vector:
@@ -107,17 +135,17 @@ conti3 <- c(56, 1, 30)
 dSorensen(conti3)
 
 # Sorensen-Dice dissimilarity from scratch, directly from two gene lists:
-# (These examples may be considerably time consuming due to many enrichment 
+# (These examples may be considerably time consuming due to many enrichment
 # tests to build the contingency tables of mutual enrichment)
+# data(pbtGeneLists)
 # ?pbtGeneLists
+# data(humanEntrezIDs)
 # (Time consuming, building the table requires many enrichment tests:)
 # dSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
-#           listNames = names(pbtGeneLists)[c(2,4)],
 #           onto = "CC", GOLevel = 3,
 #           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Essentially, the above code makes the same as:
 # tab.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
-#                                     listNames = names(pbtGeneLists)[c(2,4)],
 #                                     onto = "CC", GOLevel = 3,
 #                                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # dSorensen(tab.IRITD3vsKT1)
@@ -127,7 +155,9 @@ dSorensen(conti3)
 #           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 }
 \seealso{
-\code{\link{nice2x2Table}} for checking data,
+\code{\link{buildEnrichTable}} for constructing contingency tables of mutual
+enrichment,
+\code{\link{nice2x2Table}} for checking contingency tables validity,
 \code{\link{seSorensen}} for computing the standard error of the dissimilarity,
 \code{\link{duppSorensen}} for the upper limit of a one-sided confidence interval
 of the dissimilarity, \code{\link{equivTestSorensen}} for an equivalence test.

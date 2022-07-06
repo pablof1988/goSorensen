@@ -22,7 +22,7 @@ upgrade(x, ...)
 to recompute the test(s) according to these parameters.}
 }
 \value{
-An object of the same class than parameter \code{x}.
+An object of the same class than \code{x}.
 }
 \description{
 Recompute the test (or tests) from an object of class "equivSDhtest", "equivSDhtestList" or
@@ -45,10 +45,10 @@ equivalence test for new values of any of the parameters \code{d0} or \code{conf
 # 'allOncoGeneLists', at level 4 of the BP ontology:
 data(waldman_atlas.BP.4)
 waldman_atlas.BP.4
-# Gene universe:
-data(humanEntrezIDs)
 class(waldman_atlas.BP.4)
 # This may correspond to the result of code like:
+# data(allOncoGeneLists)
+# data(humanEntrezIDs)
 # waldman_atlas.BP.4 <- equivTestSorensen(
 #   allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
 #   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
@@ -59,20 +59,19 @@ upgrade(waldman_atlas.BP.4, d0 = 1/(1 + 2*1.25), conf.level = 0.99)
 
 # All pairwise equivalence tests at level 4 of the BP ontology
 data(BP.4)
-BP.4
+?BP.4
 class(BP.4)
 # This may correspond to a call like:
+data(allOncoGeneLists)
+data(humanEntrezIDs)
 # BP.4 <- equivTestSorensen(allOncoGeneLists,
 #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #                           onto = "BP", GOLevel = 4)
-# Upgrade these tests to d0 = 0.2857
-# (Caution: some of the contingency tables may be inadequate due to zero
-# enrichment frequencies):
-tryCatch(upgrade(BP.4, d0 = 1/(1 + 2*1.25)), error = function(e) {return(e)})
+upgrade(BP.4, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
 
 data(cancerEquivSorensen)
-cancerEquivSorensen
+?cancerEquivSorensen
 class(cancerEquivSorensen)
-tryCatch(upgrade(cancerEquivSorensen, d0 = 1/(1 + 2*1.25)), error = function(e) {return(e)})
+upgrade(cancerEquivSorensen, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
 
 }

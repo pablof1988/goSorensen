@@ -9,14 +9,13 @@ author:
   affiliation: Escuela Superior Politécnica de Chimborazo (ESPOCH), Facultad de Ciencias, Carrera de Estadística.
 package: goSorensen
 abstract: >
-  This vignette provides an introduction to goSorensen [@goSorensen] package, which was built to determine equivalence between features lists. The method is based on the Sorensen–Dice index and the joint frequencies of GO term enrichment. 
+  This vignette provides an introduction to goSorensen  package, which was built to determine equivalence between features lists. The method is based on the Sorensen–Dice index and the joint frequencies of GO term enrichment. 
   
   Starting from an introduction of the asociated technique and a description of the data used, this vignette explain how to: i) perform the equivalence test from contingency tables of joint enrichment or directly from features lists (either using a normal asymptotic or a bootstrap approximation), ii) collect specific fields of the test results like the p-value, the upper limit of the confidence interval or standard errors and iii) Another statistics related to the Sorensen-Dice dissimilarity
   
 output:
   BiocStyle::html_document:
     toc_float: true
-bibliography: refs.bib
 vignette: >
   %\VignetteIndexEntry{An introduction to equivalence test between feature lists using goSorensen.}
   %\VignetteEngine{knitr::rmarkdown}
@@ -37,7 +36,8 @@ library(goSorensen)
 ```
 
 # Introduction
-The goal of **goSorensen** is to implement the equivalence test introduced in Flores, P., Salicrú, M., Sánchez-Pla, A. and Ocaña, J.(2022) "An equivalence test between features lists, based on the Sorensen - Dice index and the joint frequencies of GO node enrichment", BMC Bioinformatics, 2022 23:207. 
+
+The goal of **goSorensen** is to implement the equivalence test introduced in Flores, P., Salicrú, M., Sánchez-Pla, A. and Ocaña, J.(2022) "An equivalence test between features lists, based on the Sorensen - Dice index and the joint frequencies of GO node enrichment", BMC Bioinformatics, 2022 23:207.
 
 Given two gene lists, $L_1$ and $L_2$, (the data) and a given set of *n* Gene Ontology (GO) terms (the frame of reference for biological information in these lists), the test is devoted to answer the following question (quite informally stated for the moment): The dissimilarity between the biological information in both lists, is it negligible? To measure the dissimilarity we use the Sorensen-Dice index:
 
@@ -52,9 +52,11 @@ More precisely, the above problem can be restated as follows: Given a negligibil
 For the moment, the reference set of GO terms can be only all those GO terms in a given level of one GO ontology, either BP, CC or MF.
 
 # Installation
-goSorensen package has to be installed with a working R version (>=4.2.0). Installation could take a few minutes on a regular desktop or laptop. Package can be installed from Bioconductor or `devtools` package, then it needs to be loaded using `library(goSorensen)`
+
+goSorensen package has to be installed with a working R version (\>=4.2.0). Installation could take a few minutes on a regular desktop or laptop. Package can be installed from Bioconductor or `devtools` package, then it needs to be loaded using `library(goSorensen)`
 
 To install from Bioconductor (recommended):
+
 ```{r, eval=FALSE}
 ## Only if BiocManager is not previosly installed:
 install.packages("BiocManager")
@@ -70,16 +72,19 @@ devtools::install_github("pablof1988/goSorensen", build_vignettes = TRUE)
 ```
 
 # Data.
-The dataset used in this vignette, `allOncoGeneLists`, is based on the gene lists compiled at <http://www.bushmanlab.org/links/genelists>, a comprehensive set of gene lists related to cancer. The package
-`goSorensen` loads this dataset by means of `data(allOncoGeneLists)`:
+
+The dataset used in this vignette, `allOncoGeneLists`, is based on the gene lists compiled at <http://www.bushmanlab.org/links/genelists>, a comprehensive set of gene lists related to cancer. The package `goSorensen` loads this dataset by means of `data(allOncoGeneLists)`:
+
 ```{r}
 data("allOncoGeneLists")
 ```
 
-It is a "list" object of length 7. Each one of its elements is a "character" with the gene identifiers of a gene list related to cancer. 
+It is a "list" object of length 7. Each one of its elements is a "character" with the gene identifiers of a gene list related to cancer.
 
 # Performing the equivalence test
+
 ## From a previously built contingency table of join enrichment
+
 Function `equivTestSorensen` performs the equivalence test. One possibility is to build first the mutual enrichment contingency table by means of the function `buildEnrichTable` and then to perform the equivalence test:
 
 ```{r}
@@ -103,6 +108,7 @@ testResult
 ```
 
 ## Directly from the gene lists.
+
 To perform the test directly from the gene lists (internally building the contingency table) is also possible:
 
 ```{r}
@@ -116,15 +122,18 @@ To save computing time, the first option (building the contingency table separat
 The above tests use a standard normal approximation to the sample distribution of the $(\hat d - d) / \widehat {se}$ statistic, where $\widehat {se}$ stands for the standard error of the sample dissimilarity, $\hat d$.
 
 ## Using a bootstrap aproximation.
+
 Alternatively, it is possible to estimate this distribution by means of bootstrap:
 
 ```{r}
 boot.testResult <- equivTestSorensen(enrichTab, d0 = 0.2857, boot = TRUE)
 boot.testResult
 ```
+
 For low frequencies in the contingency table, bootstrap is a more conservative but preferable approach, with better type I error control.
 
 # Accessing to specific fields
+
 To access specific fields of the test result:
 
 ```{r}
@@ -142,6 +151,7 @@ getNboot(boot.testResult)
 ```
 
 # Other statistics related to the Sorensen-Dice dissimilarity
+
 Sometimes, it would be interesting not to perform the full equivalence test but to compute other statistics related to the Sorensen-Dice dissimilarity:
 
 ```{r}
@@ -171,6 +181,7 @@ duppSorensen(allOncoGeneLists[["Vogelstein"]], allOncoGeneLists[["sanger"]],
 ```
 
 # All pairwise tests (or other computations)
+
 For objects of class `list`, all these functions (`equivTestSorensen`, `dSorensen`, `seSorensen`, `duppSorensen`) assume a `list` of `character` objects containing gene identifiers and all pairwise computations are performed. For example, to obtain the matrix of all pairwise Sorensen-Dice dissimilarities:
 
 ```{r}
@@ -190,6 +201,7 @@ getDissimilarity(allTests, simplify = FALSE)
 ```
 
 # Alternative representations of contingency tables of joint enrichment
+
 Besides admitting objects of class `table`, `character` and `list`, functions `equivTestSorensen`, `dSorensen`, `seSorensen` and `duppSorensen` are also adequate for contingency tables represented as a plain `matrix` or a `numeric`:
 
 ```{r}
@@ -208,17 +220,14 @@ duppSorensen(len3Vec)
 try(duppSorensen(len3Vec, boot = TRUE), TRUE)
 ```
 
-
-# Session information {-}
+# Session information {.unnumbered}
 
 All software and respective versions used to produce this document are listed below.
+
 ```{r sessionInfo}
 sessionInfo()
 ```
 
-# References {-}
+# References {.unnumbered}
 
----
-nocite: |
-  @flores2022equivalence
----
+Flores, P., Salicrú, M., Sánchez-Pla, A. et al. An equivalence test between features lists, based on the Sorensen--Dice index and the joint frequencies of GO term enrichment. BMC Bioinformatics 23, 207 (2022). <https://doi.org/10.1186/s12859-022-04739-2>

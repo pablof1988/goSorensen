@@ -18,6 +18,9 @@ crossTabGOIDsUnrestricted(GO1, GO2, onto, GOLev, listNames = NULL)
 \item{listNames}{character vector with names of the genelists that generated the
 enriched GOIDs}
 }
+\value{
+a crosstabulation between two lists of enriched GOTerms
+}
 \description{
 This function performs a crosstabulation between two lists of enriched GOTerms
 The lists are intended to have been obtained from enrichment analyses performed

@@ -19,6 +19,7 @@ extractGOIDs <- function (enriched) {
 #' @param pAdjustMeth string describing the adjust method. Belongs to c('BH', 'BY', 'Bonf')
 #' @param pvalCutoff A numeric value
 #' @param qvalCutoff A numeric value
+#' @return standard tests of enrichment from a gene list
 enrichOnto <- function (geneList,
                         geneUniverse,
                         orgPackage = 'org.Hs.eg.db',
@@ -44,6 +45,7 @@ enrichOnto <- function (geneList,
 #' @param GOLev An integer
 #' @param listNames character vector with names of the genelists that generated the
 #' enriched GOIDs
+#' @return a crosstabulation between two lists of enriched GOTerms
 crossTabGOIDsUnrestricted <- function (GO1, GO2, onto, GOLev, listNames = NULL)
 {
   levelIDs <- getGOLevel(onto = onto, level = GOLev)
@@ -67,6 +69,7 @@ crossTabGOIDsUnrestricted <- function (GO1, GO2, onto, GOLev, listNames = NULL)
 #' @param geneList2 character vector containing a SECOND gene list of entrez IDs
 #' @param orgPackage A string wih the name of the annotation package
 #' @param restricted Boolean variable to decide how tabulation is performed.
+#' @return GO identifiers appearing between GO ancestors of at least one GeneList
 GOIDsInLevel <- function (GOLev, onto, geneList1 = NULL, geneList2 = NULL, orgPackage = NULL,
                           restricted = TRUE){
   levelIDs <- getGOLevel(onto = onto, level = GOLev)
@@ -98,6 +101,7 @@ GOIDsInLevel <- function (GOLev, onto, geneList1 = NULL, geneList2 = NULL, orgPa
 #' Restricted tabulation crosses only terms from the selected GO level that are _common to ancestor terms of either list_.
 #' That is, if one term in the selected GO level is not an ancestor of at least one of the gene list most specific GO terms
 #' it is excluded from the GO Level's terms because it is impossible that it appears as being enriched.
+#' @return performs a crosstabulation between two lists of enriched GOTerms
 crossTabGOIDs <- function (GO1, GO2, onto, GOLev, listNames = NULL,
                            geneList1 = NULL, geneList2 = NULL, orgPackage = NULL,
                            restricted = FALSE)
@@ -133,6 +137,7 @@ crossTabGOIDs <- function (GO1, GO2, onto, GOLev, listNames = NULL,
 #' @param pAdjustMeth string describing the adjust method. Belongs to c('BH', 'BY', 'Bonf')
 #' @param pvalCutoff A numeric value
 #' @param qvalCutoff A numeric value
+#' @return a cross-tabulation of enriched and non-enriched GO terms from two gene lists
 crossTabGOIDs4GeneLists <- function (genelist1, genelist2, geneUniverse, orgPackg,
                                      onto, GOLev, restricted = FALSE,
                                      pAdjustMeth = "BH", pvalCutoff = 0.01, qvalCutoff = 0.05)

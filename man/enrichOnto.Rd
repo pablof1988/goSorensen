@@ -29,6 +29,9 @@ enrichOnto(
 
 \item{qvalCutoff}{A numeric value}
 }
+\value{
+standard tests of enrichment from a gene list
+}
 \description{
 This function performs standard tests of enrichment from a gene list
 }

@@ -26,6 +26,9 @@ GOIDsInLevel(
 
 \item{restricted}{Boolean variable to decide how tabulation is performed.}
 }
+\value{
+GO identifiers appearing between GO ancestors of at least one GeneList
+}
 \description{
 This function extends getGOLevel returning only GO identifiers appearing between GO ancestors of at least one GeneList
 }

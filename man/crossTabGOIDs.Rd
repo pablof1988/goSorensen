@@ -39,6 +39,9 @@ Restricted tabulation crosses only terms from the selected GO level that are _co
 That is, if one term in the selected GO level is not an ancestor of at least one of the gene list most specific GO terms
 it is excluded from the GO Level's terms because it is impossible that it appears as being enriched.}
 }
+\value{
+performs a crosstabulation between two lists of enriched GOTerms
+}
 \description{
 This function performs a crosstabulation between two lists of enriched GOTerms
 The lists are intended to have been obtained from enrichment analyses performed on two gene lists

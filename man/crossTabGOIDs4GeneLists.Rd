@@ -42,6 +42,9 @@ it is excluded from the GO Level's terms because it is impossible that it appear
 
 \item{qvalCutoff}{A numeric value}
 }
+\value{
+a cross-tabulation of enriched and non-enriched GO terms from two gene lists
+}
 \description{
 This function builds a cross-tabulation of enriched and non-enriched GO terms
 from two gene lists

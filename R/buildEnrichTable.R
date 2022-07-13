@@ -65,8 +65,8 @@
 #' ?allOncoGeneLists
 #' # Table of mutual GO node enrichment between gene lists Vogelstein and sanger,
 #' # for ontology MF at GO level 6 (only first 50 genes, to improve speed).
-#' vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]][1:50],
-#'                                 allOncoGeneLists[["sanger"]][1:50],
+#' vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]][seq_len(50)],
+#'                                 allOncoGeneLists[["sanger"]][seq_len(50)],
 #'                                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #'                                 onto = "MF", GOLevel = 6, listNames = c("Vogelstein", "sanger"))
 #' vog.VS.sang
@@ -159,8 +159,8 @@ buildEnrichTable.list <- function(x,
       cl <- makeCluster(nOfCores, type = "FORK")
     }
 
-    allTables <- parLapply(cl, 2:numLists, function(iLst1, ...) {
-      oneVsOthers <- lapply(1:(iLst1-1), function(iLst2, ...) {
+    allTables <- parLapply(cl, seq.int(2,numLists), function(iLst1, ...) {
+      oneVsOthers <- lapply(seq_len(iLst1-1), function(iLst2, ...) {
         return(buildEnrichTable.character(x[[iLst1]], x[[iLst2]],
                                           listNames = lstNams[c(iLst1, iLst2)],
                                           check.table = check.table,
@@ -170,12 +170,12 @@ buildEnrichTable.list <- function(x,
                                           pAdjustMeth = pAdjustMeth,
                                           pvalCutoff = pvalCutoff, qvalCutoff = qvalCutoff, ...))
       })
-      names(oneVsOthers) <- lstNams[1:(iLst1-1)]
+      names(oneVsOthers) <- lstNams[seq_len(iLst1-1)]
       return(oneVsOthers)
     })
   } else {
-    allTables <- lapply(2:numLists, function(iLst1, ...) {
-      oneVsOthers <- lapply(1:(iLst1-1), function(iLst2, ...) {
+    allTables <- lapply(seq.int(2,numLists), function(iLst1, ...) {
+      oneVsOthers <- lapply(seq_len(iLst1-1), function(iLst2, ...) {
         return(buildEnrichTable.character(x[[iLst1]], x[[iLst2]],
                                           listNames = lstNams[c(iLst1, iLst2)],
                                           check.table = check.table,
@@ -185,11 +185,11 @@ buildEnrichTable.list <- function(x,
                                           pAdjustMeth = pAdjustMeth,
                                           pvalCutoff = pvalCutoff, qvalCutoff = qvalCutoff, ...))
       })
-      names(oneVsOthers) <- lstNams[1:(iLst1-1)]
+      names(oneVsOthers) <- lstNams[seq_len(iLst1-1)]
       return(oneVsOthers)
     })
   }
-  names(allTables) <- lstNams[2:numLists]
+  names(allTables) <- lstNams[seq.int(2,numLists)]
   class(allTables) <- c("tableList", "list")
   return(allTables)
 }

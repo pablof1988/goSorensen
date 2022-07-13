@@ -69,7 +69,7 @@
 #' # Contingency tables only for some GO ontologies, levels or pairs of gene lists:
 #' getTable(cancerEquivSorensen, GOLevel = "level 6")
 #' getTable(cancerEquivSorensen, GOLevel = 6)
-#' getTable(cancerEquivSorensen, GOLevel = 4:6, listNames = c("waldman", "sanger"))
+#' getTable(cancerEquivSorensen, GOLevel = seq.int(4,6), listNames = c("waldman", "sanger"))
 #' getTable(cancerEquivSorensen, GOLevel = "level 6", onto = "BP")
 #' getTable(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
 #'          listNames = c("waldman", "sanger"))

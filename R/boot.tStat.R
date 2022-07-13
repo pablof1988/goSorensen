@@ -35,7 +35,7 @@
 #' values of '^dis' and '^se' are internally computed from the bootstrap data 'xBoot'.
 #'
 boot.tStat <- function(xBoot, dis) {
-  nu <- sum(xBoot[1:3])
+  nu <- sum(xBoot[seq_len(3)])
   dBoot <- (xBoot[2] + xBoot[3]) / (nu + xBoot[1])
   p11 <- xBoot[1] / nu
   p11plus <- 1 + p11

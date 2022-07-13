@@ -30,7 +30,7 @@
 #' @details
 #' Argument \code{GOLevel} can be of class "character" or "numeric". In the first case, the GO
 #' levels must be specified like \code{"level 6"} or \code{c("level 4", "level 5", "level 6")}
-#' In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{4:6}.
+#' In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{seq.int(4,6)}.
 #'
 #' @examples
 #' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
@@ -73,11 +73,11 @@
 #' # Standard errors for some GO ontologies, levels or pairs of gene lists:
 #' getSE(cancerEquivSorensen, GOLevel = "level 6")
 #' getSE(cancerEquivSorensen, GOLevel = 6)
-#' getSE(cancerEquivSorensen, GOLevel = 4:6)
+#' getSE(cancerEquivSorensen, GOLevel = seq.int(4,6))
 #' getSE(cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
 #' getSE(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
-#' getSE(cancerEquivSorensen, GOLevel = 4:6, onto = "BP")
-#' getSE(cancerEquivSorensen, GOLevel = 4:6, onto = "BP", simplify = FALSE)
+#' getSE(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP")
+#' getSE(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
 #' getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
 #'       listNames = c("waldman", "sanger"))
 #' getSE(cancerEquivSorensen$BP$`level 4`)

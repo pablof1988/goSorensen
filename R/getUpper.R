@@ -33,7 +33,7 @@
 #' @details
 #' Argument \code{GOLevel} can be of class "character" or "numeric". In the first case, the GO
 #' levels must be specified like \code{"level 6"} or \code{c("level 4", "level 5", "level 6")}
-#' In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{4:6}.
+#' In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{seq.int(4,6)}.
 #'
 #' @examples
 #' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
@@ -76,11 +76,11 @@
 #' # Upper confidence limits only for some GO ontologies, levels or pairs of gene lists:
 #' getUpper(cancerEquivSorensen, GOLevel = "level 6")
 #' getUpper(cancerEquivSorensen, GOLevel = 6)
-#' getUpper(cancerEquivSorensen, GOLevel = 4:6)
+#' getUpper(cancerEquivSorensen, GOLevel = seq.int(4,6))
 #' getUpper(cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
 #' getUpper(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
-#' getUpper(cancerEquivSorensen, GOLevel = 4:6, onto = "BP")
-#' getUpper(cancerEquivSorensen, GOLevel = 4:6, onto = "BP", simplify = FALSE)
+#' getUpper(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP")
+#' getUpper(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
 #' getUpper(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
 #'          listNames = c("waldman", "sanger"))
 #' getUpper(cancerEquivSorensen$BP$`level 4`)

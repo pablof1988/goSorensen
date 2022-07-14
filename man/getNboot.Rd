@@ -64,7 +64,7 @@ To get the number of effective bootstrap resamples use function \code{getEffNboo
 
 Argument \code{GOLevel} can be of class "character" or "numeric". In the first case, the GO
 levels must be specified like \code{"level 6"} or \code{c("level 4", "level 5", "level 6")}
-In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{4:6}.
+In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{seq.int(4,6)}.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -126,11 +126,11 @@ getNboot(boot.BP.4, simplify = FALSE)
 # Number of bootstrap replicates for specific GO ontologies, levels or pairs of gene lists:
 # getNboot(boot.cancerEquivSorensen, GOLevel = "level 6")
 # getNboot(boot.cancerEquivSorensen, GOLevel = 6)
-# getNboot(boot.cancerEquivSorensen, GOLevel = 4:6)
+# getNboot(boot.cancerEquivSorensen, GOLevel = seq.int(4,6))
 # getNboot(boot.cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
 # getNboot(boot.cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
-# getNboot(boot.cancerEquivSorensen, GOLevel = 4:6, onto = "BP")
-# getNboot(boot.cancerEquivSorensen, GOLevel = 4:6, onto = "BP", simplify = FALSE)
+# getNboot(boot.cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP")
+# getNboot(boot.cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
 # getNboot(boot.cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
 #          listNames = c("waldman", "sanger"))
 # getNboot(boot.cancerEquivSorensen$BP$`level 4`)

@@ -65,7 +65,7 @@ To get the number of initially planned bootstrap resamples use function \code{ge
 
 Argument \code{GOLevel} can be of class "character" or "numeric". In the first case, the GO
 levels must be specified like \code{"level 6"} or \code{c("level 4", "level 5", "level 6")}
-In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{4:6}.
+In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{seq.int(4,6)}.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -130,11 +130,11 @@ getEffNboot(boot.BP.4, simplify = FALSE)
 # of gene lists:
 # getEffNboot(boot.cancerEquivSorensen, GOLevel = "level 6")
 # getEffNboot(boot.cancerEquivSorensen, GOLevel = 6)
-# getEffNboot(boot.cancerEquivSorensen, GOLevel = 4:6)
+# getEffNboot(boot.cancerEquivSorensen, GOLevel = seq.int(4,6))
 # getEffNboot(boot.cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
 # getEffNboot(boot.cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
-# getEffNboot(boot.cancerEquivSorensen, GOLevel = 4:6, onto = "BP")
-# getEffNboot(boot.cancerEquivSorensen, GOLevel = 4:6, onto = "BP", simplify = FALSE)
+# getEffNboot(boot.cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP")
+# getEffNboot(boot.cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
 # getEffNboot(boot.cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
 #             listNames = c("waldman", "sanger"))
 # getEffNboot(boot.cancerEquivSorensen$BP$`level 4`)

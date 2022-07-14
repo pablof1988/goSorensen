@@ -50,7 +50,7 @@ this function returns the estimated dissimilarities in the tests.
 \details{
 Argument \code{GOLevel} can be of class "character" or "numeric". In the first case, the GO
 levels must be specified like \code{"level 6"} or \code{c("level 4", "level 5", "level 6")}
-In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{4:6}.
+In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{seq.int(4,6)}.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -102,11 +102,11 @@ getDissimilarity(cancerEquivSorensen, simplify = FALSE)
 # Dissimilarities only for some GO ontologies, levels or pairs of gene lists:
 getDissimilarity(cancerEquivSorensen, GOLevel = "level 6")
 getDissimilarity(cancerEquivSorensen, GOLevel = 6)
-getDissimilarity(cancerEquivSorensen, GOLevel = 4:6)
+getDissimilarity(cancerEquivSorensen, GOLevel = seq.int(4,6))
 getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
 getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
-getDissimilarity(cancerEquivSorensen, GOLevel = 4:6, onto = "BP")
-getDissimilarity(cancerEquivSorensen, GOLevel = 4:6, onto = "BP", simplify = FALSE)
+getDissimilarity(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP")
+getDissimilarity(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
 getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
                  listNames = c("waldman", "sanger"))
 getDissimilarity(cancerEquivSorensen$BP$`level 4`)

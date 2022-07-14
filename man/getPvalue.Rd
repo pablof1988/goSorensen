@@ -50,7 +50,7 @@ this function returns the p-values of the tests.
 \details{
 Argument \code{GOLevel} can be of class "character" or "numeric". In the first case, the GO
 levels must be specified like \code{"level 6"} or \code{c("level 4", "level 5", "level 6")}
-In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{4:6}.
+In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{seq.int(4,6)}.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -102,11 +102,11 @@ getPvalue(cancerEquivSorensen, simplify = FALSE)
 # P-values only for some GO ontologies, levels or pairs of gene lists:
 getPvalue(cancerEquivSorensen, GOLevel = "level 6")
 getPvalue(cancerEquivSorensen, GOLevel = 6)
-getPvalue(cancerEquivSorensen, GOLevel = 4:6)
+getPvalue(cancerEquivSorensen, GOLevel = seq.int(4,6))
 getPvalue(cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
 getPvalue(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
-getPvalue(cancerEquivSorensen, GOLevel = 4:6, onto = "BP")
-getPvalue(cancerEquivSorensen, GOLevel = 4:6, onto = "BP", simplify = FALSE)
+getPvalue(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP")
+getPvalue(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
 getPvalue(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
           listNames = c("waldman", "sanger"))
 getPvalue(cancerEquivSorensen$BP$`level 4`)

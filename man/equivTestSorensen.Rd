@@ -142,9 +142,14 @@ as
 \eqn{(n_{11}, n_{01}, n_{10}, n_{00})}{%
 (n_11, n_01, n_10, n_00)}, always in this order and discarding extra values if necessary.
 
-If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
-equivalence test is performed between lists \code{x} and \code{y}, after internally summarizing these
-gene lists as a 2x2 contingency table of joint enrichment.
+If \code{x} is an object of class "character", then \code{x} (and \code{y}) must represent
+two "character" vectors of valid gene identifiers.
+Then the equivalence test is performed between \code{x} and \code{y}, after internally
+summarizing them as a 2x2 contingency table of joint enrichment.
+This last operation is performed by function \code{\link{buildEnrichTable}} and "valid gene
+identifiers" stands for the coherency of these gene identifiers with the arguments
+\code{geneUniverse} and \code{orgPackg} of \code{buildEnrichTable}, passed by the ellipsis
+argument \code{...} in \code{equivTestSorensen}.
 
 If \code{x} is an object of class "list", each of its elements must be a "character" vector of gene
 identifiers. Then all pairwise equivalence tests are performed between these gene lists.

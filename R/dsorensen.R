@@ -1,8 +1,8 @@
 #' Computation of the Sorensen-Dice dissimilarity
 #' @param x either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
-#' or a "character" (a set of gene identifiers) or "list" or "tableList" object.
+#' or a "character" vector (a set of gene identifiers) or "list" or "tableList" object.
 #' See the details section for more information.
-#' @param y an object of class "character" representing a vector of gene identifiers.
+#' @param y an object of class "character" representing a vector of valid gene identifiers.
 #' @param check.table Boolean. If TRUE (default), argument \code{x} is checked to adequately
 #' represent a 2x2 contingency table, by means of function \code{nice2x2Table}.
 #' @param ... extra parameters for function \code{buildEnrichTable}.
@@ -36,9 +36,14 @@
 #' (n_11, n_01, n_10, n_00)}, always in this order and discarding extra values if necessary.
 #' The result is correct, regardless the frequencies being absolute or relative.
 #'
-#' If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
-#' dissimilarity between lists \code{x} and \code{y} is computed, after summarizing these gene lists
-#' as a 2x2 contingency table of joint enrichment.
+#' If \code{x} is an object of class "character", then \code{x} (and \code{y}) must represent
+#' two "character" vectors of valid gene identifiers.
+#' Then the dissimilarity between lists \code{x} and \code{y} is computed,
+#' after internally summarizing them as a 2x2 contingency table of joint enrichment.
+#' This last operation is performed by function \code{\link{buildEnrichTable}} and "valid gene
+#' identifiers" stands for the coherency of these gene identifiers with the arguments
+#' \code{geneUniverse} and \code{orgPackg} of \code{buildEnrichTable}, passed by the ellipsis
+#' argument \code{...} in \code{dSorensen}.
 #'
 #' If \code{x} is an object of class "list", the argument must be a list of "character" vectors, each one
 #' representing a gene list (character identifiers). Then, all pairwise dissimilarities between these
@@ -156,8 +161,7 @@ dSorensen.numeric <- function(x, check.table = TRUE, ...){
 #' @describeIn dSorensen S3 method for class "character"
 #' @export
 dSorensen.character <- function(x, y, check.table = TRUE, ...){
-  tab <- buildEnrichTable(x, y,
-                          check.table = check.table, ...)
+  tab <- buildEnrichTable(x, y, check.table = check.table, ...)
   # Typical ... arguments:
   # geneUniverse=humanEntrezIDs, orgPackg="org.Hs.eg.db",
   # onto = onto, GOLevel = ontoLevel,

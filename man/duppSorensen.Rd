@@ -163,11 +163,14 @@ Computing in advance the value of argument \code{z.conf.level} may be a way to c
 these departures from normality, by means of a more adequate quantile function.
 Alternatively, if \code{boot == TRUE}, a bootstrap quantile is internally computed.
 
-If \code{x} is an object of class "character", it must represent a list of gene identifiers. Then the
-confidence interval for the dissimilarity between lists \code{x} and \code{y} is computed, after summarizing
-these gene lists as a 2x2 contingency table of joint enrichment. This last task is performed by function
-\code{\link{buildEnrichTable}}. In general, the argument \code{...} provides extra information for this last
-function, like p and q cut-off values to stablish enrichment.
+If \code{x} is an object of class "character", then \code{x} (and \code{y}) must represent
+two "character" vectors of valid gene identifiers.
+Then the confidence interval for the dissimilarity between lists \code{x} and \code{y} is computed,
+after internally summarizing them as a 2x2 contingency table of joint enrichment.
+This last operation is performed by function \code{\link{buildEnrichTable}} and "valid gene
+identifiers" stands for the coherency of these gene identifiers with the arguments
+\code{geneUniverse} and \code{orgPackg} of \code{buildEnrichTable}, passed by the ellipsis
+argument \code{...} in \code{dUppSorensen}.
 
 In the "list" interface, the argument must be a list of "character" vectors, each one
 representing a gene list (character identifiers). Then, all pairwise upper limits of

@@ -108,7 +108,11 @@ buildEnrichTable.character <- function(x, y, listNames = c("gene.list1", "gene.l
                                        check.table = TRUE, geneUniverse, orgPackg, onto, GOLevel,
                                        restricted = FALSE,
                                        pAdjustMeth = "BH", pvalCutoff = 0.01, qvalCutoff = 0.05, ...) {
-  stopifnot("Argument 'y' must be 'character', a list of gene identifiers" = is.character(y))
+  stopifnot(
+    "Argument 'y' is missing, 'x' and 'y' must be 'character' vectors of valid gene identifiers" =
+      !missing(y))
+  stopifnot("Arguments 'x' and 'y' must be 'character' vectors of valid gene identifiers" =
+              is.character(y))
   stopifnot("Argument 'check.table' must be logical" = is.logical(check.table))
   stopifnot("Arguments 'pValCutoff' and 'qValCutoff' must be numeric between 0 and 1" =
               (0 < pvalCutoff) && (pvalCutoff < 1) && (0 < qvalCutoff) && (qvalCutoff < 1))

@@ -526,13 +526,13 @@ allEquivTestSorensen <- function(x, d0 = 1 / (1 + 1.25), conf.level = 0.95,
 {
   allOntos <- lapply(ontos, function(onto) {
     thisOnto <- lapply(GOLevels, function(lev) {
-      cat("========================================================\n")
-      cat("Ontology ", onto, " level ", lev, "\n")
+      #cat("========================================================\n")
+      #cat("Ontology ", onto, " level ", lev, "\n")
       result <- equivTestSorensen(x, d0 = d0, conf.level = conf.level,
                                   boot = boot, nboot = nboot,
                                   check.table = check.table,
                                   onto = onto, GOLevel = lev, ...)
-      print(result)
+      #print(result)
       return(result)
     })
     names(thisOnto) <- paste("level", GOLevels)

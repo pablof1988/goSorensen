@@ -145,7 +145,6 @@ getDissimilarity.AllEquivSDhtest <- function(x, onto, GOLevel, listNames,
           resList2 <- vapply(namsList2, function(ilist2) {
             return(x[[ionto]][[ilev]][[ilist1]][[ilist2]]$estimate)
           }, FUN.VALUE = 0.0)
-          #print(resList2)
           return(resList2)
         })
         resList1 <- unlist(resList1, recursive = FALSE)

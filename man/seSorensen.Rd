@@ -103,19 +103,19 @@ $lk$l1$t(k,1), $lk$l2$t(k,2), ..., $lk$l(k-1)t(k,k-1)
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{table}: S3 method for class "table"
+\item \code{seSorensen(table)}: S3 method for class "table"
 
-\item \code{matrix}: S3 method for class "matrix"
+\item \code{seSorensen(matrix)}: S3 method for class "matrix"
 
-\item \code{numeric}: S3 method for class "numeric"
+\item \code{seSorensen(numeric)}: S3 method for class "numeric"
 
-\item \code{character}: S3 method for class "character"
+\item \code{seSorensen(character)}: S3 method for class "character"
 
-\item \code{list}: S3 method for class "list"
+\item \code{seSorensen(list)}: S3 method for class "list"
 
-\item \code{tableList}: S3 method for class "tableList"
+\item \code{seSorensen(tableList)}: S3 method for class "tableList"
+
 }}
-
 \examples{
 # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
 # of GO items in ontology BP at level 3.

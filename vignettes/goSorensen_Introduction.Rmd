@@ -79,27 +79,33 @@ The dataset used in this vignette, `allOncoGeneLists`, is based on the gene list
 data("allOncoGeneLists")
 ```
 
-It is a "list" object of length 7. Each one of its elements is a "character" with the gene identifiers of a gene list related to cancer.
-
-# Performing the equivalence test
-
-## From a previously built contingency table of join enrichment
-
-Function `equivTestSorensen` performs the equivalence test. One possibility is to build first the mutual enrichment contingency table by means of the function `buildEnrichTable` and then to perform the equivalence test:
-
+It is a "list" object of length 7. Each one of its elements is a "character" with the gene identifiers of a gene list related to cancer:
 ```{r}
-data("humanEntrezIDs")
 length(allOncoGeneLists)
 sapply(allOncoGeneLists, length)
 # First 20 gene identifiers of gene lists Vogelstein and sanger:
 allOncoGeneLists[["Vogelstein"]][1:20]
 allOncoGeneLists[["sanger"]][1:20]
+```
+
+
+# Performing the equivalence test
+
+## From previously built contingency table(s) of join enrichment
+
+One possibility is to build first the mutual enrichment contingency table for two specific feature lists by means of the function `buildEnrichTable` and then to perform the equivalence test using the function `equivTestSorensen`:
+
+```{r}
+data("humanEntrezIDs")
+
 # Build the enrichment contingency table between gene lists Vogelstein and 
 # sanger for the MF ontology at GO level 5:
 enrichTab <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]],
                               allOncoGeneLists[["sanger"]],
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                              onto = "MF", GOLevel = 5, listNames = c("Vogelstein", "sanger"))
+                              geneUniverse = humanEntrezIDs, 
+                              orgPackg = "org.Hs.eg.db",
+                              onto = "MF", GOLevel = 5, 
+                              listNames = c("Vogelstein", "sanger"))
 enrichTab
 
 # Equivalence test for an equivalence (or negligibility) limit 0.2857
@@ -107,17 +113,52 @@ testResult <- equivTestSorensen(enrichTab, d0 = 0.2857)
 testResult
 ```
 
-## Directly from the gene lists.
-
-To perform the test directly from the gene lists (internally building the contingency table) is also possible:
+Another option is to build all possible pairwise contingency tables from a set of feature lists (object of class `list`) by means of the function `allBuildEnrichTable` and then to perform the equivalence test using `allEquivTestSorensen`:
 
 ```{r}
-equivTestSorensen(allOncoGeneLists[["Vogelstein"]], allOncoGeneLists[["sanger"]], d0 = 0.2857,
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                              onto = "MF", GOLevel = 5, listNames = c("Vogelstein", "sanger"))
+allEnrichTablesBP4 <- allBuildEnrichTable(allOncoGeneLists, 
+                                       geneUniverse = humanEntrezIDs,
+                                       orgPackg = "org.Hs.eg.db", 
+                                       ontos = "BP", 
+                                       GOLevels = 4)
+allTestResultBP4 <- allEquivTestSorensen(allEnrichTablesBP4)
+allTestResultBP4
 ```
 
-To save computing time, the first option (building the contingency table separately, first) may be preferable: `buildEnrichTable` may take some time (many enrichment tests) and it would be advantageous to have the contingency table ready for further computations.
+If no ontologies and/or GO levels are given by user, the function computes by default all the posible pairwise results for all three ontologies ("BP", "CC", "MF") and GO levels from 3 to 10:
+
+```{r, eval=FALSE}
+allEnrichTables <- allBuildEnrichTable(allOncoGeneLists, 
+                                       geneUniverse = humanEntrezIDs,
+                                       orgPackg = "org.Hs.eg.db")
+allTestResult <- allEquivTestSorensen(allEnrichTables)
+# Results are very extensive, for this reason they are not printed.
+```
+
+## Directly from the gene lists.
+
+To perform the test directly from the two gene lists (internally building the contingency table) is also possible:
+
+```{r}
+equivTestSorensen(allOncoGeneLists[["Vogelstein"]], 
+                  allOncoGeneLists[["sanger"]], 
+                  d0 = 0.2857,
+                  geneUniverse = humanEntrezIDs, 
+                  orgPackg = "org.Hs.eg.db",
+                  onto = "MF", GOLevel = 5, 
+                  listNames = c("Vogelstein", "sanger"))
+```
+
+Another option is to perform the tests from all possible pairwise lists in a set of feature lists (object of class `list`) by means of the function `allEquivTestSorensen`
+
+```{r, eval=FALSE}
+allEquivTestSorensen(allOncoGeneLists, 
+                     geneUniverse = humanEntrezIDs, 
+                     orgPackg = "org.Hs.eg.db")
+# Again, results are very extensive, for this reason they are not printed.
+```
+
+To save computing time, the first option (building the contingency table separately, first) may be preferable: `buildEnrichTable` and `allBuildEnrichTable` may take some time (many enrichment tests) and it would be advantageous to have the contingency table ready for further computations.
 
 The above tests use a standard normal approximation to the sample distribution of the $(\hat d - d) / \widehat {se}$ statistic, where $\widehat {se}$ stands for the standard error of the sample dissimilarity, $\hat d$.
 
@@ -157,32 +198,43 @@ Sometimes, it would be interesting not to perform the full equivalence test but 
 ```{r}
 # The dissimilarity:
 dSorensen(enrichTab)
+
 # Or from scratch, directly from both gene lists:
-dSorensen(allOncoGeneLists[["Vogelstein"]], allOncoGeneLists[["sanger"]],
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                              onto = "MF", GOLevel = 5, listNames = c("Vogelstein", "sanger"))
+dSorensen(allOncoGeneLists[["Vogelstein"]], 
+          allOncoGeneLists[["sanger"]],
+          geneUniverse = humanEntrezIDs, 
+          orgPackg = "org.Hs.eg.db",
+          onto = "MF", GOLevel = 5, 
+          listNames = c("Vogelstein", "sanger"))
+
 # The first option is faster, it avoids internally building the enrichment
 # contingency table
 
 # Its standard error:
 seSorensen(enrichTab)
 # or:
-seSorensen(allOncoGeneLists[["Vogelstein"]], allOncoGeneLists[["sanger"]],
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                              onto = "MF", GOLevel = 5, listNames = c("Vogelstein", "sanger"))
+seSorensen(allOncoGeneLists[["Vogelstein"]], 
+           allOncoGeneLists[["sanger"]],
+           geneUniverse = humanEntrezIDs, 
+           orgPackg = "org.Hs.eg.db",
+           onto = "MF", GOLevel = 5, 
+           listNames = c("Vogelstein", "sanger"))
 
 # Upper limit of the confidence interval for the true distance:
 duppSorensen(enrichTab)
 duppSorensen(enrichTab, conf.level = 0.90)
 duppSorensen(enrichTab, conf.level = 0.90, boot = TRUE)
-duppSorensen(allOncoGeneLists[["Vogelstein"]], allOncoGeneLists[["sanger"]],
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                              onto = "MF", GOLevel = 5, listNames = c("Vogelstein", "sanger"))
+duppSorensen(allOncoGeneLists[["Vogelstein"]], 
+             allOncoGeneLists[["sanger"]],
+             geneUniverse = humanEntrezIDs, 
+             orgPackg = "org.Hs.eg.db",
+             onto = "MF", GOLevel = 5, 
+             listNames = c("Vogelstein", "sanger"))
 ```
 
 # All pairwise tests (or other computations)
 
-For objects of class `list`, all these functions (`equivTestSorensen`, `dSorensen`, `seSorensen`, `duppSorensen`) assume a `list` of `character` objects containing gene identifiers and all pairwise computations are performed. For example, to obtain the matrix of all pairwise Sorensen-Dice dissimilarities:
+For objects of class `list`, all these functions (`allBuildEnrichTable`, `equivTestSorensen`, `dSorensen`, `seSorensen`, `duppSorensen`) assume a `list` of `character` objects containing gene identifiers and all pairwise computations are performed. For example, to obtain the matrix of all pairwise Sorensen-Dice dissimilarities:
 
 ```{r}
 dSorensen(allOncoGeneLists, onto = "MF", GOLevel = 5, 

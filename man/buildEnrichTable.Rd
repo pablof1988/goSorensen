@@ -135,13 +135,13 @@ appears as being enriched.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: S3 default method
+\item \code{buildEnrichTable(default)}: S3 default method
 
-\item \code{character}: S3 method for class "character"
+\item \code{buildEnrichTable(character)}: S3 method for class "character"
 
-\item \code{list}: S3 method for class "list"
+\item \code{buildEnrichTable(list)}: S3 method for class "list"
+
 }}
-
 \examples{
 # Gene universe:
 data(humanEntrezIDs)

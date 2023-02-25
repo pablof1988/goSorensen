@@ -281,6 +281,31 @@ seSorensen(allTabsBP.4)
 # allBootTests_BP_MF_lev4to8 <- allEquivTestSorensen(allOncoGeneLists,
 #                                                    boot = TRUE,
 #                                                    geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#                                                    ontos = c("BP", "MF"), GOLevels = 4:8)
+#                                                    ontos = c("BP", "MF"), GOLevels = seq.int(4,8))
 # getPvalue(allBootTests_BP_MF_lev4to8)
 # getEffNboot(allBootTests_BP_MF_lev4to8)
+
+# Another possibility is to build all enrichment tables along the desired GO ontologies
+# and levels:
+# allTabs_BP_MF_lev4to8 <- allBuildEnrichTable(allOncoGeneLists,
+#                                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#                                              ontos = c("BP", "MF"), GOLevels = seq.int(4,8))
+# And then perform the tests:
+# set.seed(123)
+# allBootTests_BP_MF_lev4to8 <- allEquivTestSorensen(allTabs_BP_MF_lev4to8,
+#                                                    boot = TRUE,
+#                                                    ontos = c("BP", "MF"), GOLevels = seq.int(4,8))
+# getPvalue(allBootTests_BP_MF_lev4to8)
+# getEffNboot(allBootTests_BP_MF_lev4to8)
+
+# To save time, directly use the dataset available at package goSorensen:
+data(allTabs)
+class(allTabs)
+# As an object of class "allTableList", it contains all contingency tables of joint enrichment
+# for the allOncoGeneLists gene lists, for all three GO ontologies and for GO levels 3 to 10.
+
+# And then perform all tests from these contingency tables, for the desired ontologies and levels:
+allBootTests <- allEquivTestSorensen(allTabs,
+                                     boot = TRUE,
+                                     ontos = c("BP", "MF"), GOLevels = seq.int(4,8))
+getPvalue(allBootTests)

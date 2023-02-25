@@ -54,13 +54,13 @@ In the second case ("numeric"), the GO levels must be specified like\code{6} or 
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{equivSDhtest}: S3 method for class "equivSDhtest"
+\item \code{getDissimilarity(equivSDhtest)}: S3 method for class "equivSDhtest"
 
-\item \code{equivSDhtestList}: S3 method for class "equivSDhtestList"
+\item \code{getDissimilarity(equivSDhtestList)}: S3 method for class "equivSDhtestList"
 
-\item \code{AllEquivSDhtest}: S3 method for class "AllEquivSDhtest"
+\item \code{getDissimilarity(AllEquivSDhtest)}: S3 method for class "AllEquivSDhtest"
+
 }}
-
 \examples{
 # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
 # 'waldman' and 'atlas', at level 4 of the BP ontology:

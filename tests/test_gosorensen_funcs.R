@@ -194,34 +194,38 @@ set.seed(123)
 duppSorensen(tab, boot = TRUE)
 getUpper(bootTst)
 
-# To perform from scratch all pairwise tests (or other Sorensen-Dice computations)
-# is even much slower. For example, all pairwise...
-# Dissimilarities:
-# # allPairDiss <- dSorensen(allOncoGeneLists,
-# #                          onto = "BP", GOLevel = 5,
-# #                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# # allPairDiss
-#
+# # To perform from scratch all pairwise tests (or other Sorensen-Dice computations)
+# # is even much slower because all pairwise tables must be built first.
+# # For example, all pairwise...
+# # Dissimilarities:
+# allPairDiss <- dSorensen(allOncoGeneLists,
+#                          onto = "BP", GOLevel = 4,
+#                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# allPairDiss
+
 # # Still time consuming but faster: build all tables computing in parallel:
 # allPairDiss <- dSorensen(allOncoGeneLists,
-#                          onto = "BP", GOLevel = 5,
+#                          onto = "BP", GOLevel = 4,
 #                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #                          parallel = TRUE)
 # allPairDiss
 
 # Standard errors:
 # seSorensen(allOncoGeneLists,
-#            onto = "BP", GOLevel = 5,
-#            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+#            onto = "BP", GOLevel = 4,
+#            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#            parallel = TRUE)
 #
 # Upper confidence interval limits:
 # duppSorensen(allOncoGeneLists,
-#              onto = "BP", GOLevel = 5,
-#              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+#              onto = "BP", GOLevel = 4,
+#              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#              parallel = TRUE)
 # All pairwise asymptotic normal tests:
 # allTests <- equivTestSorensen(allOncoGeneLists,
-#                               onto = "BP", GOLevel = 5,
-#                               geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+#                               onto = "BP", GOLevel = 4,
+#                               geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#                               parallel = TRUE)
 # getPvalue(allTests, simplify = FALSE)
 # getPvalue(allTests)
 # p.adjust(getPvalue(allTests), method = "holm")
@@ -230,8 +234,9 @@ getUpper(bootTst)
 # set.seed(123)
 # allBootTests <- equivTestSorensen(allOncoGeneLists,
 #                                   boot = TRUE,
-#                                   onto = "BP", GOLevel = 5,
-#                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+#                                   onto = "BP", GOLevel = 4,
+#                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#                                   parallel = TRUE)
 # Not all bootstrap replicates may conduct to finite statistics:
 # getNboot(allBootTests)
 
@@ -244,15 +249,17 @@ getUpper(bootTst)
 # Again, the faster and more flexible possibility may be:
 # 1) First, build all pairwise enrichment contingency tables (slow first step):
 # allTabsBP.4 <- buildEnrichTable(allOncoGeneLists,
-#                                 onto = "BP", GOLevel = 5,
-#                                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+#                                 onto = "BP", GOLevel = 4,
+#                                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+#                                 parallel = TRUE)
 # allTabsBP.4
 
 # Better, directly use the dataset available at this package, goSorensen:
+# (NOTE: THESE TABLES MAY DIFFER WITH THE BIOCONDUCTOR VERSION)
 data(allTabsBP.4)
 allTabsBP.4
 class(allTabsBP.4)
-# 2) Then perform all required computatios from these enrichment contingency tables...
+# 2) Then perform all required computations from these enrichment contingency tables...
 # All pairwise tests:
 allTests <- equivTestSorensen(allTabsBP.4)
 allTests
@@ -274,9 +281,9 @@ seSorensen(allTabsBP.4)
 
 
 # Tipically, in a real study it would be interesting to scan tests
-# along some ontologies and levels inside these ontologies:
+# along some GO ontologies and levels inside these ontologies:
 # (which obviously will be a quite slow process)
-# gc()
+gc()
 # set.seed(123)
 # allBootTests_BP_MF_lev4to8 <- allEquivTestSorensen(allOncoGeneLists,
 #                                                    boot = TRUE,
@@ -289,8 +296,9 @@ seSorensen(allTabsBP.4)
 # and levels:
 # allTabs_BP_MF_lev4to8 <- allBuildEnrichTable(allOncoGeneLists,
 #                                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#                                              ontos = c("BP", "MF"), GOLevels = seq.int(4,8))
-# And then perform the tests:
+#                                              ontos = c("BP", "MF"), GOLevels = seq.int(4,8),
+#                                              parallel = TRUE)
+# # And then perform the tests:
 # set.seed(123)
 # allBootTests_BP_MF_lev4to8 <- allEquivTestSorensen(allTabs_BP_MF_lev4to8,
 #                                                    boot = TRUE,

@@ -1,10 +1,10 @@
-#' An example of "AllEquivSDhtest" object resulting from a call to 'allEquivTestSorensen'
+#' An example of an object of class "AllEquivSDhtest" resulting from a call to 'allEquivTestSorensen'
 #'
 #' The Sorensen-Dice test (normal asymptotic version) performed on the cancer gene lists in data
-#' \code{\link{allOncoGeneLists}} which is automatically charged with this package.
+#' \code{\link{allOncoGeneLists}} which may be charged from this package.
 #' The test is iterated for all GO ontologies and for GO levels 3 to 10. These results are not
 #' automatically updated for changes in these gene lists and Bioconductor or Go updates, take them
-#' just as an illustrative example.
+#' just as an illustrative example. The present version was obtained under Bioconductor 3.17.
 #'
 #' For each ontology and GO level, the result contains the result of all pairwise tests of equivalence
 #' between the cancer gene lists.

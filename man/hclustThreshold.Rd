@@ -36,16 +36,16 @@ An object of class \code{equivClustSorensen}, descending from class \code{hclust
 From a Sorensen-Dice threshold dissimilarity matrix, generate an object of class "hclust"
 }
 \examples{
-\dontrun{
 # Gene lists to analyse:
 data("allOncoGeneLists")
 # Gene universe:
 data("humanEntrezIDs")
-# First, compute the Sorensen-Dice equivalence dissimilarity for ontology BP at level 4:
+# First, compute the Sorensen-Dice threshold equivalence dissimilarity
+# for ontology BP at level 4:
+# # Very time consuming, it requires building all joint enrichment contingency tables
 dOncBP4 <- sorenThreshold(allOncoGeneLists, onto = "BP", GOLevel = 4,
                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-}
-# Much faster, using the previously tabulated contingency tables:
+# Preferable (much faster), using the previously tabulated contingency tables:
 data("allTabsBP.4")
 dOncBP4 <- sorenThreshold(allTabsBP.4)
 clust.threshold <- hclustThreshold(dOncBP4)

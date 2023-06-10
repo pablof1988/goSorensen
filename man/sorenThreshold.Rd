@@ -119,15 +119,13 @@ compared, as the process may not converge for some pairs of gene lists.
 
 }}
 \examples{
-\dontrun{
-# This example is quite time consuming:
-# Gene universe:
-data("humanEntrezIDs")
 # Gene lists to be explored for enrichment:
-data("allOncoGeneLists")
-sorenThreshold(allOncoGeneLists,
-               geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-}
+data(allOncoGeneLists)
+# Gene universe:
+data(humanEntrezIDs)
+# # This example is quite time consuming:
+# sorenThreshold(allOncoGeneLists,
+#                geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Much faster:
 # Object \code{allTabsBP.4} of class "tableList" contains all the pairwise contingency
 # tables of joint enrichment for the gene lists in \code{allOncoGeneLists}, for the BP

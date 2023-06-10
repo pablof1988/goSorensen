@@ -3,7 +3,7 @@
 \docType{data}
 \name{allTabs}
 \alias{allTabs}
-\title{An example of "allTableList" object resulting from a call to 'buildEnrichTable'}
+\title{An example of an object of class "allTableList" resulting from a call to 'buildEnrichTable'}
 \format{
 An object of class "allTableList" inheriting from class "list".
 }
@@ -20,6 +20,6 @@ allTabs$BP$`level 10`. Finally, each one of these lists contains all contingency
 enrichment, in a pairwise fashion, for the gene lists in data \code{\link{allOncoGeneLists}}.
 These results are based on gene lists which are not automatically
 updated, take them just as an illustrative example because the gene lists, and the GO, may change along
-time. The present version of these data was generated under Bioconductor version 3.16.
+time. The present version of these data was generated under Bioconductor version 3.17.
 }
 \keyword{datasets}

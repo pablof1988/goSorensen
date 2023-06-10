@@ -20,6 +20,6 @@ of ontology BP at level 3 which are:
 Enriched in both lists, enriched in sanger but not in atlas, non-enriched in sanger
 but enriched in atlas and non-enriched in both lists.
 Take it just as an illustrative example, non up-to-date for changes in the gene lists
-or changes in the GO.
+or changes in the GO. The present version was obtained under Bioconductor 3.17.
 }
 \keyword{datasets}

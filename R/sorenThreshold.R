@@ -58,15 +58,13 @@
 #'
 #' @importFrom stats as.dist
 #' @examples
-#' \dontrun{
-#' # This example is quite time consuming:
-#' # Gene universe:
-#' data("humanEntrezIDs")
 #' # Gene lists to be explored for enrichment:
-#' data("allOncoGeneLists")
-#' sorenThreshold(allOncoGeneLists,
-#'                geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-#' }
+#' data(allOncoGeneLists)
+#' # Gene universe:
+#' data(humanEntrezIDs)
+#' # # This example is quite time consuming:
+#' # sorenThreshold(allOncoGeneLists,
+#' #                geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #' # Much faster:
 #' # Object \code{allTabsBP.4} of class "tableList" contains all the pairwise contingency
 #' # tables of joint enrichment for the gene lists in \code{allOncoGeneLists}, for the BP
@@ -86,17 +84,6 @@ sorenThreshold.list <- function(x, onto, GOLevel, geneUniverse, orgPackg,
                                 boot = FALSE, nboot = 10000, boot.seed = 6551,
                                 trace = TRUE, alpha = 0.05, precis = 0.001, ...)
 {
-  # subName <- paste0("Ontology ", onto, " at level ", GOLevel, sep = "")
-  # if (trace) {
-  #   cat("\n\n", date(), " Building the Sorensen-Dice equivalence threshold dissimilarity", "\n")
-  # }
-  # s <- length(x)
-  # h <- s * (s - 1) * 0.5
-  # equivDists <- rep(NA, h)
-  # dIdxs <- unlist(lapply(seq.int(2,s),
-  #                        function(i) lapply(seq.int(1,(i-1)),
-  #                                           function(j) c(i,j))
-  # ), recursive = FALSE)
   if (trace) {
     cat("\n", date(), "  Building all enrichment contingency tables...\n")
   }
@@ -116,10 +103,6 @@ sorenThreshold.tableList <- function(x, onto = NULL, GOLevel = NULL,
                                       boot = FALSE, nboot = 10000, boot.seed = 6551,
                                       trace = TRUE, alpha = 0.05, precis = 0.001, ...)
 {
-  # subName <- paste0("Ontology ", onto, " at level ", GOLevel, sep = "")
-  # if (trace) {
-  #   cat("\n\n", date(), " Building the Sorensen-Dice equivalence threshold dissimilarity", "\n")
-  # }
   s <- length(x) + 1
   h <- s * (s - 1) * 0.5
   equivDists <- rep(NA, h)
@@ -127,13 +110,6 @@ sorenThreshold.tableList <- function(x, onto = NULL, GOLevel = NULL,
                          function(i) lapply(seq.int(1,(i-1)),
                                             function(j) c(i,j))
   ), recursive = FALSE)
-  # if (trace) {
-  #   cat("\n", date(), "  Building all enrichment contingency tables...\n")
-  # }
-  # all2x2Tables <- buildEnrichTable(x,
-  #                                  onto = onto, GOLevel = GOLevel,
-  #                                  geneUniverse = geneUniverse, orgPackg = orgPackg,
-  #                                  ...)
   if (boot) {
     arrTabs <- array(unlist(x), dim = c(2,2,h))
   }
@@ -174,7 +150,6 @@ sorenThreshold.tableList <- function(x, onto = NULL, GOLevel = NULL,
     equivDists[finite.idxs[iDelta]] <- delta
     se[iDelta] <- NA
   }
-  # equivDists[is.na(equivDists)] <- deltaMax
   distMat <- matrix(NA, nrow = s, ncol = s)
   rownames(distMat) <- colnames(distMat) <- c(names(x[[1]]), names(x))
   distMat[upper.tri(distMat)] <- equivDists
@@ -278,35 +253,4 @@ tStatSorensen <- function(xBoot, dis) {
   se <- 2 * sqrt(p11 * (1 - p11) / (nu - 1)) / (p11plus * p11plus)
   return((dBoot - dis) / se)
 }
-
-# plot.equivClustSorensen <- function(x, ...) {
-#   if (is.null(x) | length(attr(x, "distMat")) < 3) {
-#     return(NULL)
-#   }
-#   plot.hclust(x, ...)
-# }
-
-
-# auxIter <- function(onto, geneLists, ontoLevels, geneUniverse, orgPackg,
-#                     boot, nboot, boot.seed,
-#                     trace, onTheFlyDev, method, jobName, ylab, alpha, precis,
-#                     ...) {
-#   result <- lapply(ontoLevels, function(ontoLevel, geneLists, onto, geneUniverse, orgPackg,
-#                                         boot, nboot, boot.seed,
-#                                         trace, onTheFlyDev, method,
-#                                         jobName, ylab, alpha, precis, ...){
-#     equivClustSorensen(geneLists, onto, ontoLevel, geneUniverse, orgPackg,
-#                        boot, nboot, boot.seed,
-#                        trace, onTheFlyDev, method,
-#                        jobName, ylab, alpha, precis, ...)
-#   }, onto = onto, geneLists = geneLists,
-#   geneUniverse = geneUniverse, orgPackg = orgPackg,
-#   boot = boot, nboot = nboot, boot.seed = boot.seed,
-#   trace = trace, onTheFlyDev = onTheFlyDev, method = method,
-#   jobName = jobName, ylab = ylab, alpha = alpha, precis = precis,
-#   ...)
-#   names(result) <- paste("Level", ontoLevels, sep = "")
-#   return(result)
-# }
-
 

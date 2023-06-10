@@ -27,12 +27,12 @@
 #' i.e., objects of class "equivSDhtestList" containing pairwise comparisons between gene lists.
 #'
 #' @examples
-#' data(humanEntrezIDs)
+#' # Gene lists to be explored for enrichment:
 #' data(allOncoGeneLists)
+#' # Gene universe:
+#' data(humanEntrezIDs)
 #' # This example is extremely time consuming, it scans two GO ontologies and three
 #' # GO levels inside them to perform the equivalence test.
-#' # Gene universe:
-#' # Gene lists to be explored for enrichment:
 #' # allEquivTestSorensen(allOncoGeneLists,
 #' #                      geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #' #                      ontos = c("MF", "BP"), GOLevels = seq.int(4,6))

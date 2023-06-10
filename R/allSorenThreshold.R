@@ -1,7 +1,7 @@
 #' Iterate \code{sorenThreshold} along the specified GO ontologies and GO levels
 #'
 #' @param x either an object of class "list" or an object of class "allTableList". In the first
-#' case, each of its elements must be a "character" vector of gene identifiers. In the second case,
+#' case, each of idata:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAWElEQVR42mNgGPTAxsZmJsVqQApgmGw1yApwKcQiT7phRBuCzzCSDSHGMKINIeDNmWQlA2IigKJwIssQkHdINgxfmBBtGDEBS3KCxBc7pMQgMYE5c/AXPwAwSX4lV3pTWwAAAABJRU5ErkJggg==ts elements must be a "character" vector of gene identifiers. In the second case,
 #' the object corresponds to all contingency tables of joint enrichment along one or more GO
 #' ontologies and one or more GO levels.
 #' @param geneUniverse character vector containing all genes from where geneLists have been extracted
@@ -28,16 +28,14 @@
 #' equivalence threshold dissimilarity.
 #'
 #' @examples
-#' \dontrun{
-#' # This example is extremely time consuming, it scans two GO ontologies and three
-#' # GO levels inside them to perform the equivalence test.
-#' # Gene universe:
-#' data("humanEntrezIDs")
-#' # Gene lists to be explored for enrichment:
-#' data("allOncoGeneLists")
-#' allSorenThreshold(allOncoGeneLists,
-#'                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' }                  ontos = c("MF", "BP"), GOLevels = seq.int(4,6))
+#' # # This example is extremely time consuming, it scans two GO ontologies and three
+#' # # GO levels inside them to perform the equivalence test.
+#' # # Gene universe:
+#' # data("humanEntrezIDs")
+#' # # Gene lists to be explored for enrichment:
+#' # data("allOncoGeneLists")
+#' # allSorenThreshold(allOncoGeneLists,
+#' #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #' #
 #' # Much faster:
 #' # Object \code{allTabs} of class "allTableList" contains all the pairwise contingency tables of

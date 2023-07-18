@@ -98,10 +98,10 @@ sorenThreshold.list <- function(x, onto, GOLevel, geneUniverse, orgPackg,
 
 #' @describeIn sorenThreshold S3 method for class "tableList"
 #' @export
-sorenThreshold.tableList <- function(x, onto = NULL, GOLevel = NULL,
-                                      #geneUniverse, orgPackg,
-                                      boot = FALSE, nboot = 10000, boot.seed = 6551,
-                                      trace = TRUE, alpha = 0.05, precis = 0.001, ...)
+sorenThreshold.tableList <- function(x, #onto = NULL, GOLevel = NULL,
+                                     #geneUniverse, orgPackg,
+                                     boot = FALSE, nboot = 10000, boot.seed = 6551,
+                                     trace = TRUE, alpha = 0.05, precis = 0.001, ...)
 {
   s <- length(x) + 1
   h <- s * (s - 1) * 0.5
@@ -172,8 +172,8 @@ sorenThreshold.tableList <- function(x, onto = NULL, GOLevel = NULL,
   distMat <- as.dist(t(distMat))
   attr(distMat, "dist.method") <- "equivalence_threshold"
   attr(distMat, "all2x2Tables") <- x
-  attr(distMat, "onto") <- onto
-  attr(distMat, "GOLevel") <- GOLevel
+  attr(distMat, "onto") <- attr(x, "onto")
+  attr(distMat, "GOLevel") <- attr(x, "GOLevel")
   return(distMat)
 }
 

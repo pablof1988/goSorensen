@@ -129,6 +129,8 @@ buildEnrichTable.character <- function(x, y, listNames = c("gene.list1", "gene.l
   }
   dimnames(tab) <- list(c(TRUE, FALSE), c(TRUE, FALSE))
   names(dimnames(tab)) <- paste0("Enriched in ", listNames)
+  attr(tab, "onto") <- onto
+  attr(tab, "GOLevel") <- GOLevel
   return(tab)
 }
 
@@ -193,6 +195,8 @@ buildEnrichTable.list <- function(x,
       return(oneVsOthers)
     })
   }
+  attr(allTables, "onto") <- onto
+  attr(allTables, "GOLevel") <- GOLevel
   names(allTables) <- lstNams[seq.int(2,numLists)]
   class(allTables) <- c("tableList", "list")
   return(allTables)

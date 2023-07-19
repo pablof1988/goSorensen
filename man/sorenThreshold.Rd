@@ -26,8 +26,6 @@ sorenThreshold(x, ...)
 
 \method{sorenThreshold}{tableList}(
   x,
-  onto = NULL,
-  GOLevel = NULL,
   boot = FALSE,
   nboot = 10000,
   boot.seed = 6551,

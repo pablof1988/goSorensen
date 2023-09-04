@@ -33,13 +33,13 @@ equivalence test for new values of any of the parameters \code{d0} or \code{conf
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{equivSDhtest}: S3 method for class "equivSDhtest"
+\item \code{upgrade(equivSDhtest)}: S3 method for class "equivSDhtest"
 
-\item \code{equivSDhtestList}: S3 method for class "equivSDhtestList"
+\item \code{upgrade(equivSDhtestList)}: S3 method for class "equivSDhtestList"
 
-\item \code{AllEquivSDhtest}: S3 method for class "allEquivSDhtest"
+\item \code{upgrade(AllEquivSDhtest)}: S3 method for class "allEquivSDhtest"
+
 }}
-
 \examples{
 # Result of the equivalence test between gene lists 'waldman' and 'atlas', in dataset
 # 'allOncoGeneLists', at level 4 of the BP ontology:

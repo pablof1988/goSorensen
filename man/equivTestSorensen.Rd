@@ -94,8 +94,8 @@ of a bootstrap approach instead of the asymptotic normal approach. Defaults to F
 \code{boot == FALSE}. Defaults to 10000.}
 
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
-represent a 2x2 contingency table. This checking is performed by means of function
-\code{nice2x2Table}.}
+represent a 2x2 contingency table (or an aggregate of them) or gene lists producing a correct
+table. This checking is performed by means of function \code{nice2x2Table}.}
 
 \item{y}{an object of class "character" representing a list of gene identifiers.}
 }
@@ -199,19 +199,19 @@ of finally effective bootstrap replicates.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{table}: S3 method for class "table"
+\item \code{equivTestSorensen(table)}: S3 method for class "table"
 
-\item \code{matrix}: S3 method for class "matrix"
+\item \code{equivTestSorensen(matrix)}: S3 method for class "matrix"
 
-\item \code{numeric}: S3 method for class "numeric"
+\item \code{equivTestSorensen(numeric)}: S3 method for class "numeric"
 
-\item \code{character}: S3 method for class "character"
+\item \code{equivTestSorensen(character)}: S3 method for class "character"
 
-\item \code{list}: S3 method for class "list"
+\item \code{equivTestSorensen(list)}: S3 method for class "list"
 
-\item \code{tableList}: S3 method for class "tableList"
+\item \code{equivTestSorensen(tableList)}: S3 method for class "tableList"
+
 }}
-
 \examples{
 # Gene lists 'atlas' and 'sanger' in 'allOncoGeneLists' dataset. Table of joint enrichment
 # of GO items in ontology BP at level 3.

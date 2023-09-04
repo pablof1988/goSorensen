@@ -48,13 +48,13 @@ In the "numeric" interface, the input \code{x} must correspond to a numeric of l
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{table}: S3 method for class "table"
+\item \code{nice2x2Table(table)}: S3 method for class "table"
 
-\item \code{matrix}: S3 method for class "matrix"
+\item \code{nice2x2Table(matrix)}: S3 method for class "matrix"
 
-\item \code{numeric}: S3 method for class "numeric"
+\item \code{nice2x2Table(numeric)}: S3 method for class "numeric"
+
 }}
-
 \examples{
 conti <- as.table(matrix(c(27, 36, 12, 501, 43, 15, 0, 0, 0), nrow = 3, ncol = 3,
                          dimnames = list(c("a1","a2","a3"),

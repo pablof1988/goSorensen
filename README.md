@@ -25,21 +25,22 @@ devtools::install_github("pablof1988/goSorensen", build_vignettes = TRUE)
 ## Basic ideas and concepts
 For the moment, the goSorensen package provides the following functions:
 
-- **buildEnrichTable:** Build an enrichment contingency table from two gene lists. 
+- **buildEnrichTable:** Build an enrichment contingency table from two gene lists.
+- **allBuildEnrichTable:** Iterate `buildEnrichTable` along the specified GO ontologies and GO levels
 - **nice2x2Table:** Check for validity an enrichment contingency table.
 - **dSorensen:** Compute the Sorensen-Dice dissimilarity.
 - **seSorensen:** Standard error estimate of the sample Sorensen-Dice dissimilarity.
 - **duppSorensen:** Upper limit of a one-sided confidence interval (0,dUpp] for the population dissimilarity.
 - **equivTestSorensen:** Equivalence test between two gene lists, based on the Sorensen-Dice dissimilarity.
-- **allEquivTestSorensen** Iterate equivTestSorensen along GO ontologies and GO levels.
+- **allEquivTestSorensen** Iterate `equivTestSorensen` along GO ontologies and GO levels.
 - **getDissimilarity, getPvalue, getSE, getTable, getUpper, getNboot:** Accessor functions to some fields of an equivalence test result
 - **upgrade:** Updating the result of an equivalence test, e.g., changing the equivalence limit.
 
 
-All these functions are generic, with methods for classes representing diverse kinds of data or statistical results. dSorensen, seSorensen, duppSorensen and equivTestSorensen have methods to manage classes directly representing enrichment cross-tabulations or, alternatively, character vectors representing gene lists. In this second case (gene lists), the enrichment tables are built in a previous step. If the first parameter of these functions is a list of character vectors (i.e., a list of gene lists) all paired enrichment cross-tabulations are performded and the result is a symmetric matrix of all paired dissimilarities, or standard errors, or confidence interval upper limits -or a list structure emulating a symmetric matrix as a result of equivTestSorensen. The accessor and upgradding functions have methods for all classes of equivTestSorensen and allEquivTestSorensen results.
+All these functions are generic, with methods for classes representing diverse kinds of data or statistical results. `dSorensen`, `seSorensen`, `duppSorensen` and `equivTestSorensen` have methods to manage classes directly representing enrichment cross-tabulations or, alternatively, character vectors representing gene lists. In this second case (gene lists), the enrichment tables are built in a previous step. If the first parameter of these functions is a list of character vectors (i.e., a list of gene lists) all paired enrichment cross-tabulations are performded and the result is a symmetric matrix of all paired dissimilarities, or standard errors, or confidence interval upper limits -or a list structure emulating a symmetric matrix as a result of equivTestSorensen. The accessor and upgradding functions have methods for all classes of equivTestSorensen and allEquivTestSorensen results.
 
 ## Contribution Guidelines
-Contributions are welcome, if you wish to contribute or give ideas to improve the package, please you can contact with maintainer (Pablo Flores) to the addres `p_flores@espoch.edu.ec`, and we can discuss your suggestion.
+Contributions are welcome, if you wish to contribute or give ideas to improve the package, please you can contact with maintainer (Pablo Flores) to the address `p_flores@espoch.edu.ec`, and we can discuss your suggestion.
 
 ## References
 <div id="refs" class="references">

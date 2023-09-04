@@ -1,6 +1,6 @@
 # goSorensen
 ## version 1.1.0
-- This is the first version submitted to review. There are currently no updates
+- This is the first version submitted to review. There are currently no updates.
 
 ## version 1.2.0
 - Added some results (allTabsBP.4 object) about computed crosstabs for all possible list pairs in allOncoGeneLists for BP ontology, level 4

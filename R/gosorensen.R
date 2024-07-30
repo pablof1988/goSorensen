@@ -14,9 +14,11 @@
 #' degree of similarity between both lists must be directly related to the degree of concordance in
 #' the enrichment, n11.
 #'
-#' For the moment, the gosorensen package provides the following functions:
+#' gosorensen package provides the following functions:
 #' \describe{
-#'   \item{buildEnrichTable}{Build an enrichment contingency table from two gene lists}
+#'   \item{enrichedIn}{Build a cross-tabulation of enriched and non-enriched GO terms vs. gene lists}
+#'   \item{buildEnrichTable}{Build an enrichment contingency table from two or more gene lists}
+#'   \item{allBuildEnrichTable}{Iterate 'buildEnrichTable' along the specified GO ontologies and GO levels}
 #'   \item{nice2x2Table}{Check for validity an enrichment contingency table}
 #'   \item{dSorensen}{Compute the Sorensen-Dice dissimilarity}
 #'   \item{seSorensen}{Standard error estimate of the sample Sorensen-Dice dissimilarity}
@@ -25,9 +27,14 @@
 #'   \item{allEquivTestSorensen}{Iterate equivTestSorensen along GO ontologies and GO levels}
 #'   \item{getDissimilarity, getPvalue, getSE, getTable, getUpper, getNboot, getEffNboot}{Accessor functions to some fields of an equivalence test result}
 #'   \item{upgrade}{Updating the result of an equivalence test, e.g., changing the equivalence limit}
+#'   \item{sorenThreshold}{For a given level (2, 3, ...) in a GO ontology (BP, MF or CC), compute the equivalence threshold dissimilarity matrix.}
+#'   \item{allSorenThreshold}{Iterate 'sorenThreshold' along the specified GO ontologies and GO levels.}
+#'   \item{hclustThreshold}{From a Sorensen-Dice threshold dissimilarity matrix, generate an object of class "hclust"}
+#'   \item{allHclustThreshold}{Iterate 'hclustThreshold' along the specified GO ontologies and GO levels}
+#'   \item{pruneClusts}{Remove all NULL or unrepresentable as a dendrogram "equivClustSorensen" elements in an object of class "equivClustSorensenList"}
 #' }
 #' All these functions are generic, adequate for different (S3) classes representing the before cited
-#' GO item enrichment cross-tabulations.
+#' GO term enrichment cross-tabulations.
 #'
 #' @docType package
 #' @name gosorensen

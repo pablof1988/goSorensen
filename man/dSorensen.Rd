@@ -34,7 +34,7 @@ See the details section for more information.}
 \item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
 represent a 2x2 contingency table, by means of function \code{nice2x2Table}.}
 
-\item{y}{an object of class "character" representing a vector of valid gene identifiers.}
+\item{y}{an object of class "character" representing a vector of valid gene identifiers (e.g., ENTREZ).}
 }
 \value{
 In the "table", "matrix", "numeric" and "character" interfaces, the value of the
@@ -49,8 +49,8 @@ Given a 2x2 arrangement of frequencies (either implemented as a "table", a "matr
 or a "numeric" object):
 
 \tabular{rr}{
-n11 \tab n01 \cr
-n10 \tab n00,
+\eqn{n_{11}} \tab \eqn{n_{10}} \cr
+\eqn{n_{01}} \tab \eqn{n_{00}},
 }
 
 this function computes the Sorensen-Dice dissimilarity
@@ -58,9 +58,9 @@ this function computes the Sorensen-Dice dissimilarity
 n_10 + n_01}/{2 n_11 + n_10 + n_01}.}
 
 The subindex '11' corresponds to those
-GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,
-'10' to items enriched in the first list but not enriched in the second one and '00' corresponds
-to those GO items non enriched in both gene lists, i.e., to the double negatives, a value which
+GO terms enriched in both lists, '01' to terms enriched in the second list but not in the first one,
+'10' to terms enriched in the first list but not enriched in the second one and '00' corresponds
+to those GO terms non enriched in both gene lists, i.e., to the double negatives, a value which
 is ignored in the computations.
 
 In the "numeric" interface, if \code{length(x) >= 3}, the values are interpreted
@@ -70,11 +70,11 @@ as
 The result is correct, regardless the frequencies being absolute or relative.
 
 If \code{x} is an object of class "character", then \code{x} (and \code{y}) must represent
-two "character" vectors of valid gene identifiers.
+two "character" vectors of valid gene identifiers (e.g., ENTREZ).
 Then the dissimilarity between lists \code{x} and \code{y} is computed,
 after internally summarizing them as a 2x2 contingency table of joint enrichment.
 This last operation is performed by function \code{\link{buildEnrichTable}} and "valid gene
-identifiers" stands for the coherency of these gene identifiers with the arguments
+identifiers (e.g., ENTREZ)" stands for the coherency of these gene identifiers with the arguments
 \code{geneUniverse} and \code{orgPackg} of \code{buildEnrichTable}, passed by the ellipsis
 argument \code{...} in \code{dSorensen}.
 
@@ -121,7 +121,7 @@ $lk$l1$t(k,1), $lk$l2$t(k,2), ..., $lk$l(k-1)t(k,k-1)
 }}
 \examples{
 # Gene lists 'atlas' and 'sanger' in 'allOncoGeneLists' dataset. Table of joint enrichment
-# of GO items in ontology BP at level 3.
+# of GO terms in ontology BP at level 3.
 data(tab_atlas.sanger_BP3)
 tab_atlas.sanger_BP3
 ?tab_atlas.sanger_BP3
@@ -141,22 +141,27 @@ dSorensen(conti3)
 
 # Sorensen-Dice dissimilarity from scratch, directly from two gene lists:
 # (These examples may be considerably time consuming due to many enrichment
-# tests to build the contingency tables of mutual enrichment)
-# data(pbtGeneLists)
-# ?pbtGeneLists
-# data(humanEntrezIDs)
+# tests to build the contingency tables of joint enrichment)
+# data(allOncoGeneLists)
+# ?allOncoGeneLists
+
+# Obtaining ENTREZ identifiers for the gene universe of humans:
+# library(org.Hs.eg.db)
+# humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
+
 # (Time consuming, building the table requires many enrichment tests:)
-# dSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
-#           onto = "CC", GOLevel = 3,
+# dSorensen(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
+#           onto = "BP", GOLevel = 3,
 #           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+
 # Essentially, the above code makes the same as:
-# tab.IRITD3vsKT1 <- buildEnrichTable(pbtGeneLists[[2]], pbtGeneLists[[4]],
-#                                     onto = "CC", GOLevel = 3,
+# tab_atlas.sanger_BP3 <- buildEnrichTable(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
+#                                     onto = "BP", GOLevel = 3,
 #                                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# dSorensen(tab.IRITD3vsKT1)
+# dSorensen(tab_atlas.sanger_BP3)
 # (Quite time consuming, all pairwise dissimilarities:)
-# dSorensen(pbtGeneLists,
-#           onto = "CC", GOLevel = 3,
+# dSorensen(allOncoGeneLists,
+#           onto = "BP", GOLevel = 3,
 #           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 }
 \seealso{

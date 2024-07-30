@@ -5,8 +5,8 @@
 #' See the details section for more information.
 #' @param GOLevel integer (2, 3, ...) level of a GO ontology where the GO profiles are built
 #' @param onto character, GO ontology ("BP", "MF" or "CC") under consideration
-#' @param geneUniverse character vector containing all genes from where geneLists have been extracted
-#' @param orgPackg a string with the name of the annotation package
+#' @param orgPackg A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details see \href{../doc/README.html}{README File}.
+#' @param geneUniverse character vector containing the universe of genes from where geneLists have been extracted. This vector must be extracted from the annotation package declared in \code{orgPackg}. For more details see \href{../doc/README.html}{README File}.
 #' @param boot boolean. If TRUE, the p-values are computed by means
 #' of a bootstrap approach instead of the asymptotic normal approach. Defaults to FALSE.
 #' @param nboot numeric, number of initially planned bootstrap replicates. Ignored if
@@ -23,7 +23,7 @@
 #' Sorensen-Dice dissimilarity.
 #' @details
 #' If \code{x} is an object of class "list", each of its elements must be a "character" vector of gene
-#' identifiers. Then all pairwise threshold dissimilarities between these gene lists are obtained.
+#' identifiers (e.g., ENTREZ). Then all pairwise threshold dissimilarities between these gene lists are obtained.
 #'
 #' Class "tableList" corresponds to objects representing all mutual enrichment contingency tables
 #' generated in a pairwise fashion:
@@ -60,9 +60,12 @@
 #' @examples
 #' # Gene lists to be explored for enrichment:
 #' data(allOncoGeneLists)
-#' # Gene universe:
-#' data(humanEntrezIDs)
-#' # # This example is quite time consuming:
+#' 
+#' # Obtaining ENTREZ identifiers for the gene universe of humans:
+#' library(org.Hs.eg.db)
+#' humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
+#' 
+#' # This example is quite time consuming:
 #' # sorenThreshold(allOncoGeneLists,
 #' #                geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #' # Much faster:

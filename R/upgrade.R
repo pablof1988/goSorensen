@@ -20,7 +20,8 @@
 #' class(waldman_atlas.BP.4)
 #' # This may correspond to the result of code like:
 #' # data(allOncoGeneLists)
-#' # data(humanEntrezIDs)
+#' # library(org.Hs.eg.db)
+#' # humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
 #' # waldman_atlas.BP.4 <- equivTestSorensen(
 #' #   allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
 #' #   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
@@ -34,8 +35,9 @@
 #' ?BP.4
 #' class(BP.4)
 #' # This may correspond to a call like:
-#' data(allOncoGeneLists)
-#' data(humanEntrezIDs)
+#' # data(allOncoGeneLists)
+#' # library(org.Hs.eg.db)
+#' # humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
 #' # BP.4 <- equivTestSorensen(allOncoGeneLists,
 #' #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #' #                           onto = "BP", GOLevel = 4)

@@ -17,7 +17,7 @@ data(waldman_atlas.BP.4)
 The Sorensen-Dice equivalence test between the gene lists "waldman" and "atlas" taken from dataset
 \code{\link{allOncoGeneLists}} which may be charged from this package.
 To perform the test, the information in these gene
-lists was summarized by means of contingency tables of mutual GO item enrichment, for all GO items
+lists was summarized by means of contingency tables of mutual GO term enrichment, for all GO terms
 at level 4 of the BP ontology. The tests were performed for an equivalence
 limit d0 = 0.4444 and a confidence level conf.int = 0.95.
 Based on a version of these gene lists that may be non up-to-date, take just as an illustrative example.

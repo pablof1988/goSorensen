@@ -36,7 +36,7 @@ allEquivTestSorensen(x, ...)
 }
 \arguments{
 \item{x}{either an object of class "list" or an object of class "allTableList". In the first
-case, each of its elements must be a "character" vector of gene identifiers.}
+case, each of its elements must be a "character" vector of gene identifiers (e.g., ENTREZ).}
 
 \item{...}{extra parameters for function \code{buildEnrichTable}.}
 
@@ -83,13 +83,19 @@ Iterate \code{equivTestSorensen} along the specified GO ontologies and GO levels
 \examples{
 # Gene lists to be explored for enrichment:
 data(allOncoGeneLists)
-# Gene universe:
-data(humanEntrezIDs)
-# This example is extremely time consuming, it scans two GO ontologies and three
+
+# Obtaining ENTREZ identifiers for the gene universe of humans:
+library(org.Hs.eg.db)
+humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
+
+# This example is highly time-consuming. It scans two GO ontologies and three
 # GO levels inside them to perform the equivalence test.
 # allEquivTestSorensen(allOncoGeneLists,
 #                      geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #                      ontos = c("MF", "BP"), GOLevels = seq.int(4,6))
+# When the "ontos" and "GOLevels" arguments are not supplied, the function computes 
+# by default every possible contingency table between the lists being compared for 
+# the three ontologies (BP, CC, MF) and GO levels from 3 to 10. 
 #
 # Much faster:
 # Object \code{allTabs} of class "allTableList" contains all the pairwise contingency tables of

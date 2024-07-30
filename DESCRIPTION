@@ -2,22 +2,49 @@ Package: goSorensen
 Type: Package
 Title: Statistical inference based on the Sorensen-Dice dissimilarity
         and the Gene Ontology (GO)
-Version: 1.3.0
-Description: This package implements inferential methods to compare gene lists 
-    in terms of their biological meaning as expressed in the
-    GO. The compared gene lists are characterized by cross-tabulation frequency tables of
-    enriched GO items. Dissimilarity between gene lists is evaluated using the Sorensen-Dice index.
-    The fundamental guiding principle is that two gene lists are taken as similar if they share a
-    great proportion of common enriched GO items.
+Version: 1.7.0
+Description: This package implements inferential methods to compare gene lists in terms of their biological meaning as expressed in the GO. The compared gene lists are characterized by cross-tabulation frequency tables of enriched GO items. Dissimilarity between gene lists is evaluated using the Sorensen-Dice index.
+    The fundamental guiding principle is that two gene lists are taken as similar if they share a great proportion of common enriched GO items.
 Authors@R: 
-  c(person("Pablo", "Flores", role = c("aut", "cre"), email = "p_flores@espoch.edu.ec", comment = c(ORCID = "0000-0002-7156-8547")),
-    person("Jordi", "Ocana", role = c("aut", "ctb"), comment = c(ORCID = "0000-0002-4736-699")),
-    person("Alexandre", "Sanchez-Pla", role = "ctb", comment = c(ORCID = "0000-0002-8673-7737")),
-	person("Miquel", "Salicru", role = "ctb", comment = c(ORCID = "0000-0001-9644-5626")))
-Suggests: BiocStyle, knitr, rmarkdown
-Depends: R (>= 4.3.0)
-Imports: GO.db, org.Hs.eg.db, goProfiles,
-        stats, clusterProfiler, parallel, stringr
+  c(person("Pablo", "Flores", role = c("aut", "cre"), 
+            email = "p_flores@espoch.edu.ec", 
+            comment = c(ORCID = "0000-0002-7156-8547")),
+    person("Jordi", "Ocana", role = c("aut", "ctb"), 
+            comment = c(ORCID = "0000-0002-4736-699")),
+    person("Alexandre", "Sanchez-Pla", role = "ctb", 
+            comment = c(ORCID = "0000-0002-8673-7737")),
+	  person("Miquel", "Salicru", role = "ctb", 
+	          comment = c(ORCID = "0000-0001-9644-5626")))
+Depends: R (>= 4.3)
+Imports: 
+        clusterProfiler,
+        goProfiles,
+        org.Hs.eg.db, 
+        parallel,
+        stats, 
+        stringr
+Suggests:
+    BiocManager,
+    BiocStyle,
+    knitr,
+    rmarkdown,
+    org.At.tair.db,
+    org.Ag.eg.db,
+    org.Bt.eg.db,
+    org.Ce.eg.db,
+    org.Cf.eg.db,
+    org.Dm.eg.db,
+    org.Dr.eg.db,
+    org.EcSakai.eg.db,
+    org.EcK12.eg.db,
+    org.Gg.eg.db,
+    org.Mm.eg.db,
+    org.Mmu.eg.db,
+    org.Rn.eg.db,
+    org.Sc.sgd.db,
+    org.Ss.eg.db,
+    org.Pt.eg.db,
+    org.Xl.eg.db
 VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8

@@ -1,11 +1,11 @@
 #' Iterate \code{sorenThreshold} along the specified GO ontologies and GO levels
 #'
 #' @param x either an object of class "list" or an object of class "allTableList". In the first
-#' case, each of idata:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAWElEQVR42mNgGPTAxsZmJsVqQApgmGw1yApwKcQiT7phRBuCzzCSDSHGMKINIeDNmWQlA2IigKJwIssQkHdINgxfmBBtGDEBS3KCxBc7pMQgMYE5c/AXPwAwSX4lV3pTWwAAAABJRU5ErkJggg==ts elements must be a "character" vector of gene identifiers. In the second case,
+#' case, each of its elements must be a "character" vector of gene identifiers (e.g., ENTREZ). In the second case,
 #' the object corresponds to all contingency tables of joint enrichment along one or more GO
 #' ontologies and one or more GO levels.
-#' @param geneUniverse character vector containing all genes from where geneLists have been extracted
-#' @param orgPackg a string with the name of the annotation package
+#' @param orgPackg A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details see \href{../doc/README.html}{README File}.
+#' @param geneUniverse character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in orgPackg. For more details see \href{../doc/README.html}{README File}.
 #' @param boot boolean. If TRUE, the confidence intervals and the test p-values are computed by means
 #' of a bootstrap approach instead of the asymptotic normal approach. Defaults to FALSE.
 #' @param nboot numeric, number of initially planned bootstrap replicates. Ignored if
@@ -28,17 +28,20 @@
 #' equivalence threshold dissimilarity.
 #'
 #' @examples
-#' # # This example is extremely time consuming, it scans two GO ontologies and three
+#' # # This example is highly time-consuming. It scans two GO ontologies and three
 #' # # GO levels inside them to perform the equivalence test.
-#' # # Gene universe:
-#' # data("humanEntrezIDs")
+#' 
+#' # Obtaining ENTREZ identifiers for the gene universe of humans:
+#' # library(org.Hs.eg.db)
+#' # humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
+#' 
 #' # # Gene lists to be explored for enrichment:
 #' # data("allOncoGeneLists")
 #' # allSorenThreshold(allOncoGeneLists,
 #' #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #' #
 #' # Much faster:
-#' # Object \code{allTabs} of class "allTableList" contains all the pairwise contingency tables of
+#' # Object allTabs of class "allTableList" contains all the pairwise contingency tables of
 #' # joint enrichment for the gene lists in \code{allOncoGeneLists}, obtained along all three GO
 #' # ontologies and along GO levels 3 to 10:
 #' data(allTabs)

@@ -38,14 +38,17 @@ From a Sorensen-Dice threshold dissimilarity matrix, generate an object of class
 \examples{
 # Gene lists to analyse:
 data("allOncoGeneLists")
-# Gene universe:
-data("humanEntrezIDs")
+
+# Obtaining ENTREZ identifiers for the gene universe of humans:
+library(org.Hs.eg.db)
+humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
+
 # First, compute the Sorensen-Dice threshold equivalence dissimilarity
 # for ontology BP at level 4:
 # # Very time consuming, it requires building all joint enrichment contingency tables
 dOncBP4 <- sorenThreshold(allOncoGeneLists, onto = "BP", GOLevel = 4,
                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# Preferable (much faster), using the previously tabulated contingency tables:
+# Better (much faster), using the previously tabulated contingency tables:
 data("allTabsBP.4")
 dOncBP4 <- sorenThreshold(allTabsBP.4)
 clust.threshold <- hclustThreshold(dOncBP4)

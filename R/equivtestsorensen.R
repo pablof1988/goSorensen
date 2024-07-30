@@ -6,7 +6,7 @@
 #' @param x either an object of class "table", "matrix", "numeric", "character", "list"
 #' or "tableList".
 #' See the details section for more information.
-#' @param y an object of class "character" representing a list of gene identifiers.
+#' @param y an object of class "character" representing a list of gene identifiers (e.g., ENTREZ).
 #' @param d0 equivalence threshold for the Sorensen-Dice dissimilarity, d.
 #' The null hypothesis states that d >= d0, i.e., inequivalence between the compared
 #' gene lists and the alternative that d < d0, i.e., equivalence or dissimilarity
@@ -46,13 +46,13 @@
 #' (either implemented as a "table", a "matrix" or a "numeric" object):
 #'
 #'\tabular{rr}{
-#' n11 \tab n10 \cr
-#' n01 \tab n00,
+#' \eqn{n_{11}} \tab \eqn{n_{10}} \cr
+#' \eqn{n_{01}} \tab \eqn{n_{00}},
 #'}
 #'
-#' The subindex '11' corresponds to those GO items enriched in both lists, '01' to items enriched
-#' in the second list but not in the first one, '10' to items enriched in the first list but not
-#' enriched in the second one and '00' corresponds to those GO items non enriched in both gene
+#' The subindex '11' corresponds to those GO terms enriched in both lists, '01' to terms enriched
+#' in the second list but not in the first one, '10' to terms enriched in the first list but not
+#' enriched in the second one and '00' corresponds to those GO terms non enriched in both gene
 #' lists, i.e., to the double negatives, a value which is ignored in the computations.
 #'
 #' In the "numeric" interface, if \code{length(x) >= 4}, the values are interpreted
@@ -61,16 +61,16 @@
 #' (n_11, n_01, n_10, n_00)}, always in this order and discarding extra values if necessary.
 #'
 #' If \code{x} is an object of class "character", then \code{x} (and \code{y}) must represent
-#' two "character" vectors of valid gene identifiers.
+#' two "character" vectors of valid gene identifiers (e.g., ENTREZ).
 #' Then the equivalence test is performed between \code{x} and \code{y}, after internally
 #' summarizing them as a 2x2 contingency table of joint enrichment.
 #' This last operation is performed by function \code{\link{buildEnrichTable}} and "valid gene
-#' identifiers" stands for the coherency of these gene identifiers with the arguments
+#' identifiers (e.g., ENTREZ)" stands for the coherency of these gene identifiers with the arguments
 #' \code{geneUniverse} and \code{orgPackg} of \code{buildEnrichTable}, passed by the ellipsis
 #' argument \code{...} in \code{equivTestSorensen}.
 #'
 #' If \code{x} is an object of class "list", each of its elements must be a "character" vector of gene
-#' identifiers. Then all pairwise equivalence tests are performed between these gene lists.
+#' identifiers (e.g., ENTREZ). Then all pairwise equivalence tests are performed between these gene lists.
 #'
 #' Class "tableList" corresponds to objects representing all mutual enrichment contingency tables
 #' generated in a pairwise fashion:
@@ -130,7 +130,7 @@
 #'
 #' @examples
 #' # Gene lists 'atlas' and 'sanger' in 'allOncoGeneLists' dataset. Table of joint enrichment
-#' # of GO items in ontology BP at level 3.
+#' # of GO terms in ontology BP at level 3.
 #' data(tab_atlas.sanger_BP3)
 #' tab_atlas.sanger_BP3
 #' equivTestSorensen(tab_atlas.sanger_BP3)
@@ -140,31 +140,37 @@
 #' # Equivalence tests from scratch, directly from gene lists:
 #' # (These examples may be considerably time consuming due to many enrichment
 #' # tests to build the contingency tables of mutual enrichment)
-#' # ?pbtGeneLists
-#' # Gene universe:
-#' # data(humanEntrezIDs)
-#' # equivTestSorensen(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
+#' # data(allOncoGeneLists)
+#' # ?allOncoGeneLists
+#' 
+#' # Obtaining ENTREZ identifiers for the gene universe of humans:
+#' library(org.Hs.eg.db)
+#' humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
+#' 
+#' # Computing the equivalence test:
+#' # equivTestSorensen(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
 #' #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #                   onto = "CC", GOLevel = 5)
+#' #                   onto = "BP", GOLevel = 3)
 #' # Bootstrap instead of normal approximation test:
-#' # equivTestSorensen(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
+#' # equivTestSorensen(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
 #' #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #                   onto = "CC", GOLevel = 5,
+#' #                   onto = "BP", GOLevel = 3,
 #' #                   boot = TRUE)
 #'
 #' # Essentially, the above code makes:
-#' # IRITD3vs5.CC5 <- buildEnrichTable(pbtGeneLists[["IRITD3"]], pbtGeneLists[["IRITD5"]],
+#' # ctab_atlas.sanger_BP3 <- buildEnrichTable(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
 #' #                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #                                   onto = "CC", GOLevel = 5)
-#' # IRITD3vs5.CC5
-#' # equivTestSorensen(IRITD3vs5.CC5)
-#' # equivTestSorensen(IRITD3vs5.CC5, boot = TRUE)
+#' #                                   onto = "BP", GOLevel = 3)
+#' # ctab_atlas.sanger_BP3
+#' # equivTestSorensen(ctab_atlas.sanger_BP3)
+#' # equivTestSorensen(ctab_atlas.sanger_BP3, boot = TRUE)
 #' # (Note that building first the contingency table may be advantageous to save time!)
+#' # The object tab_atlas.sanger_BP3 and ctab_atlas.sanger_BP3 are exactly the same
 #'
 #' # All pairwise equivalence tests:
-#' # equivTestSorensen(pbtGeneLists,
+#' # equivTestSorensen(allOncoGeneLists,
 #' #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #                   onto = "CC", GOLevel = 5)
+#' #                   onto = "BP", GOLevel = 3)
 #'
 #'
 #' # Equivalence test on a contingency table represented as a numeric vector:

@@ -20,8 +20,8 @@ nice2x2Table(x)
 }
 \value{
 boolean, TRUE if \code{x} nicely represents a 2x2 contingency table
-interpretable as the cross-tabulation of the enriched GO items in two gene lists:
-"Number of enriched items in list 1 (TRUE, FALSE)" x "Number of enriched items in
+interpretable as the cross-tabulation of the enriched GO terms in two gene lists:
+"Number of enriched terms in list 1 (TRUE, FALSE)" x "Number of enriched terms in
 list 2 (TRUE, FALSE)". In this function, "nicely representing a 2x2 contingency table"
 is interpreted in terms of computing the Sorensen-Dice dissimilarity and associated
 statistics.
@@ -35,11 +35,11 @@ In the "table" and "matrix" interfaces, the input parameter \code{x} must corres
 to a two-dimensional array:
 
 \tabular{rr}{
-n11 \tab n01 \cr
-n10 \tab n00,
+\eqn{n_{11}} \tab \eqn{n_{10}} \cr
+\eqn{n_{01}} \tab \eqn{n_{00}},
 }
-These values are interpreted (always in this order) as n11: number of GO items enriched in both lists,
-n01: GO items enriched in the second list but not in the first one, n10: items not enriched in the second
+These values are interpreted (always in this order) as n11: number of GO terms enriched in both lists,
+n01: GO terms enriched in the second list but not in the first one, n10: terms not enriched in the second
 list but enriched in the first one and double negatives, n00.
 The double negatives n00 are ignored in many computations concerning the Sorensen-Dice index.
 

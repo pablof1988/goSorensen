@@ -1,9 +1,7 @@
-#' Reformats and completes (if necessary) an enrichment contingency table as is generated
-#' by function 'crossTabGOIDs4GeneLists', in order to make it appropriate for its use in
-#' package goSorensen.
+#' Reformats and completes (if necessary) a 2x2 enrichment contingency table for its appropriate use in package goSorensen. It is internally used by function 'buildEnrichTable'..
 #' 
-#' @param x an object of class "table", typically the output of function 'crossTabGOIDs4GeneLists'.
-#' @param listNames a character(2) with the gene lists names originating the cross-tabulated
+#' @param x an object of class "table".
+#' @param listNames a character(2) with the gene lists names.
 #' enrichment frequencies.
 #' @return a complete contingency table to use in package goSorensen.
 completeTable <- function(x, listNames) {

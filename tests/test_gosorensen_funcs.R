@@ -108,7 +108,9 @@ equivTestSorensen(c(0,0,0,45))
 # Sorensen-Dice computations from scratch, directly from gene lists
 data(allOncoGeneLists)
 ?allOncoGeneLists
-data(humanEntrezIDs)
+
+library(org.Hs.eg.db)
+humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
 # First, the mutual GO node enrichment tables are built, then computations
 # proceed from these contingency tables.
 # Building the contingency tables is a slow process (many enrichment tests)

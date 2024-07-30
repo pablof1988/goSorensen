@@ -1,5 +1,5 @@
 ---
-title: "An introduction to package goSorensen"
+title: "An Introduction to goSorensen R-Package"
 author:
 - name: Jordi Ocaña
   email: jocana@ub.edu
@@ -11,7 +11,8 @@ package: goSorensen
 abstract: >
   This vignette provides an introduction to goSorensen  package, which was built to determine equivalence between features lists. The method is based on the Sorensen–Dice index and the joint frequencies of GO term enrichment. 
   
-  Starting from an introduction of the asociated technique and a description of the data used, this vignette explain how to: i) perform the equivalence test from contingency tables of joint enrichment or directly from features lists (either using a normal asymptotic or a bootstrap approximation), ii) collect specific fields of the test results like the p-value, the upper limit of the confidence interval or standard errors and iii) Another statistics related to the Sorensen-Dice dissimilarity
+  
+  Starting from an introduction, which includes a brief explanation of the method to detect equivalence between feature lists, a description of the data to be used, and previous considerations about the necessary information of the species to be analyzed, this vignette explains how to: i) perform an equivalence test, ii) access to specific results of the equivalence test, iii) upgrade the obtained results and iv) perform results for more than two lists.
   
 output:
   BiocStyle::html_document:
@@ -35,71 +36,92 @@ knitr::opts_chunk$set(dpi=25,fig.width=7)
 library(goSorensen)
 ```
 
-# Introduction
+# Introduction. {.unnumbered}
 
 The goal of **goSorensen** is to implement the equivalence test introduced in Flores, P., Salicrú, M., Sánchez-Pla, A. and Ocaña, J.(2022) "An equivalence test between features lists, based on the Sorensen - Dice index and the joint frequencies of GO node enrichment", BMC Bioinformatics, 2022 23:207.
 
-Given two gene lists, $L_1$ and $L_2$, (the data) and a given set of *n* Gene Ontology (GO) terms (the frame of reference for biological information in these lists), the test is devoted to answer the following question (quite informally stated for the moment): The dissimilarity between the biological information in both lists, is it negligible? To measure the dissimilarity we use the Sorensen-Dice index:
+Given two gene lists, $L_1$ and $L_2$, (the data) and a given set of $n$ Gene Ontology (GO) terms (the frame of reference for biological significance in these lists), the test is devoted to answer the following question (quite informally stated for the moment): The dissimilarity between the biological information in both lists, is it negligible? To measure the dissimilarity we use the Sorensen-Dice index:
 
 $$
-\hat d_{12} = d(L_1,L_2) = \frac{2n_{11}}{2n_{11} + n_{10} + n_{01}}
+\hat d_S = \hat d(L_1,L_2) = \frac{2n_{11}}{2n_{11} + n_{10} + n_{01}}
 $$
 
-where $n_{11}$ corresponds to the number of GO terms (among the *n* GO terms under consideration) which are enriched in both gene lists, $n_{10}$ corresponds to the GO terms enriched in $L_1$ but not in $L_2$ and $n_{01}$ the reverse, those enriched in $L_2$ but not in $L_1$. For notation completeness, $n_{00}$ would correspond to those GO terms not enriched in both lists; it is not considered by the Sorensen-Dice index but would be necessary in some computations. Obviously, $n = n_{11} + n_{10} + n_{01} + n_{00}$.
+where $n_{11}$ corresponds to the number of GO terms (among the $n$ GO terms under consideration) which are enriched in both gene lists, $n_{10}$ corresponds to the GO terms enriched in $L_1$ but not in $L_2$ and $n_{01}$ the reverse, those enriched in $L_2$ but not in $L_1$. For notation completeness, $n_{00}$ would correspond to those GO terms not enriched in both lists; it is not considered by the Sorensen-Dice index but would be necessary in some computations. Obviously, $n = n_{11} + n_{10} + n_{01} + n_{00}$.
 
-More precisely, the above problem can be restated as follows: Given a negligibility threshold $d_0$ for the Sorensen-Dice values, to decide negligibility corresponds to rejecting the null hypothesis $H_0: d \ge d_0$ in favor of the alternative $H_1: d < d_0$, where $d$ stands for the "true" value of the Sorensen-Dice dissimilarity ($L_1$ and $L_2$ are samples, and the own process of declaring enrichment of a GO term is random, so $\hat d = d(L_1,L_2)$ is an estimate of $d$). Then, a bit more precise statement of the problem is "The dissimilarity between the biological information in two gene lists, is it negligible up to a degree $d_0$?" Where this information is expressed by means of the Sorensen-Dice dissimilarity measured on the degree of coincidence and non-coincidence in GO terms enrichment among a given set of GO terms.
+More precisely, the above problem can be restated as follows: Given a negligibility threshold $d_0$ for the Sorensen-Dice values, to decide negligibility corresponds to rejecting the null hypothesis $H_0:d_S \ge d_0$ in favour of the alternative $H_1: d_S < d_0$, where $d_S$ stands for the "true" value of the Sorensen-Dice dissimilarity ($L_1$ and $L_2$ are samples, and the own process of declaring enrichment of a GO term is random, so $\hat d_S = \hat d(L_1,L_2)$ is an estimate of $d_S$). Then, a bit more precise statement of the problem is "The dissimilarity between the biological information in two gene lists, is it negligible up to a degree $d_0$?" Where this information is expressed by means of the Sorensen-Dice dissimilarity measured on the degree of coincidence and non-coincidence in GO terms enrichment among a given set of GO terms.
 
 For the moment, the reference set of GO terms can be only all those GO terms in a given level of one GO ontology, either BP, CC or MF.
 
-# Installation
+## Installation. {.unnumbered}
 
-goSorensen package has to be installed with a working R version (\>=4.2.0). Installation could take a few minutes on a regular desktop or laptop. Package can be installed from Bioconductor or `devtools` package, then it needs to be loaded using `library(goSorensen)`
+goSorensen package must be installed with a working R version (\>=4.3.0). Installation could take a few minutes on a regular desktop or laptop. Package can be installed from Bioconductor, then it needs to be loaded using `library(goSorensen)`:
 
-To install from Bioconductor (recommended):
-
-```{r, eval=FALSE}
-## Only if BiocManager is not previosly installed:
-install.packages("BiocManager")
-
-## otherwise, directly:
-BiocManager::install("goSorensen")
+```{r, eval=TRUE}
+if (!requireNamespace("goSorensen", quietly = TRUE)) {
+    BiocManager::install("goSorensen")
+}
+library(goSorensen)
 ```
 
-To install from Github
+## Data. {.unnumbered}
 
-```{r, eval=FALSE}
-devtools::install_github("pablof1988/goSorensen", build_vignettes = TRUE)
-```
-
-# Data.
-
-The dataset used in this vignette, `allOncoGeneLists`, is based on the gene lists compiled at <http://www.bushmanlab.org/links/genelists>, a comprehensive set of gene lists related to cancer. The package `goSorensen` loads this dataset by means of `data(allOncoGeneLists)`:
+The dataset used in this vignette, `allOncoGeneLists`, is based on the gene lists compiled at <http://www.bushmanlab.org/links/genelists>, a comprehensive set of gene lists related to cancer. The package `goSorensen` loads this dataset using `data(allOncoGeneLists)`:
 
 ```{r}
 data("allOncoGeneLists")
 ```
 
-It is a "list" object of length 7. Each one of its elements is a "character" with the gene identifiers of a gene list related to cancer.
-
-# Performing the equivalence test
-
-## From a previously built contingency table of join enrichment
-
-Function `equivTestSorensen` performs the equivalence test. One possibility is to build first the mutual enrichment contingency table by means of the function `buildEnrichTable` and then to perform the equivalence test:
+`allOncoGeneLists`  is an object of class list, containing seven character vectors with the ENTREZ gene identifiers of a gene list related to cancer.
 
 ```{r}
-data("humanEntrezIDs")
 length(allOncoGeneLists)
 sapply(allOncoGeneLists, length)
+
 # First 20 gene identifiers of gene lists Vogelstein and sanger:
 allOncoGeneLists[["Vogelstein"]][1:20]
 allOncoGeneLists[["sanger"]][1:20]
+```
+
+## Previous Information About the Species to Analyze.  {.unnumbered}
+Before using `goSorensen,` the users must have adequate knowledge of the species they intend to focus their analysis on. The genomic annotation packages available in Bioconductor provide all the essential information about many species. 
+
+
+For the specific case of this vignette, given that the analysis will be done in the human species, the `org.Hs.eg.db` package must be previously installed and activated as follows:
+
+```{r, message = FALSE, warning = FALSE, eval = TRUE}
+if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) {
+    BiocManager::install("org.Hs.eg.db")
+}
+library(org.Hs.eg.db)
+```
+
+Actually, the `org.Hs.eg.db` package is automatically installed as a dependency on `goSorensen`, making its installation unnecessary. However, for any other species, the user must install the correspondence genome annotation for the species to analyze, as indicated in the above code. 
+
+
+In addition, it is necessary to have a vector containing the IDs of the universe of genes associated with the species under study. The genomic annotation package provides an easy way to obtain this universe. The ENTREZ identifiers of the gene universe for humans, necessary for this vignette, is obtained as follows:
+
+```{r, message = FALSE, warning = FALSE, echo = TRUE}
+humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
+```
+
+In this same way, the identifiers of the gene universe can be obtained for any other species.
+
+
+# Performing an Equivalence Test.
+
+## Equivalence Test From a Contingency Table of Joint Enrichment.
+
+Function `equivTestSorensen` performs the equivalence test. One possibility is to build first the joint enrichment contingency table using the function `buildEnrichTable` and then to perform the equivalence test:
+
+```{r, warning=FALSE, message=FALSE}
 # Build the enrichment contingency table between gene lists Vogelstein and 
 # sanger for the MF ontology at GO level 5:
 enrichTab <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]],
                               allOncoGeneLists[["sanger"]],
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                              onto = "MF", GOLevel = 5, listNames = c("Vogelstein", "sanger"))
+                              geneUniverse = humanEntrezIDs, 
+                              orgPackg = "org.Hs.eg.db",
+                              onto = "MF", GOLevel = 5, 
+                              listNames = c("Vogelstein", "sanger"))
 enrichTab
 
 # Equivalence test for an equivalence (or negligibility) limit 0.2857
@@ -107,34 +129,79 @@ testResult <- equivTestSorensen(enrichTab, d0 = 0.2857)
 testResult
 ```
 
-## Directly from the gene lists.
+## Equivalence Test Directly From the Gene Lists.
 
-To perform the test directly from the gene lists (internally building the contingency table) is also possible:
+Performing the test directly from the gene lists is also possible:
 
 ```{r}
-equivTestSorensen(allOncoGeneLists[["Vogelstein"]], allOncoGeneLists[["sanger"]], d0 = 0.2857,
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                              onto = "MF", GOLevel = 5, listNames = c("Vogelstein", "sanger"))
+equivTestSorensen(allOncoGeneLists[["Vogelstein"]],
+                  allOncoGeneLists[["sanger"]], d0 = 0.2857,
+                  geneUniverse = humanEntrezIDs, 
+                  orgPackg = "org.Hs.eg.db",
+                  onto = "MF", GOLevel = 5, 
+                  listNames = c("Vogelstein", "sanger"))
 ```
 
-To save computing time, the first option (building the contingency table separately, first) may be preferable: `buildEnrichTable` may take some time (many enrichment tests) and it would be advantageous to have the contingency table ready for further computations.
+The first option (building previously the contingency table) may be suitable to save computing time.
 
-The above tests use a standard normal approximation to the sample distribution of the $(\hat d - d) / \widehat {se}$ statistic, where $\widehat {se}$ stands for the standard error of the sample dissimilarity, $\hat d$.
+The above tests are based on the normal distribution. The next section shows how to use the bootstrap distribution, which is suitable for low enrichment levels.
 
-## Using a bootstrap aproximation.
+## Using a Bootstrap Aproximation.
 
-Alternatively, it is possible to estimate this distribution by means of bootstrap:
+The following code computes the results of an equivalence test based on the bootstrap distribution:
 
 ```{r}
 boot.testResult <- equivTestSorensen(enrichTab, d0 = 0.2857, boot = TRUE)
 boot.testResult
 ```
 
+As one can see, to obtain the bootstrap results, we only have used the argument `boot=TRUE`.
+
 For low frequencies in the contingency table, bootstrap is a more conservative but preferable approach, with better type I error control.
 
-# Accessing to specific fields
+## Isolated Computes. 
 
-To access specific fields of the test result:
+The outputs of the equivalence test, such as the Sorensen dissimilarity, the standard error of the test, and the confidence limit, can be computed individually. 
+
+```{r}
+# The Sorensen dissimilarity from the contingency table:
+dSorensen(enrichTab)
+# The Sorensen dissimilarity from the gene lists:
+dSorensen(allOncoGeneLists[["Vogelstein"]], 
+          allOncoGeneLists[["sanger"]],
+          geneUniverse = humanEntrezIDs, 
+          orgPackg = "org.Hs.eg.db",
+          onto = "MF", GOLevel = 5, 
+          listNames = c("Vogelstein", "sanger"))
+
+# The standard error from the contingency table::
+seSorensen(enrichTab)
+# or from the gene lists:
+seSorensen(allOncoGeneLists[["Vogelstein"]], 
+           allOncoGeneLists[["sanger"]],
+           geneUniverse = humanEntrezIDs, 
+           orgPackg = "org.Hs.eg.db",
+           onto = "MF", GOLevel = 5, 
+           listNames = c("Vogelstein", "sanger"))
+
+# Upper limit of the confidence interval from the contingency table:
+duppSorensen(enrichTab)
+duppSorensen(enrichTab, conf.level = 0.90)
+duppSorensen(enrichTab, conf.level = 0.90, boot = TRUE)
+
+# Upper limit of the confidence interval from the gene lists:
+duppSorensen(allOncoGeneLists[["Vogelstein"]], 
+             allOncoGeneLists[["sanger"]],    
+             geneUniverse = humanEntrezIDs, 
+             orgPackg = "org.Hs.eg.db", 
+             onto = "MF", GOLevel = 5, 
+             listNames = c("Vogelstein", "sanger"))
+```
+
+
+# Accessing to Specific Results.
+
+To access specific results from the equivalence test above computed, one can use the functions of the type `get...`, as follows:
 
 ```{r}
 getDissimilarity(testResult)
@@ -150,43 +217,28 @@ getUpper(boot.testResult)
 getNboot(boot.testResult)
 ```
 
-# Other statistics related to the Sorensen-Dice dissimilarity
+# Upgrading the Outputs.
+After performing the equivalence test calculations, the results can be updated without redoing the calculations. This can be done by using different values for the irrelevance limit, level of significance, distribution, and number of resamples (in the case of Bootstrap) than the ones initially provided to the function. 
 
-Sometimes, it would be interesting not to perform the full equivalence test but to compute other statistics related to the Sorensen-Dice dissimilarity:
+For example, the results saved in the `testResult` object were calculated using the arguments: `d0 = 0.2857`, `conf.level = 0.95` and `boot = FALSE` (using normal distribution). Now, we are going to upgrade the results with other arguments, as follows:
 
 ```{r}
-# The dissimilarity:
-dSorensen(enrichTab)
-# Or from scratch, directly from both gene lists:
-dSorensen(allOncoGeneLists[["Vogelstein"]], allOncoGeneLists[["sanger"]],
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                              onto = "MF", GOLevel = 5, listNames = c("Vogelstein", "sanger"))
-# The first option is faster, it avoids internally building the enrichment
-# contingency table
-
-# Its standard error:
-seSorensen(enrichTab)
-# or:
-seSorensen(allOncoGeneLists[["Vogelstein"]], allOncoGeneLists[["sanger"]],
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                              onto = "MF", GOLevel = 5, listNames = c("Vogelstein", "sanger"))
-
-# Upper limit of the confidence interval for the true distance:
-duppSorensen(enrichTab)
-duppSorensen(enrichTab, conf.level = 0.90)
-duppSorensen(enrichTab, conf.level = 0.90, boot = TRUE)
-duppSorensen(allOncoGeneLists[["Vogelstein"]], allOncoGeneLists[["sanger"]],
-                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                              onto = "MF", GOLevel = 5, listNames = c("Vogelstein", "sanger"))
+upgrade(testResult, d0 = 0.4444, conf.level = 0.99, boot = TRUE)
 ```
 
-# All pairwise tests (or other computations)
 
-For objects of class `list`, all these functions (`equivTestSorensen`, `dSorensen`, `seSorensen`, `duppSorensen`) assume a `list` of `character` objects containing gene identifiers and all pairwise computations are performed. For example, to obtain the matrix of all pairwise Sorensen-Dice dissimilarities:
+
+# All Pairwise Computes
+
+Since `goSorensen` has been built under the S3 object-oriented programming paradigm, it is not only possible to perform calculations for a couple of gene lists. If instead of entering two vectors with the lists $L_1, L_2$ of genes to be compared as input to the functions, an object of the class "list" is entered, which contains several vectors with $L_1, L_2, \ldots, L_s$ lists, then some specific `goSorensen` functions perform the calculations for all possible pairs of gene lists that are formed.
+
+
+For instance, the object `allOncoGeneLists` is a list object that consists of seven vectors, each corresponding to a list of genes. For a given ontology and GO level, we can compute the dissimilarity between all possible pairs of comparisons among the lists. In this case, there are a total of 21 pairs. The computation is as follows:
 
 ```{r}
-dSorensen(allOncoGeneLists, onto = "MF", GOLevel = 5, 
+totalDiss <- dSorensen(allOncoGeneLists, onto = "MF", GOLevel = 5, 
           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+round(totalDiss, 2)
 ```
 
 Similarly, the following code performs all pairwise tests:
@@ -200,27 +252,8 @@ getPvalue(allTests)
 getDissimilarity(allTests, simplify = FALSE)
 ```
 
-# Alternative representations of contingency tables of joint enrichment
 
-Besides admitting objects of class `table`, `character` and `list`, functions `equivTestSorensen`, `dSorensen`, `seSorensen` and `duppSorensen` are also adequate for contingency tables represented as a plain `matrix` or a `numeric`:
-
-```{r}
-enrichMat <- matrix(c(20, 1, 9, 2149), nrow = 2)
-enrichMat
-dSorensen(enrichMat)
-enrichVec <- c(20, 1, 9, 2149)
-equivTestSorensen(enrichVec)
-equivTestSorensen(enrichVec, boot = TRUE)
-
-len3Vec <- c(20, 1, 9)
-dSorensen(len3Vec)
-seSorensen(len3Vec)
-duppSorensen(len3Vec)
-# Error, bootstrapping requires the full (4 values) contingency table:
-try(duppSorensen(len3Vec, boot = TRUE), TRUE)
-```
-
-# Session information {.unnumbered}
+# Session information. {.unnumbered}
 
 All software and respective versions used to produce this document are listed below.
 
@@ -228,6 +261,6 @@ All software and respective versions used to produce this document are listed be
 sessionInfo()
 ```
 
-# References {.unnumbered}
+# Bibliography. {.unnumbered}
 
 Flores, P., Salicrú, M., Sánchez-Pla, A. et al. An equivalence test between features lists, based on the Sorensen--Dice index and the joint frequencies of GO term enrichment. BMC Bioinformatics 23, 207 (2022). <https://doi.org/10.1186/s12859-022-04739-2>

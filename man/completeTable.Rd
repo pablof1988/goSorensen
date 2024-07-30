@@ -2,23 +2,19 @@
 % Please edit documentation in R/completeTable.R
 \name{completeTable}
 \alias{completeTable}
-\title{Reformats and completes (if necessary) an enrichment contingency table as is generated
-by function 'crossTabGOIDs4GeneLists', in order to make it appropriate for its use in
-package goSorensen.}
+\title{Reformats and completes (if necessary) a 2x2 enrichment contingency table for its appropriate use in package goSorensen. It is internally used by function 'buildEnrichTable'..}
 \usage{
 completeTable(x, listNames)
 }
 \arguments{
-\item{x}{an object of class "table", typically the output of function 'crossTabGOIDs4GeneLists'.}
+\item{x}{an object of class "table".}
 
-\item{listNames}{a character(2) with the gene lists names originating the cross-tabulated
+\item{listNames}{a character(2) with the gene lists names.
 enrichment frequencies.}
 }
 \value{
 a complete contingency table to use in package goSorensen.
 }
 \description{
-Reformats and completes (if necessary) an enrichment contingency table as is generated
-by function 'crossTabGOIDs4GeneLists', in order to make it appropriate for its use in
-package goSorensen.
+Reformats and completes (if necessary) a 2x2 enrichment contingency table for its appropriate use in package goSorensen. It is internally used by function 'buildEnrichTable'..
 }

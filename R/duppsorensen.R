@@ -3,7 +3,7 @@
 #' @param x either an object of class "table", "matrix" or "numeric" representing a 2x2 contingency table,
 #' or a "character" (a set of gene identifiers) or "list" or "tableList" object.
 #' See the details section for more information.
-#' @param y an object of class "character" representing a vector of gene identifiers.
+#' @param y an object of class "character" representing a vector of gene identifiers (e.g., ENTREZ).
 #' @param dis Sorensen-Dice dissimilarity value. Only required to speed computations if this value
 #' is known in advance.
 #' @param se standard error estimate of the sample dissimilarity. Only required to speed computations
@@ -34,14 +34,14 @@
 #' or a "numeric" object):
 #'
 #'\tabular{rr}{
-#' n11 \tab n01 \cr
-#' n10 \tab n00,
+#' \eqn{n_{11}} \tab \eqn{n_{10}} \cr
+#' \eqn{n_{01}} \tab \eqn{n_{00}},
 #'}
 #'
 #' The subindex '11' corresponds to those
-#' GO items enriched in both lists, '01' to items enriched in the second list but not in the first one,
-#' '10' to items enriched in the first list but not enriched in the second one and '00' corresponds
-#' to those GO items non enriched in both gene lists, i.e., to the double negatives, a value which
+#' GO terms enriched in both lists, '01' to terms enriched in the second list but not in the first one,
+#' '10' to terms enriched in the first list but not enriched in the second one and '00' corresponds
+#' to those GO terms non enriched in both gene lists, i.e., to the double negatives, a value which
 #' is ignored in the computations, except if \code{boot == TRUE}.
 #'
 #' In the "numeric" interface, if \code{length(x) >= 4}, the values are interpreted
@@ -75,11 +75,11 @@
 #' Alternatively, if \code{boot == TRUE}, a bootstrap quantile is internally computed.
 #'
 #' If \code{x} is an object of class "character", then \code{x} (and \code{y}) must represent
-#' two "character" vectors of valid gene identifiers.
+#' two "character" vectors of valid gene identifiers (e.g., ENTREZ).
 #' Then the confidence interval for the dissimilarity between lists \code{x} and \code{y} is computed,
 #' after internally summarizing them as a 2x2 contingency table of joint enrichment.
 #' This last operation is performed by function \code{\link{buildEnrichTable}} and "valid gene
-#' identifiers" stands for the coherency of these gene identifiers with the arguments
+#' identifiers (e.g., ENTREZ)" stands for the coherency of these gene identifiers with the arguments
 #' \code{geneUniverse} and \code{orgPackg} of \code{buildEnrichTable}, passed by the ellipsis
 #' argument \code{...} in \code{dUppSorensen}.
 #'
@@ -118,7 +118,7 @@
 #'
 #' @examples
 #' # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
-#' # of GO items in ontology BP at level 3.
+#' # of GO terms in ontology BP at level 3.
 #' data(tab_atlas.sanger_BP3)
 #' ?tab_atlas.sanger_BP3
 #' duppSorensen(tab_atlas.sanger_BP3)
@@ -135,14 +135,19 @@
 #' # directly from two gene lists:
 #' # (These examples may be considerably time consuming due to many enrichment
 #' # tests to build the contingency tables of mutual enrichment)
-#' # data(pbtGeneLists)
-#' # ?pbtGeneLists
-#' # data(humanEntrezIDs)
-#' # duppSorensen(pbtGeneLists[[2]], pbtGeneLists[[4]],
+#' # data(allOncoGeneLists)
+#' # ?allOncoGeneLists
+#' 
+#' # Obtaining ENTREZ identifiers for the gene universe of humans:
+#' # library(org.Hs.eg.db)
+#' # humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
+#' 
+#' # Computing the Upper confidence limit:
+#' # duppSorensen(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
 #' #              onto = "CC", GOLevel = 5,
 #' #              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #' # Even more time consuming (all pairwise values):
-#' # duppSorensen(pbtGeneLists,
+#' # duppSorensen(allOncoGeneLists,
 #' #              onto = "CC", GOLevel = 5,
 #' #              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #' @md

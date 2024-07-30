@@ -19,10 +19,12 @@ buildEnrichTable(x, ...)
   orgPackg,
   onto,
   GOLevel,
-  restricted = FALSE,
+  showEnrichedIn = TRUE,
   pAdjustMeth = "BH",
   pvalCutoff = 0.01,
   qvalCutoff = 0.05,
+  parallel = FALSE,
+  nOfCores = 1,
   ...
 )
 
@@ -30,15 +32,17 @@ buildEnrichTable(x, ...)
   x,
   y,
   listNames = c("gene.list1", "gene.list2"),
-  check.table = TRUE,
   geneUniverse,
   orgPackg,
   onto,
   GOLevel,
-  restricted = FALSE,
+  showEnrichedIn = TRUE,
+  check.table = TRUE,
   pAdjustMeth = "BH",
   pvalCutoff = 0.01,
   qvalCutoff = 0.05,
+  parallel = FALSE,
+  nOfCores = 1,
   ...
 )
 
@@ -49,7 +53,7 @@ buildEnrichTable(x, ...)
   orgPackg,
   onto,
   GOLevel,
-  restricted = FALSE,
+  showEnrichedIn = TRUE,
   pAdjustMeth = "BH",
   pvalCutoff = 0.01,
   qvalCutoff = 0.05,
@@ -60,44 +64,47 @@ buildEnrichTable(x, ...)
 }
 \arguments{
 \item{x}{either an object of class "character" (or coerzable to "character") representing a
-vector of gene identifiers or an object of class "list". In this second case, each element
-of the list must be a "character" vector of gene identifiers. Then, all pairwise
+vector of gene identifiers (e.g., ENTREZ) or an object of class "list". In this second case, each
+element of the list must be a "character" vector of gene identifiers (e.g., ENTREZ). Then, all pairwise
 contingency tables between these gene lists are built.}
 
 \item{...}{Additional parameters for internal use (not used for the moment)}
 
-\item{y}{an object of class "character" (or coerzable to "character") representing a vector of gene identifiers.}
+\item{y}{an object of class "character" (or coerzable to "character") representing a vector
+of gene identifiers (e.g., ENTREZ).}
 
-\item{listNames}{a character(2) with the gene lists names originating the cross-tabulated enrichment frequencies.}
+\item{listNames}{a character(2) with the gene lists names originating the cross-tabulated
+enrichment frequencies. Only in the "character" or default interface.}
 
 \item{check.table}{Logical The resulting table must be checked. Defaults to TRUE.}
 
-\item{geneUniverse}{character vector containing all genes from where geneLists have been extracted.}
+\item{geneUniverse}{character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details see \href{../doc/README.html}{README File}.}
 
-\item{orgPackg}{A string with the name of the annotation package.}
+\item{orgPackg}{A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details see \href{../doc/README.html}{README File}.}
 
 \item{onto}{string describing the ontology. Either "BP", "MF" or "CC".}
 
 \item{GOLevel}{An integer, the GO ontology level.}
 
-\item{restricted}{Logical variable to decide how tabulation of GOIDs is performed. Defaults to FALSE.
-See the details section.}
+\item{showEnrichedIn}{Boolean. If TRUE (default), the cross-table of enriched and non-enriched GO terms vs  Gene Lists names (obtained from the \code{enrichedIn} function) is automatically saved in the Global Environment.}
 
 \item{pAdjustMeth}{string describing the adjust method, either "BH", "BY" or "Bonf", defaults to 'BH'.}
 
-\item{pvalCutoff}{A numeric value. Defaults to 0.01.}
+\item{pvalCutoff}{adjusted pvalue cutoff on enrichment tests to report}
 
-\item{qvalCutoff}{A numeric value. Defaults to 0.05.}
+\item{qvalCutoff}{qvalue cutoff on enrichment tests to report as significant.
+Tests must pass i) pvalueCutoff on unadjusted pvalues, ii) pvalueCutoff on adjusted pvalues and
+iii) qvalueCutoff on qvalues to be reported}
 
 \item{parallel}{Logical. Defaults to FALSE but put it at TRUE for parallel computation.}
 
 \item{nOfCores}{Number of cores for parallel computations. Only in "list" interface.}
 }
 \value{
-in the "character" interface, an object of class "table" is returned.
-It represents a 2x2 contingency table interpretable as the cross-tabulation of
-the enriched GO items in two gene lists: "Number of enriched items in list 1
-(TRUE, FALSE)" x "Number of enriched items in list 2 (TRUE, FALSE)".
+in the "character" interface, an object of class "table".
+It represents a 2x2 contingency table, the cross-tabulation of
+the enriched GO terms in two gene lists: "Number of enriched GO terms in list 1
+(TRUE, FALSE)" x "Number of enriched Go terms in list 2 (TRUE, FALSE)".
 In the "list" interface, the result is an object of class "tableList" with all
 pairwise tables.
 Class "tableList" corresponds to objects representing all mutual enrichment contingency tables
@@ -126,12 +133,12 @@ Creates a 2x2 enrichment contingency table from two gene lists, or all pairwise 
 tables for a "list" of gene lists.
 }
 \details{
-Unrestricted tabulation crosses _all_ GO Terms located at the level indicated by `GOLev`
-with the two GOIDs lists. Restricted tabulation crosses only terms from the selected GO level
-that are _common to ancestor terms of either list_.
-That is, if one term in the selected GO level is not an ancestor of at least one of the gene list
-most specific GO terms it is excluded from the GO Level's terms because it is impossible that it
-appears as being enriched.
+The arguments 'parallel' and 'nOfCores' are ignored in the 'default' and "character" interfaces,
+but included for possible future developments; they only apply to the "list" interface.
+In the "list" interface, 'parallel' defaults to FALSE but there is the possibility of some time
+saving when the number of gene lists (the length of 'x' in the "list" interface) is high.
+The trade off between the time spent initializing parallel computing and the possible time gain
+due to parallelization must be considered in each application and computer.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -143,28 +150,24 @@ appears as being enriched.
 
 }}
 \examples{
-# Gene universe:
-data(humanEntrezIDs)
+# Obtaining ENTREZ identifiers for the gene universe of humans:
+library(org.Hs.eg.db)
+humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
+
 # Gene lists to be explored for enrichment:
 data(allOncoGeneLists)
 ?allOncoGeneLists
-# Table of mutual GO node enrichment between gene lists Vogelstein and sanger,
-# for ontology MF at GO level 6 (only first 50 genes, to improve speed).
-vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]][seq_len(50)],
-                                allOncoGeneLists[["sanger"]][seq_len(50)],
+
+# Table of joint GO term enrichment between gene lists Vogelstein and sanger,
+# for ontology MF at GO level 6.
+vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]],
+                                allOncoGeneLists[["sanger"]],
                                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
                                 onto = "MF", GOLevel = 6, listNames = c("Vogelstein", "sanger"))
 vog.VS.sang
-# This is an inadequate table for Sorensen-Dice computations:
-equivTestSorensen(vog.VS.sang)
-# This sometimes happens, due too small gene lists or due to poor incidence
-# of enrichment.
-#
-# In fact, the complete gene lists generate a much interesting contingency table:
-# vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]],
-#                                 allOncoGeneLists[["sanger"]],
-#                                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#                                 onto = "MF", GOLevel = 6, listNames = c("Vogelstein", "sanger"))
-# vog.VS.sang
-# equivTestSorensen(vog.VS.sang)
+# All tables of mutual enrichment:
+all.tabs <- buildEnrichTable(allOncoGeneLists,
+                             geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
+                             onto = "MF", GOLevel = 6)
+all.tabs$waldman
 }

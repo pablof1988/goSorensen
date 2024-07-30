@@ -15,15 +15,15 @@
 #' Given a contingency table 'x' of mutual enrichment (the "true" dataset):
 #'
 #'\tabular{rr}{
-#' n_11 \tab n_01 \cr
-#' n_10 \tab n_00,
+#' \eqn{n_{11}} \tab \eqn{n_{10}} \cr
+#' \eqn{n_{01}} \tab \eqn{n_{00}},
 #'}
 #'
 #' summarizing the status of mutual presence of enrichment in two gene lists, where
-#' the subindex '11' corresponds to those GO items enriched in both lists,
-#' '01' to items enriched in the second list but not in the first one,
-#' '10' to items enriched in the first list but not enriched in the second one and
-#' '00' to those GO items non enriched in both gene lists, i.e., to the double negatives.
+#' the subindex '11' corresponds to those GO terms enriched in both lists,
+#' '01' to terms enriched in the second list but not in the first one,
+#' '10' to terms enriched in the first list but not enriched in the second one and
+#' '00' to those GO terms non enriched in both gene lists, i.e., to the double negatives.
 #'
 #' A typical bootstrap iteration consists in repeatedly generating four frequencies
 #' from a multinomial of parameters size = sum(n_ij), i,j = 1, 0 and probabilities

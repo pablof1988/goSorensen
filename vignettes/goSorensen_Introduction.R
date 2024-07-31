@@ -7,11 +7,11 @@ knitr::opts_chunk$set(dpi=25,fig.width=7)
 ## ----env, message = FALSE, warning = FALSE, echo = TRUE-----------------------
 library(goSorensen)
 
-## ---- eval=TRUE---------------------------------------------------------------
-if (!requireNamespace("goSorensen", quietly = TRUE)) {
-    BiocManager::install("goSorensen")
-}
-library(goSorensen)
+## ---- eval=FALSE--------------------------------------------------------------
+#  if (!requireNamespace("goSorensen", quietly = TRUE)) {
+#      BiocManager::install("goSorensen")
+#  }
+#  library(goSorensen)
 
 ## -----------------------------------------------------------------------------
 data("allOncoGeneLists")
@@ -24,10 +24,13 @@ sapply(allOncoGeneLists, length)
 allOncoGeneLists[["Vogelstein"]][1:20]
 allOncoGeneLists[["sanger"]][1:20]
 
+## ---- message = FALSE, warning = FALSE, eval = FALSE--------------------------
+#  if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) {
+#      BiocManager::install("org.Hs.eg.db")
+#  }
+#  library(org.Hs.eg.db)
+
 ## ---- message = FALSE, warning = FALSE, eval = TRUE---------------------------
-if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) {
-    BiocManager::install("org.Hs.eg.db")
-}
 library(org.Hs.eg.db)
 
 ## ---- message = FALSE, warning = FALSE, echo = TRUE---------------------------

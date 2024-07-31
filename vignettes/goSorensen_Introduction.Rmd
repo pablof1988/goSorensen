@@ -56,7 +56,7 @@ For the moment, the reference set of GO terms can be only all those GO terms in 
 
 goSorensen package must be installed with a working R version (\>=4.3.0). Installation could take a few minutes on a regular desktop or laptop. Package can be installed from Bioconductor, then it needs to be loaded using `library(goSorensen)`:
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 if (!requireNamespace("goSorensen", quietly = TRUE)) {
     BiocManager::install("goSorensen")
 }
@@ -88,10 +88,14 @@ Before using `goSorensen,` the users must have adequate knowledge of the species
 
 For the specific case of this vignette, given that the analysis will be done in the human species, the `org.Hs.eg.db` package must be previously installed and activated as follows:
 
-```{r, message = FALSE, warning = FALSE, eval = TRUE}
+```{r, message = FALSE, warning = FALSE, eval = FALSE}
 if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) {
     BiocManager::install("org.Hs.eg.db")
 }
+library(org.Hs.eg.db)
+```
+
+```{r, message = FALSE, warning = FALSE, eval = TRUE}
 library(org.Hs.eg.db)
 ```
 

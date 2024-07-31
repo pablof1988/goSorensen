@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2024-07-25" />
+<meta name="date" content="2024-07-31" />
 
 <title>An Introduction to goSorensen R-Package</title>
 
@@ -1839,7 +1839,7 @@ function toggle_visibility(id1) {
 <p class="author-name">Jordi Ocaña<span class="affil-mark">1*</span> and Pablo Flores<span class="affil-mark">2**</span></p>
 <p class="author-affiliation"><span class="affil-mark">1</span>Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona<br><span class="affil-mark">2</span>Escuela Superior Politécnica de Chimborazo (ESPOCH), Facultad de Ciencias, Carrera de Estadística.</p>
 <p class="author-email"><span class="affil-mark">*</span><a href="mailto:jocana@ub.edu">jocana@ub.edu</a><br><span class="affil-mark">**</span><a href="mailto:p_flores@espoch.edu.ec">p_flores@espoch.edu.ec</a></p>
-<h4 class="date">25 July 2024</h4>
+<h4 class="date">31 July 2024</h4>
 <h4 class="abstract">Abstract</h4>
 <p>This vignette provides an introduction to goSorensen package, which was built to determine equivalence between features lists. The method is based on the Sorensen–Dice index and the joint frequencies of GO term enrichment.</p>
 <p>Starting from an introduction, which includes a brief explanation of the method to detect equivalence between feature lists, a description of the data to be used, and previous considerations about the necessary information of the species to be analyzed, this vignette explains how to: i) perform an equivalence test, ii) access to specific results of the equivalence test, iii) upgrade the obtained results and iv) perform results for more than two lists.</p>
@@ -1911,6 +1911,7 @@ allOncoGeneLists[[&quot;Vogelstein&quot;]][1:20]</code></pre>
     BiocManager::install(&quot;org.Hs.eg.db&quot;)
 }
 library(org.Hs.eg.db)</code></pre>
+<pre class="r"><code>library(org.Hs.eg.db)</code></pre>
 <p>Actually, the <code>org.Hs.eg.db</code> package is automatically installed as a dependency on <code>goSorensen</code>, making its installation unnecessary. However, for any other species, the user must install the correspondence genome annotation for the species to analyze, as indicated in the above code.</p>
 <p>In addition, it is necessary to have a vector containing the IDs of the universe of genes associated with the species under study. The genomic annotation package provides an easy way to obtain this universe. The ENTREZ identifiers of the gene universe for humans, necessary for this vignette, is obtained as follows:</p>
 <pre class="r"><code>humanEntrezIDs &lt;- keys(org.Hs.eg.db, keytype = &quot;ENTREZID&quot;)</code></pre>
@@ -1991,10 +1992,10 @@ boot.testResult</code></pre>
 ##  dissimilarity (9999 effective bootstrap replicates of 10000)
 ## 
 ## data:  enrichTab
-## (d - d0) / se = -2.9884, p-value = 0.0182
+## (d - d0) / se = -2.9884, p-value = 0.0184
 ## alternative hypothesis: true equivalence limit d0 is less than 0.2857
 ## 95 percent confidence interval:
-##  0.0000000 0.2438589
+##  0.0000000 0.2455429
 ## sample estimates:
 ## Sorensen dissimilarity 
 ##              0.1428571 
@@ -2035,7 +2036,7 @@ duppSorensen(enrichTab)</code></pre>
 <pre class="r"><code>duppSorensen(enrichTab, conf.level = 0.90)</code></pre>
 <pre><code>## [1] 0.2041143</code></pre>
 <pre class="r"><code>duppSorensen(enrichTab, conf.level = 0.90, boot = TRUE)</code></pre>
-<pre><code>## [1] 0.215254
+<pre><code>## [1] 0.2168031
 ## attr(,&quot;eff.nboot&quot;)
 ## [1] 9999</code></pre>
 <pre class="r"><code># Upper limit of the confidence interval from the gene lists:
@@ -2074,10 +2075,10 @@ duppSorensen(allOncoGeneLists[[&quot;Vogelstein&quot;]],
 <pre class="r"><code># In the bootstrap approach, only these differ:
 getPvalue(boot.testResult)</code></pre>
 <pre><code>## p-value 
-##  0.0182</code></pre>
+##  0.0184</code></pre>
 <pre class="r"><code>getUpper(boot.testResult)</code></pre>
 <pre><code>##    dUpper 
-## 0.2438589</code></pre>
+## 0.2455429</code></pre>
 <pre class="r"><code># (Only available for bootstrap tests) efective number of bootstrap resamples:
 getNboot(boot.testResult)</code></pre>
 <pre><code>## [1] 10000</code></pre>
@@ -2092,10 +2093,10 @@ getNboot(boot.testResult)</code></pre>
 ##  dissimilarity (9999 effective bootstrap replicates of 10000)
 ## 
 ## data:  tab
-## (d - d0) / se = -6.3085, p-value = 8e-04
+## (d - d0) / se = -6.3085, p-value = 0.001
 ## alternative hypothesis: true equivalence limit d0 is less than 0.4444
 ## 99 percent confidence interval:
-##  0.0000000 0.3060955
+##  0.0000000 0.3062555
 ## sample estimates:
 ## Sorensen dissimilarity 
 ##              0.1428571 

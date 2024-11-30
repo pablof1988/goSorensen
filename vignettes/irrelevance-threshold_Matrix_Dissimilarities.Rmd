@@ -1,0 +1,299 @@
+---
+title: "An Irrelevance Threshold Matrix of Dissimilarities."
+author:
+- name: Pablo Flores
+  email: p_flores@espoch.edu.ec
+  affiliation: Escuela Superior Politécnica de Chimborazo (ESPOCH), Facultad de Ciencias, Carrera de Estadística.
+- name: Jordi Ocaña
+  email: jocana@ub.edu
+  affiliation: Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona
+header-includes:
+  -\usepackage{amsmath}
+  -\usepackage{mathtools}
+package: goSorensen
+abstract: >
+  This vignette illustrates calculating, visualising, and interpreting the irrelevance-threshold matrix of dissimilarities. This matrix is derived from the statistical method implemented in goSorensen to identify significant equivalence between two or more gene lists based on the Sorensen dissimilarity and the joint frequencies of GO terms enrichment.
+  
+  
+  Initially, we provide a brief introduction to the meaning of the matrix. Subsequently, we elucidate the process of computing this matrix and its significance. Subsequently, we represent the dissimilarity matrix using interpretable statistical graphs, such as the dendrogram and the Biplot generated from an MDS multidimensional scaling analysis. In particular, we suggest a method for identifying the GO terms that explain the formation of the axes (two more relevant dimensions) of the MDS-Biplot. This characterisation is valuable as it enables us to ascertain the biological functions associated with the equivalences detected between compared lists. 
+output:
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{An Irrelevance Threshold Matrix of Dissimilarities.}
+  %\VignetteEngine{knitr::rmarkdown}
+  %%\VignetteKeywords{GO, dissimilarities, lists, genes}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r style, echo = FALSE, results = 'asis'}
+BiocStyle::markdown()
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=100,fig.width=7)
+```
+
+```{r env, message = FALSE, warning = FALSE, echo = TRUE}
+library(goSorensen)
+```
+
+# Introduction. {.unnumbered}
+
+The majority of functions of **goSorensen** are devoted to implementing a statistical hypothesis test to detect equivalence between two or more gene lists. This method was introduced in Flores, P., Salicrú, M., Sánchez-Pla, A. and Ocaña, J.(2022) "An equivalence test between features lists, based on the Sorensen - Dice index and the joint frequencies of GO node enrichment", BMC Bioinformatics, 2022 23:207.
+
+Following this method, we develop the irrelevance-threshold matrix of dissimilarities $\mathfrak{D}$:
+
+\begin{equation}
+	\begin{aligned}
+		& \begin{matrix}
+			\hspace{0.6cm} L_1 &  L_2 & \hspace{0.1cm} L_3 & \hspace{0.1cm}  \ldots \hspace{0.1cm} &  L_{s-1}
+		\end{matrix} \\
+		\mathfrak{D} =  \begin{matrix}
+			L_2 \\
+			L_3 \\
+			L_4 \\
+			\vdots \\
+			L_s
+		\end{matrix} & \begin{pmatrix}
+			\mathfrak{d}_{21} &  &  &  &  \\
+			\mathfrak{d}_{31} & \mathfrak{d}_{32} &  &  &  \\
+			\mathfrak{d}_{41} & \mathfrak{d}_{42} & \mathfrak{d}_{43} &  &  \\
+			\vdots & \vdots & \vdots & &  \\
+			\mathfrak{d}_{s1} & \mathfrak{d}_{s2} & \mathfrak{d}_{s3} & \ldots & \mathfrak{d}_{s(s-1)}  \\
+		\end{pmatrix}
+	\end{aligned}
+	\label{it-diss}
+\end{equation} 
+
+The goal is to determine a dissimilarity measure $\mathfrak{d}_{ij}$ for comparing two lists ($L_i, L_j$). This dissimilarity is not only a descriptive measure, but it is based on the irrelevance threshold determining whether two lists ($L_i, L_j$) are equivalent, which ensures that the dissimilarity $\mathfrak{d}_{ij}$ is directly associated with the statistically significant equivalence declaration for a specific ontology (BP, MF, or CC) and GO level. 
+
+The dissimilarity measures between all the compared $s$ feature lists can be collectively obtained in the symmetric matrix $\mathfrak{D}$ using the following algorithm: 
+
+- Step 1. Establish $h = s(s-1)$ equivalence hypothesis tests. Each test $ET_I$ (with $I = 1, \ldots, h$) compares some specific pair of lists $L_{i}, L_{j}$ (with $i, j = 1, 2, \ldots, s$).
+
+- Step 2. Let $\mathfrak{d}_h$ be the smallest irrelevance limit that makes all the null hypotheses corresponding to the $h$ equivalence tests be rejected (All the $s$ lists are equivalent):
+	$$\mathfrak{d}_h = \text{min} \left(\mathfrak{d}: P_v(\mathfrak{d})_{(I)} \leq \frac{\alpha}{h+1-I}; \hspace{0.5cm} I=1, 2, \ldots,h \right).$$
+	
+- Step 3. Obtain $\mathfrak{d}_h$ and use it as the irrelevance limit between the lists $L_i, L_j$ corresponding to the last position in a vector of ordered p-values $P_v(\mathfrak{d}_{h})_{(I)}$, i.e. $\mathfrak{d}_{ij} = \mathfrak{d}_{h}.$
+
+- Step 4. Set $h = h-1$, excluding the comparison between the lists $L_i, L_j$ from Step $3$, and go back to Step $2$ until $h=0$.
+
+## Data used in this vignette. {.unnumbered}
+We use a specific database to provide a clear and precise explanation of the computation, visualization, and interpretation of the $\mathfrak{D}$ matrix. Specifically, we will employ the set of `PBTs` lists, which is available as a resource in the  **goSorensen ** package. Access to this database can be obtained as follows:
+```{r}
+data("pbtGeneLists")
+```
+
+`PBTs`  is an object of class list, containing 14 character vectors with the ENTREZ gene identifiers of a gene list related to cell graft rejection:
+
+```{r, comment=NA}
+sapply(pbtGeneLists, length)
+```
+
+# Performing the Irrelevance - Threshold Matrix of Dissimilarities. 
+
+## For an Specific Ontology and GO level.
+One method to compute the dissimilarity matrix $\mathfrak{D}$ for a given ontology and level (e.g., ontology BP, level 5) is to directly input the gene lists into the `sorenThreshold` function:
+
+```{r, warning=FALSE, message=FALSE, comment=NA}
+# Previously load the genomic annotation package for the studied specie:
+library(org.Hs.eg.db)
+humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
+
+# Computing the irrelevance-threshold matrix of dissimilarities
+dismatBP5 <- sorenThreshold(pbtGeneLists, onto = "BP", GOLevel = 5,
+                            geneUniverse = humanEntrezIDs, 
+                            orgPackg = "org.Hs.eg.db")
+round(dismatBP5, 2)
+```
+
+Each value in this matrix represents dissimilarities determined by the equivalence threshold which determines whether the compared lists are equivalent. In addition, it is essential to consider that when the Sorensen dissimilarity value is irrelevantly equal to zero (equivalent to zero), it suggests biological similarity. Based on this, we can deduce that the smallest values (near zero) in the matrix $\mathfrak{D}$ indicate equivalence between lists, whereas the largest values (close to 1) indicate that the lists cannot be considered equivalent.
+
+
+Another way is to compute all the pairwise $2 \times 2$ enrichment contingency tables previously. From this table, we can obtain the dissimilarity matrix as follows:
+
+
+```{r, warning=FALSE, message=FALSE, comment=NA, eval=FALSE}
+# Previously compute the 2x2 contingency tables:
+ctableBP5 <- buildEnrichTable(pbtGeneLists, onto = "BP", GOLevel = 5,
+                            geneUniverse = humanEntrezIDs, 
+                            orgPackg = "org.Hs.eg.db")
+
+# Computing the irrelevance-threshold matrix of dissimilarities
+dismatBP5 <- sorenThreshold(ctableBP5)
+```
+The result is exactly the same matrix od dissimilarities above showed.
+
+
+## For More than One Ontology and GO Level Defined by the User.
+Similarly, we can directly perform the computation using the gene lists dataset: 
+
+```{r, warning=FALSE, message=FALSE, comment=NA, eval=FALSE}
+allDismat <- allSorenThreshold (pbtGeneLists, geneUniverse = humanEntrezIDs, 
+                            orgPackg = "org.Hs.eg.db", ontos = c("BP", "CC"), 
+                            GOLevels = 4:7)
+```
+
+Or, previously computing all the pairwise contingency tables for the ontologies (BP, CC, MF) and GO levels defined by the user:
+
+```{r, warning=FALSE, message=FALSE, comment=NA, eval=FALSE}
+allTabs <- allBuildEnrichTable(pbtGeneLists, geneUniverse = humanEntrezIDs, 
+                            orgPackg = "org.Hs.eg.db", ontos = c("BP", "CC"), 
+                            GOLevels = 4:7)
+allDismat <- allSorenThreshold(allTabs)
+```
+
+Given the substantial quantity of outcomes obtained, exhibiting all of these results is not feasible. The result is a collection of dissimilarity matrices for the different ontologies and GO levels defined in the `ontos` and `GOLevels` arguments.
+
+
+Suppose the `ontos` and `GOLevels` arguments are not provided. In that case, the `allSorenThreshold` function automatically computes the dissimilarity matrices for all three ontologies (BP, CC and MF) and GO levels ranging from 3 to 10. 
+
+# Representing the Dissimilarity Matrix in Statistic Graphs.
+## Dendrogram.
+Below, we graph a dendrogram based on the irrelevance-threshold matrix of dissimilarities for the particular case of the MF ontology, GO level 5, in our PBTs dataset. The dissimilarity matrix for this particular case was computed above and it is saved in the object `dismatBP5`.
+
+```{r, warning=FALSE, message=FALSE, comment=NA}
+clust.threshold <- hclustThreshold(dismatBP5)
+plot(clust.threshold)
+```
+
+The dendrogram displays the lists of genes that are most similar and most distant. For instance, when considering a dissimilarity of 0.6, chosen arbitrarily, we can observe the formation of three groups. Within each group, the lists can be regarded as similar but different from those in other groups. There are three groups of lists that can be considered equivalent. The first group includes LT3 and LT1. The second group contains GRIT2 and GRIT3. The third group comprises the lists TCMR_RATs, ABMR_RATs, and Rej_RATs.
+
+## MDS-Biplot.
+
+We initiate the process by performing a multidimensional scaling MDS analysis. MDS transforms the initial dissimilarity matrix into Euclidean distances while maintaining the maximum possible variation of the original dissimilarities. In this instance, we compute the first two dimensions, which account for the most relevant proportion of the original variability. 
+
+```{r, warning=FALSE, message=FALSE, comment=NA}
+mds <- as.data.frame(cmdscale(dismatBP5, k = 2))
+mds
+```
+
+Below we plot the biplot:
+
+```{r, warning=FALSE, message=FALSE, comment=NA, fig.align='center'}
+library(ggplot2)
+library(ggrepel)
+graph <- ggplot() +
+  geom_point(aes(mds[,1], mds[,2]), color = "blue", size = 3) +
+  geom_text_repel(aes(mds[,1], mds[,2], label = attr(dismatBP5, "Labels")), 
+                  color = "black", size = 3) +
+    xlab("Dim 1") +
+    ylab("Dim 2") +
+    theme_light()
+graph
+```
+
+The MDS-Biplot suggests that the formation of groups is consistent with what was observed in the dendrogram. It is important to remember that the distances observed between lists in the biplot are defined based on the dissimilarity threshold that establishes the equivalence of the compared lists. For instance, the proximity between the Rej_RATs and GRIT3 lists implies that both are equivalent.
+
+However, it is more interesting to identify the GO terms most strongly associated with the dimensions generated in the biplot rather than just determining if the lists are equivalent. These GO terms elucidate the biological functions associated with the observed distances between lists, explaining the formation of groups and the biological reasons for detecting equivalences between lists. In the next section, we develop a 5-step procedure for identifying these GO terms: 
+
+# Characterizing MDS-Biplot Dimensions.
+
+The following 5-step procedure helps identify the GO terms that biologically elucidate the creation of groups in each dimension of the Biplot. In this specific instance, we will execute the technique on Dimension 1. However, the approach remains identical if we were to explain Dimension 2.
+
+-  STEP 1: Split the axis (Dimension 1) in three parts to identify the lists located at the extremes. 
+
+```{r, warning=FALSE, message=FALSE, comment=NA}
+# Split the axis 20% to the left, 60% to the middle and 20% to the right:
+prop <- c(0.2, 0.6, 0.2) 
+# Sort according  dimension 1:
+sorted <- mds[order(mds[, 1]), ] 
+# Determine the range for dimension 1.
+range <- sorted[, 1][c(1, nrow(mds))] 
+# Find the cutpoints to split the axis:
+cutpoints <- cumsum(prop) * diff(range) + range[1]
+cutpoints <- cutpoints[-length(cutpoints)]
+
+# Identify lists to the left:  
+lleft <- rownames(sorted[sorted[, 1] < cutpoints[1], ])
+# Identify lists to the right
+lright <- rownames(sorted[sorted[, 1] > cutpoints[2], ]) 
+
+lleft
+lright
+```
+
+```{r, warning=FALSE, message=FALSE, comment=NA, fig.align='center'}
+graph +
+  geom_vline(xintercept = cutpoints, color = "red", linetype = "dashed", 
+             linewidth = 0.75)
+```
+
+The basic idea is that if the enrichment of a GO term in these two groups of lists is different, then we can assume that this GO term discriminates the groups of lists, consequently explaining the formation of groups in that particular dimension.
+
+- STEP 2: Identify the enriched and non-enriched GO terms for each GO term and each list selected at the extremes, differentiating the lists by the groups to which they belong.
+
+```{r}
+tableleft <- enrichedIn(pbtGeneLists[lleft], onto = "BP", GOLevel = 5,
+                            geneUniverse = humanEntrezIDs, 
+                            orgPackg = "org.Hs.eg.db")
+
+tableright <- enrichedIn(pbtGeneLists[lright], onto = "BP", GOLevel = 5,
+                            geneUniverse = humanEntrezIDs, 
+                            orgPackg = "org.Hs.eg.db")
+```
+
+Due to the large size of the results, we only show the first 15 rows of each matrix:
+
+```{r, warning=FALSE, message=FALSE, comment=NA}
+tableleft[1:15, ]
+tableright[1:15, ]
+```
+
+- STEP 3: Compute the means $\overline{X}_{GO_j}$ and variances $S^2_{GO_j}$ for each of the GO terms analyzed at each extreme group:
+
+
+```{r, warning=FALSE, message=FALSE, comment=NA}
+lmnsd <- apply(tableleft, 1, 
+                 function(x){c("meanLeft" = mean(x), "sdLeft" = sd(x))})
+rmnsd <- apply(tableright, 1, 
+                 function(x){c("meanRight" = mean(x), "sdRight" = sd(x))})
+```
+
+
+- STEP 4: Establish a statistic to assess the degree of enrichment disparity between extreme groups for each GO term. This measure should consider that a GO term discriminates a dimension if: i) the lists show opposing patterns of enrichment in the GO term, indicated by a large difference between $| _L\overline{X}_{GO_j} - _R \overline{X}_{GO_j}|$ ($L$ represents Left and $R$ Rigth),  and ii) the behavior of the lists remains stable at each extreme, indicated by a small amount of $_LS^2_{GO_j} + _RS^2_{GO_j}$.
+	
+Considering these specific details, the following statistic, is suggested:
+
+$$st_j = \dfrac{| _L\overline{X}_{GO_j} - _R \overline{X}_{GO_j}|}{\sqrt{\dfrac{_LS^2_{GO_j}}{l} + \dfrac{_RS^2_{GO_j}}{r} + \epsilon  }}$$
+with $l$ the number of lists to the extreme left and $r$ the number of lists to the extreme right. Using $\epsilon= 0.00000001$ the statistic is computed as follows:
+
+```{r, warning=FALSE, message=FALSE, comment=NA}
+nl <- ncol(tableleft) 
+nr <- ncol(tableright) 
+stat <- abs(lmnsd[1, ] - rmnsd[1, ]) / 
+  sqrt((((lmnsd[2, ] / nl) + (rmnsd[2, ] / nr))) + 0.00000001)
+```
+
+- STEP 5: Select the GO terms with the highest statistic (those with a value as close as possible to $1/\sqrt{\epsilon}$ ). These selected GO terms mainly contribute to forming groups in the analyzed dimension.
+
+```{r, warning=FALSE, message=FALSE, comment=NA}
+result <- stat[stat == max(stat)]
+result
+```
+
+Finally, we can identify the specific biological functions associated with the detected GO terms. 
+
+```{r, warning=FALSE, message=FALSE, comment=NA}
+library(GO.db)
+library(knitr)
+# Previous function to get the description of the identified GO terms:
+get_go_description <- function(go_id) {
+  go_term <- Term(GOTERM[[go_id]])
+  return(go_term)
+}
+
+# GO terms description:
+kable(data.frame(Description = sapply(names(result), get_go_description, 
+                                             USE.NAMES = TRUE)))
+```
+
+# Session information. {.unnumbered}
+
+All software and respective versions used to produce this document are listed below.
+
+```{r sessionInfo}
+sessionInfo()
+```
+

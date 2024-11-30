@@ -9,58 +9,68 @@
 #' @param geneUniverse character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details see \href{../doc/README.html}{README File}.
 #' @param onto string describing the ontology. Belongs to c('BP', 'MF', 'CC')
 #' @param GOLevel GO level, an integer
-# @param restricted Boolean variable to decide how tabulation of GOIDs is performed.
-# Unrestricted tabulation crosses _all_ GO Terms located at the level indicated by `GOLevel` with the two GOIDs lists
-# Restricted tabulation crosses only terms from the selected GO level that are _common to ancestor terms of either list_.
-# That is, if one term in the selected GO level is not an ancestor of at least one of the gene list most specific GO terms
-# it is excluded from the GO Level's terms because it is impossible that it appears as being enriched.
 #' @param pAdjustMeth string describing the adjust method. Belongs to c('BH', 'BY', 'Bonf')
 #' @param pvalCutoff adjusted pvalue cutoff on enrichment tests to report
 #' @param qvalCutoff qvalue cutoff on enrichment tests to report as significant.
 #' Tests must pass i) pvalueCutoff on unadjusted pvalues, ii) pvalueCutoff on adjusted pvalues and
 #' iii) qvalueCutoff on qvalues to be reported
-#' @param parallel Logical. Only in "list" interface. Defaults to FALSE but put it at TRUE for parallel computation
+#' @param parallel Logical. Only in "list" interface. Defaults to FALSE, put it at TRUE for parallel computation
 #' @param nOfCores Number of cores for parallel computations. Only in "list" interface
+#' @param onlyEnriched logical. If TRUE (the default), the returned result only contains those GO terms
+#' enriched in almost one of the gene lists
 #' @param ... Additional parameters
-#' 
-#' @return In the "character" interface, a length k vector of TRUE/FALSE values
-#' corresponding to enrichment or not, where k stands for the total number of GO terms at level
-#' 'GOLev' in ontology 'onto'.
-#' In the "list" interface, a boolean matrix of TRUE/FALSE values indicating enrichment or not,
-#' with k rows and s columns, where k corresponds to the total number of GO terms at level 'GOLev'
-#' in ontology 'onto' and s corresponds to the length of "list" 'x'.
 #'
+#' @return In the "character" interface, a length k vector of TRUE/FALSE values
+#' corresponding to enrichment or not of the GO terms at level 'GOLev' in ontology 'onto'.
+#' If 'onlyEnriched' is FALSE, k corresponds to the total number of these GO terms. If 'onlyEnriched'
+#' is TRUE (default) k is the number of enriched GO terms (and then all values in the resulting
+#' vector are TRUE).
+#' In the "list" interface, a logical matrix of TRUE/FALSE values indicating enrichment or not,
+#' with k rows and s columns. s is the number of gene lists (the length of "list" 'x').
+#' If 'onlyEnriched' is FALSE, k corresponds to the total number of GO terms at level 'GOLev' in ontology
+#' 'onto'. If 'onlyEnriched' is TRUE (default), the resulting matrix only contains the k rows
+#' corresponding to GO terms enriched in almost one of these s gene lists.
+#' In both interfaces ("character" or "list"), the result also has an attribute (\code{nTerms}) with
+#' the total number of GO terms at level 'GOLev' in ontology 'onto'.
 
 #' @details
-#' The arguments 'parallel' and 'nOfCores' are ignored in the 'default' and "character" interfaces
-#' because (in the present implementation) parallelisation is only applied to repeated calls
-#' to function 'clusterProfiler::enrichGO' which, in turn, does not provide for the possibility
-#' of parallelisation. They only apply to the "list" interface.
-#' 
+#' When the function argument \code{onlyEnriched} is FALSE, commonly the result is a sparse
+#' but very large object. This function is primarily designed for internal use of function
+#' \code{buildEnrichTable}, with argument \code{onlyEnriched} always put at its default TRUE value.
+#' Then calls to \code{enrichedIn} result in much more compact objects, in general.
+#'
+#' Argument \code{parallel} only applies to interface "list". Its default value ís "FALSE" and you
+#' may consider the trade of between the time spent in initializing parallelization and the possible
+#' time gain when parallelizing. It is difficult to establish a general guideline, but parallelizing
+#' is only worthwhile when analyzing many gene lists, on the order of 30 or more, although it depends
+#' a lot on each processor.
 
-#' @importFrom org.Hs.eg.db org.Hs.eg.db 
-#' 
+#' @importFrom org.Hs.eg.db org.Hs.eg.db
+#'
 #' @examples
 #' # Obtaining ENTREZ identifiers for the gene universe of humans:
 #' library(org.Hs.eg.db)
 #' humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
-#' 
+#'
 #' # Gene lists to be explored for enrichment:
 #' data(allOncoGeneLists)
 #' ?allOncoGeneLists
-#' 
+#'
 #' # Computing the cross table:
 #' enrichd <- enrichedIn(allOncoGeneLists[["Vogelstein"]],
 #'                       geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #'                       onto = "MF", GOLevel = 6)
 #' enrichd
 #'
-#' # Cross table of enriched GO terms (GO ontology MF, level 6) for all gene 
+#' # Cross table of enriched GO terms (GO ontology MF, level 6) for all gene
 #' # lists in 'allOncoGeneLists':
 #' enrichedAllOncoMF.6 <- enrichedIn(allOncoGeneLists,
 #'                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #'                           onto = "MF", GOLevel = 6)
 #' enrichedAllOncoMF.6
+#' object.size(enrichedAllOncoMF.6)
+#' # How many GO terms were tested for enrichment at ontology MF and level 6:
+#' attr(enrichedAllOncoMF.6, "nTerms")
 
 #' @export
 enrichedIn <- function(x, ...) {
@@ -73,18 +83,14 @@ enrichedIn.default <- function (x, geneUniverse, orgPackg,
                                 onto, GOLevel,
                                 pAdjustMeth = "BH", pvalCutoff = 0.01, qvalCutoff = 0.05,
                                 parallel = FALSE,
-                                nOfCores = 1, ...){
-  if (!requireNamespace(orgPackg, quietly = TRUE)) {
-    stop(paste("Genomic annotation of the organism to analyse is in package", orgPackg, ". Please, install this package before to use this function."),
-         call. = FALSE)
-  }
-  allGOIDs <- goProfiles::getGOLevel(onto, GOLevel)
-  enriched <- clusterProfiler::enrichGO(gene = as.character(x),
-                                        universe = geneUniverse, OrgDb = orgPackg,
-                                        ont = onto, pAdjustMethod = pAdjustMeth,
-                                        pvalueCutoff = pvalCutoff, qvalueCutoff = qvalCutoff)
-  GOIDs <- as.character(as.data.frame(enriched)$ID)
-  return(is.element(allGOIDs, GOIDs))
+                                nOfCores = 1,
+                                onlyEnriched = TRUE, ...){
+  enrichedIn.character(as.character(x), geneUniverse = geneUniverse, orgPackg = orgPackg,
+                       onto = onto, GOLevel = GOLevel,
+                       pAdjustMeth = pAdjustMeth, pvalCutoff = pvalCutoff, qvalCutoff = qvalCutoff,
+                       parallel = parallel,
+                       nOfCores = nOfCores,
+                       onlyEnriched = onlyEnriched, ...)
 }
 
 #' @describeIn enrichedIn S3 method for class "character"
@@ -93,12 +99,15 @@ enrichedIn.character <- function (x, geneUniverse, orgPackg,
                                   onto, GOLevel, #restricted = FALSE,
                                   pAdjustMeth = "BH", pvalCutoff = 0.01, qvalCutoff = 0.05,
                                   parallel = FALSE,
-                                  nOfCores = 1, ...){
+                                  nOfCores = 1,
+                                  onlyEnriched = TRUE, ...)
+{
   if (!requireNamespace(orgPackg, quietly = TRUE)) {
     stop(paste("Genomic annotation of the organism to analyse is in package", orgPackg, ". Please, install this package before to use this function."),
          call. = FALSE)
   }
   allGOIDs <- goProfiles::getGOLevel(onto, GOLevel)
+  nGOIDs <- length(allGOIDs)
   enriched <- clusterProfiler::enrichGO(gene = x,
                                         universe = geneUniverse, OrgDb = orgPackg,
                                         ont = onto, pAdjustMethod = pAdjustMeth,
@@ -106,6 +115,10 @@ enrichedIn.character <- function (x, geneUniverse, orgPackg,
   GOIDs <- as.character(as.data.frame(enriched)$ID)
   result <- is.element(allGOIDs, GOIDs)
   names(result) <- allGOIDs
+  if (onlyEnriched) {
+    result <- result[result]
+  }
+  attr(result, "nTerms") <- nGOIDs
   return(result)
 }
 
@@ -113,16 +126,18 @@ enrichedIn.character <- function (x, geneUniverse, orgPackg,
 #' @importFrom parallel detectCores makeCluster clusterExport clusterEvalQ parSapply stopCluster
 #' @export
 enrichedIn.list <- function (x, geneUniverse, orgPackg,
-                             onto, GOLevel, #restricted = FALSE,
+                             onto, GOLevel,
                              pAdjustMeth = "BH", pvalCutoff = 0.01, qvalCutoff = 0.05,
                              parallel = FALSE,
-                             nOfCores = min(detectCores() - 1, length(x)), ...){
+                             nOfCores = min(detectCores() - 1, length(x)),
+                             onlyEnriched = TRUE, ...)
+{
   if (!requireNamespace(orgPackg, quietly = TRUE)) {
     stop(paste("Genomic annotation of the organism to analyse is in package", orgPackg, ". Please, install this package before to use this function."),
          call. = FALSE)
   }
   allGOIDs <- goProfiles::getGOLevel(onto, GOLevel)
-  lenAllGOIDs <- length(allGOIDs)
+  nGOIDs <- length(allGOIDs)
   lenGeneLists <- length(x)
   if (parallel) {
     on.exit(stopCluster(cl))
@@ -145,7 +160,7 @@ enrichedIn.list <- function (x, geneUniverse, orgPackg,
                                             pvalueCutoff = pvalCutoff, qvalueCutoff = qvalCutoff)
       GOIDs <- as.character(as.data.frame(enriched)$ID)
       return(is.element(allGOIDs, GOIDs))
-    })
+    }, USE.NAMES = FALSE)
   } else {
     result <- vapply(seq_len(lenGeneLists), function(iList, ...) {
       enriched <- clusterProfiler::enrichGO(gene = x[[iList]],
@@ -154,9 +169,13 @@ enrichedIn.list <- function (x, geneUniverse, orgPackg,
                                             pvalueCutoff = pvalCutoff, qvalueCutoff = qvalCutoff)
       GOIDs <- as.character(as.data.frame(enriched)$ID)
       return(is.element(allGOIDs, GOIDs))
-    }, FUN.VALUE = logical(lenAllGOIDs))
+    }, FUN.VALUE = logical(nGOIDs), USE.NAMES = FALSE)
   }
   rownames(result) <- allGOIDs
   colnames(result) <- names(x)
+  if (onlyEnriched) {
+    result <- result[apply(result, 1, any),]
+  }
+  attr(result, "nTerms") <- nGOIDs
   return(result)
 }

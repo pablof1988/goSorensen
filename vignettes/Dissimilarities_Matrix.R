@@ -10,10 +10,10 @@ library(goSorensen)
 ## -----------------------------------------------------------------------------
 data("pbtGeneLists")
 
-## ---- comment=NA--------------------------------------------------------------
+## ----comment=NA---------------------------------------------------------------
 sapply(pbtGeneLists, length)
 
-## ---- warning=FALSE, message=FALSE, comment=NA--------------------------------
+## ----warning=FALSE, message=FALSE, comment=NA---------------------------------
 # Previously load the genomic annotation package for the studied specie:
 library(org.Hs.eg.db)
 humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
@@ -24,35 +24,35 @@ dismatBP5 <- sorenThreshold(pbtGeneLists, onto = "BP", GOLevel = 5,
                             orgPackg = "org.Hs.eg.db")
 round(dismatBP5, 2)
 
-## ---- warning=FALSE, message=FALSE, comment=NA, eval=FALSE--------------------
-#  # Previously compute the 2x2 contingency tables:
-#  ctableBP5 <- buildEnrichTable(pbtGeneLists, onto = "BP", GOLevel = 5,
-#                              geneUniverse = humanEntrezIDs,
-#                              orgPackg = "org.Hs.eg.db")
-#  
-#  # Computing the irrelevance-threshold matrix of dissimilarities
-#  dismatBP5 <- sorenThreshold(ctableBP5)
+## ----warning=FALSE, message=FALSE, comment=NA, eval=TRUE----------------------
+# Previously compute the 2x2 contingency tables:
+ctableBP5 <- buildEnrichTable(pbtGeneLists, onto = "BP", GOLevel = 5,
+                            geneUniverse = humanEntrezIDs, 
+                            orgPackg = "org.Hs.eg.db")
 
-## ---- warning=FALSE, message=FALSE, comment=NA, eval=FALSE--------------------
-#  allDismat <- allSorenThreshold (pbtGeneLists, geneUniverse = humanEntrezIDs,
-#                              orgPackg = "org.Hs.eg.db", ontos = c("BP", "CC"),
-#                              GOLevels = 4:7)
+# Computing the irrelevance-threshold matrix of dissimilarities
+dismatBP5 <- sorenThreshold(ctableBP5)
 
-## ---- warning=FALSE, message=FALSE, comment=NA, eval=FALSE--------------------
-#  allTabs <- allBuildEnrichTable(pbtGeneLists, geneUniverse = humanEntrezIDs,
-#                              orgPackg = "org.Hs.eg.db", ontos = c("BP", "CC"),
-#                              GOLevels = 4:7)
-#  allDismat <- allSorenThreshold(allTabs)
+## ----warning=FALSE, message=FALSE, comment=NA, eval=FALSE---------------------
+# allDismat <- allSorenThreshold (pbtGeneLists, geneUniverse = humanEntrezIDs,
+#                             orgPackg = "org.Hs.eg.db", ontos = c("BP", "CC"),
+#                             GOLevels = 4:7)
 
-## ---- warning=FALSE, message=FALSE, comment=NA--------------------------------
+## ----warning=FALSE, message=FALSE, comment=NA, eval=FALSE---------------------
+# allTabs <- allBuildEnrichTable(pbtGeneLists, geneUniverse = humanEntrezIDs,
+#                             orgPackg = "org.Hs.eg.db", ontos = c("BP", "CC"),
+#                             GOLevels = 4:7)
+# allDismat <- allSorenThreshold(allTabs)
+
+## ----warning=FALSE, message=FALSE, comment=NA---------------------------------
 clust.threshold <- hclustThreshold(dismatBP5)
 plot(clust.threshold)
 
-## ---- warning=FALSE, message=FALSE, comment=NA--------------------------------
+## ----warning=FALSE, message=FALSE, comment=NA---------------------------------
 mds <- as.data.frame(cmdscale(dismatBP5, k = 2))
 mds
 
-## ---- warning=FALSE, message=FALSE, comment=NA, fig.align='center'------------
+## ----warning=FALSE, message=FALSE, comment=NA, fig.align='center'-------------
 library(ggplot2)
 library(ggrepel)
 graph <- ggplot() +
@@ -64,7 +64,7 @@ graph <- ggplot() +
     theme_light()
 graph
 
-## ---- warning=FALSE, message=FALSE, comment=NA--------------------------------
+## ----warning=FALSE, message=FALSE, comment=NA---------------------------------
 # Split the axis 20% to the left, 60% to the middle and 20% to the right:
 prop <- c(0.2, 0.6, 0.2) 
 # Sort according  dimension 1:
@@ -83,41 +83,37 @@ lright <- rownames(sorted[sorted[, 1] > cutpoints[2], ])
 lleft
 lright
 
-## ---- warning=FALSE, message=FALSE, comment=NA, fig.align='center'------------
+## ----warning=FALSE, message=FALSE, comment=NA, fig.align='center'-------------
 graph +
   geom_vline(xintercept = cutpoints, color = "red", linetype = "dashed", 
              linewidth = 0.75)
 
 ## -----------------------------------------------------------------------------
-tableleft <- enrichedIn(pbtGeneLists[lleft], onto = "BP", GOLevel = 5,
-                            geneUniverse = humanEntrezIDs, 
-                            orgPackg = "org.Hs.eg.db")
+tableleft <- attr(ctableBP5, "enriched")[, lleft]
 
-tableright <- enrichedIn(pbtGeneLists[lright], onto = "BP", GOLevel = 5,
-                            geneUniverse = humanEntrezIDs, 
-                            orgPackg = "org.Hs.eg.db")
+tableright <- attr(ctableBP5, "enriched")[, lright]
 
-## ---- warning=FALSE, message=FALSE, comment=NA--------------------------------
+## ----warning=FALSE, message=FALSE, comment=NA---------------------------------
 tableleft[1:15, ]
 tableright[1:15, ]
 
-## ---- warning=FALSE, message=FALSE, comment=NA--------------------------------
+## ----warning=FALSE, message=FALSE, comment=NA---------------------------------
 lmnsd <- apply(tableleft, 1, 
                  function(x){c("meanLeft" = mean(x), "sdLeft" = sd(x))})
 rmnsd <- apply(tableright, 1, 
                  function(x){c("meanRight" = mean(x), "sdRight" = sd(x))})
 
-## ---- warning=FALSE, message=FALSE, comment=NA--------------------------------
+## ----warning=FALSE, message=FALSE, comment=NA---------------------------------
 nl <- ncol(tableleft) 
 nr <- ncol(tableright) 
 stat <- abs(lmnsd[1, ] - rmnsd[1, ]) / 
   sqrt((((lmnsd[2, ] / nl) + (rmnsd[2, ] / nr))) + 0.00000001)
 
-## ---- warning=FALSE, message=FALSE, comment=NA--------------------------------
+## ----warning=FALSE, message=FALSE, comment=NA---------------------------------
 result <- stat[stat == max(stat)]
 result
 
-## ---- warning=FALSE, message=FALSE, comment=NA--------------------------------
+## ----warning=FALSE, message=FALSE, comment=NA---------------------------------
 library(GO.db)
 library(knitr)
 # Previous function to get the description of the identified GO terms:

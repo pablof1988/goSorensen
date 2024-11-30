@@ -1,5 +1,5 @@
 ---
-title: "An Irrelevance Threshold Matrix of Dissimilarities."
+title: "An Irrelevance - Threshold Matrix of Dissimilarities."
 author:
 - name: Pablo Flores
   email: p_flores@espoch.edu.ec
@@ -114,7 +114,7 @@ Each value in this matrix represents dissimilarities determined by the equivalen
 Another way is to compute all the pairwise $2 \times 2$ enrichment contingency tables previously. From this table, we can obtain the dissimilarity matrix as follows:
 
 
-```{r, warning=FALSE, message=FALSE, comment=NA, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, comment=NA, eval=TRUE}
 # Previously compute the 2x2 contingency tables:
 ctableBP5 <- buildEnrichTable(pbtGeneLists, onto = "BP", GOLevel = 5,
                             geneUniverse = humanEntrezIDs, 
@@ -225,16 +225,12 @@ The basic idea is that if the enrichment of a GO term in these two groups of lis
 - STEP 2: Identify the enriched and non-enriched GO terms for each GO term and each list selected at the extremes, differentiating the lists by the groups to which they belong.
 
 ```{r}
-tableleft <- enrichedIn(pbtGeneLists[lleft], onto = "BP", GOLevel = 5,
-                            geneUniverse = humanEntrezIDs, 
-                            orgPackg = "org.Hs.eg.db")
+tableleft <- attr(ctableBP5, "enriched")[, lleft]
 
-tableright <- enrichedIn(pbtGeneLists[lright], onto = "BP", GOLevel = 5,
-                            geneUniverse = humanEntrezIDs, 
-                            orgPackg = "org.Hs.eg.db")
+tableright <- attr(ctableBP5, "enriched")[, lright]
 ```
 
-Due to the large size of the results, we only show the first 15 rows of each matrix:
+Below, one can see the first 15 rows of each matrix:
 
 ```{r, warning=FALSE, message=FALSE, comment=NA}
 tableleft[1:15, ]

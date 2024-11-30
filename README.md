@@ -1,4 +1,4 @@
-![](logo.png){width=25% align=center}
+![](inst/extdata/logo.png){width=25% align=center}
 
 ## Introduction
 
@@ -41,7 +41,7 @@ This inferential method, is developed and explained in the paper *An equivalence
 
 The following graph illustrates the structure and relationship between the functions, objects and documentation contained in goSorensen.
 
-![](gosorstructure.png){width=100% align=center}
+![](inst/extdata/gosorstructure.png){width=100% align=center}
 
 ## Installation Instructions
 

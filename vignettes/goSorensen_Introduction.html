@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2024-07-25" />
+<meta name="date" content="2024-11-30" />
 
 <title>An Introduction to goSorensen R-Package</title>
 
@@ -52,7 +52,7 @@ h4 {font-size: 18px;}
 h5 {font-size: 16px;}
 h6 {font-size: 12px;}
 code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-pre:not([class]) { background-color: white }</style>
+</style>
 <script>/*! jQuery UI - v1.13.2 - 2022-07-14
 * http://jqueryui.com
 * Includes: widget.js, position.js, data.js, disable-selection.js, effect.js, effects/effect-blind.js, effects/effect-bounce.js, effects/effect-clip.js, effects/effect-drop.js, effects/effect-explode.js, effects/effect-fade.js, effects/effect-fold.js, effects/effect-highlight.js, effects/effect-puff.js, effects/effect-pulsate.js, effects/effect-scale.js, effects/effect-shake.js, effects/effect-size.js, effects/effect-slide.js, effects/effect-transfer.js, focusable.js, form-reset-mixin.js, jquery-patch.js, keycode.js, labels.js, scroll-parent.js, tabbable.js, unique-id.js, widgets/accordion.js, widgets/autocomplete.js, widgets/button.js, widgets/checkboxradio.js, widgets/controlgroup.js, widgets/datepicker.js, widgets/dialog.js, widgets/draggable.js, widgets/droppable.js, widgets/menu.js, widgets/mouse.js, widgets/progressbar.js, widgets/resizable.js, widgets/selectable.js, widgets/selectmenu.js, widgets/slider.js, widgets/sortable.js, widgets/spinner.js, widgets/tabs.js, widgets/tooltip.js
@@ -1839,12 +1839,12 @@ function toggle_visibility(id1) {
 <p class="author-name">Jordi Ocaña<span class="affil-mark">1*</span> and Pablo Flores<span class="affil-mark">2**</span></p>
 <p class="author-affiliation"><span class="affil-mark">1</span>Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona<br><span class="affil-mark">2</span>Escuela Superior Politécnica de Chimborazo (ESPOCH), Facultad de Ciencias, Carrera de Estadística.</p>
 <p class="author-email"><span class="affil-mark">*</span><a href="mailto:jocana@ub.edu">jocana@ub.edu</a><br><span class="affil-mark">**</span><a href="mailto:p_flores@espoch.edu.ec">p_flores@espoch.edu.ec</a></p>
-<h4 class="date">25 July 2024</h4>
+<h4 class="date">30 November 2024</h4>
 <h4 class="abstract">Abstract</h4>
 <p>This vignette provides an introduction to goSorensen package, which was built to determine equivalence between features lists. The method is based on the Sorensen–Dice index and the joint frequencies of GO term enrichment.</p>
 <p>Starting from an introduction, which includes a brief explanation of the method to detect equivalence between feature lists, a description of the data to be used, and previous considerations about the necessary information of the species to be analyzed, this vignette explains how to: i) perform an equivalence test, ii) access to specific results of the equivalence test, iii) upgrade the obtained results and iv) perform results for more than two lists.</p>
 <h4 class="package">Package</h4>
-<p>goSorensen 1.7.0</p>
+<p>goSorensen 1.8.1</p>
 
 </div>
 
@@ -1911,6 +1911,7 @@ allOncoGeneLists[[&quot;Vogelstein&quot;]][1:20]</code></pre>
     BiocManager::install(&quot;org.Hs.eg.db&quot;)
 }
 library(org.Hs.eg.db)</code></pre>
+<pre class="r"><code>library(org.Hs.eg.db)</code></pre>
 <p>Actually, the <code>org.Hs.eg.db</code> package is automatically installed as a dependency on <code>goSorensen</code>, making its installation unnecessary. However, for any other species, the user must install the correspondence genome annotation for the species to analyze, as indicated in the above code.</p>
 <p>In addition, it is necessary to have a vector containing the IDs of the universe of genes associated with the species under study. The genomic annotation package provides an easy way to obtain this universe. The ENTREZ identifiers of the gene universe for humans, necessary for this vignette, is obtained as follows:</p>
 <pre class="r"><code>humanEntrezIDs &lt;- keys(org.Hs.eg.db, keytype = &quot;ENTREZID&quot;)</code></pre>
@@ -1933,8 +1934,8 @@ enrichTab &lt;- buildEnrichTable(allOncoGeneLists[[&quot;Vogelstein&quot;]],
 enrichTab</code></pre>
 <pre><code>##                       Enriched in sanger
 ## Enriched in Vogelstein TRUE FALSE
-##                  TRUE    27     7
-##                  FALSE    2  2187</code></pre>
+##                  TRUE    33    10
+##                  FALSE    2  1958</code></pre>
 <pre class="r"><code># Equivalence test for an equivalence (or negligibility) limit 0.2857
 testResult &lt;- equivTestSorensen(enrichTab, d0 = 0.2857)
 testResult</code></pre>
@@ -1943,16 +1944,16 @@ testResult</code></pre>
 ##  Sorensen-Dice dissimilarity
 ## 
 ## data:  enrichTab
-## (d - d0) / se = -2.9884, p-value = 0.001402
+## (d - d0) / se = -2.9711, p-value = 0.001484
 ## alternative hypothesis: true equivalence limit d0 is less than 0.2857
 ## 95 percent confidence interval:
-##  0.0000000 0.2214798
+##  0.0000000 0.2268426
 ## sample estimates:
 ## Sorensen dissimilarity 
-##              0.1428571 
+##              0.1538462 
 ## attr(,&quot;se&quot;)
 ## standard error 
-##     0.04779919</code></pre>
+##      0.0443787</code></pre>
 </div>
 <div id="equivalence-test-directly-from-the-gene-lists." class="section level2" number="1.2">
 <h2><span class="header-section-number">1.2</span> Equivalence Test Directly From the Gene Lists.</h2>
@@ -1968,16 +1969,16 @@ testResult</code></pre>
 ##  Sorensen-Dice dissimilarity
 ## 
 ## data:  tab
-## (d - d0) / se = -2.9884, p-value = 0.001402
+## (d - d0) / se = -2.9711, p-value = 0.001484
 ## alternative hypothesis: true equivalence limit d0 is less than 0.2857
 ## 95 percent confidence interval:
-##  0.0000000 0.2214798
+##  0.0000000 0.2268426
 ## sample estimates:
 ## Sorensen dissimilarity 
-##              0.1428571 
+##              0.1538462 
 ## attr(,&quot;se&quot;)
 ## standard error 
-##     0.04779919</code></pre>
+##      0.0443787</code></pre>
 <p>The first option (building previously the contingency table) may be suitable to save computing time.</p>
 <p>The above tests are based on the normal distribution. The next section shows how to use the bootstrap distribution, which is suitable for low enrichment levels.</p>
 </div>
@@ -1988,19 +1989,19 @@ testResult</code></pre>
 boot.testResult</code></pre>
 <pre><code>## 
 ##  Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice
-##  dissimilarity (9999 effective bootstrap replicates of 10000)
+##  dissimilarity (10000 bootstrap replicates)
 ## 
 ## data:  enrichTab
-## (d - d0) / se = -2.9884, p-value = 0.0182
+## (d - d0) / se = -2.9711, p-value = 0.0119
 ## alternative hypothesis: true equivalence limit d0 is less than 0.2857
 ## 95 percent confidence interval:
-##  0.0000000 0.2438589
+##  0.0000000 0.2447487
 ## sample estimates:
 ## Sorensen dissimilarity 
-##              0.1428571 
+##              0.1538462 
 ## attr(,&quot;se&quot;)
 ## standard error 
-##     0.04779919</code></pre>
+##      0.0443787</code></pre>
 <p>As one can see, to obtain the bootstrap results, we only have used the argument <code>boot=TRUE</code>.</p>
 <p>For low frequencies in the contingency table, bootstrap is a more conservative but preferable approach, with better type I error control.</p>
 </div>
@@ -2009,7 +2010,7 @@ boot.testResult</code></pre>
 <p>The outputs of the equivalence test, such as the Sorensen dissimilarity, the standard error of the test, and the confidence limit, can be computed individually.</p>
 <pre class="r"><code># The Sorensen dissimilarity from the contingency table:
 dSorensen(enrichTab)</code></pre>
-<pre><code>## [1] 0.1428571</code></pre>
+<pre><code>## [1] 0.1538462</code></pre>
 <pre class="r"><code># The Sorensen dissimilarity from the gene lists:
 dSorensen(allOncoGeneLists[[&quot;Vogelstein&quot;]], 
           allOncoGeneLists[[&quot;sanger&quot;]],
@@ -2017,10 +2018,10 @@ dSorensen(allOncoGeneLists[[&quot;Vogelstein&quot;]],
           orgPackg = &quot;org.Hs.eg.db&quot;,
           onto = &quot;MF&quot;, GOLevel = 5, 
           listNames = c(&quot;Vogelstein&quot;, &quot;sanger&quot;))</code></pre>
-<pre><code>## [1] 0.1428571</code></pre>
+<pre><code>## [1] 0.1538462</code></pre>
 <pre class="r"><code># The standard error from the contingency table::
 seSorensen(enrichTab)</code></pre>
-<pre><code>## [1] 0.04779919</code></pre>
+<pre><code>## [1] 0.0443787</code></pre>
 <pre class="r"><code># or from the gene lists:
 seSorensen(allOncoGeneLists[[&quot;Vogelstein&quot;]], 
            allOncoGeneLists[[&quot;sanger&quot;]],
@@ -2028,14 +2029,14 @@ seSorensen(allOncoGeneLists[[&quot;Vogelstein&quot;]],
            orgPackg = &quot;org.Hs.eg.db&quot;,
            onto = &quot;MF&quot;, GOLevel = 5, 
            listNames = c(&quot;Vogelstein&quot;, &quot;sanger&quot;))</code></pre>
-<pre><code>## [1] 0.04779919</code></pre>
+<pre><code>## [1] 0.0443787</code></pre>
 <pre class="r"><code># Upper limit of the confidence interval from the contingency table:
 duppSorensen(enrichTab)</code></pre>
-<pre><code>## [1] 0.2214798</code></pre>
+<pre><code>## [1] 0.2268426</code></pre>
 <pre class="r"><code>duppSorensen(enrichTab, conf.level = 0.90)</code></pre>
-<pre><code>## [1] 0.2041143</code></pre>
+<pre><code>## [1] 0.2107197</code></pre>
 <pre class="r"><code>duppSorensen(enrichTab, conf.level = 0.90, boot = TRUE)</code></pre>
-<pre><code>## [1] 0.215254
+<pre><code>## [1] 0.2206999
 ## attr(,&quot;eff.nboot&quot;)
 ## [1] 9999</code></pre>
 <pre class="r"><code># Upper limit of the confidence interval from the gene lists:
@@ -2045,7 +2046,7 @@ duppSorensen(allOncoGeneLists[[&quot;Vogelstein&quot;]],
              orgPackg = &quot;org.Hs.eg.db&quot;, 
              onto = &quot;MF&quot;, GOLevel = 5, 
              listNames = c(&quot;Vogelstein&quot;, &quot;sanger&quot;))</code></pre>
-<pre><code>## [1] 0.2214798</code></pre>
+<pre><code>## [1] 0.2268426</code></pre>
 </div>
 </div>
 <div id="accessing-to-specific-results." class="section level1" number="2">
@@ -2053,31 +2054,31 @@ duppSorensen(allOncoGeneLists[[&quot;Vogelstein&quot;]],
 <p>To access specific results from the equivalence test above computed, one can use the functions of the type <code>get...</code>, as follows:</p>
 <pre class="r"><code>getDissimilarity(testResult)</code></pre>
 <pre><code>## Sorensen dissimilarity 
-##              0.1428571 
+##              0.1538462 
 ## attr(,&quot;se&quot;)
 ## standard error 
-##     0.04779919</code></pre>
+##      0.0443787</code></pre>
 <pre class="r"><code>getSE(testResult)</code></pre>
 <pre><code>## standard error 
-##     0.04779919</code></pre>
+##      0.0443787</code></pre>
 <pre class="r"><code>getPvalue(testResult)</code></pre>
 <pre><code>##     p-value 
-## 0.001402234</code></pre>
+## 0.001483644</code></pre>
 <pre class="r"><code>getTable(testResult)</code></pre>
 <pre><code>##                       Enriched in sanger
 ## Enriched in Vogelstein TRUE FALSE
-##                  TRUE    27     7
-##                  FALSE    2  2187</code></pre>
+##                  TRUE    33    10
+##                  FALSE    2  1958</code></pre>
 <pre class="r"><code>getUpper(testResult)</code></pre>
 <pre><code>##    dUpper 
-## 0.2214798</code></pre>
+## 0.2268426</code></pre>
 <pre class="r"><code># In the bootstrap approach, only these differ:
 getPvalue(boot.testResult)</code></pre>
-<pre><code>## p-value 
-##  0.0182</code></pre>
+<pre><code>##    p-value 
+## 0.01189881</code></pre>
 <pre class="r"><code>getUpper(boot.testResult)</code></pre>
 <pre><code>##    dUpper 
-## 0.2438589</code></pre>
+## 0.2447487</code></pre>
 <pre class="r"><code># (Only available for bootstrap tests) efective number of bootstrap resamples:
 getNboot(boot.testResult)</code></pre>
 <pre><code>## [1] 10000</code></pre>
@@ -2089,19 +2090,19 @@ getNboot(boot.testResult)</code></pre>
 <pre class="r"><code>upgrade(testResult, d0 = 0.4444, conf.level = 0.99, boot = TRUE)</code></pre>
 <pre><code>## 
 ##  Bootstrap test for 2x2 contingency tables based on the Sorensen-Dice
-##  dissimilarity (9999 effective bootstrap replicates of 10000)
+##  dissimilarity (10000 bootstrap replicates)
 ## 
 ## data:  tab
-## (d - d0) / se = -6.3085, p-value = 8e-04
+## (d - d0) / se = -6.5471, p-value = 5e-04
 ## alternative hypothesis: true equivalence limit d0 is less than 0.4444
 ## 99 percent confidence interval:
-##  0.0000000 0.3060955
+##  0.0000000 0.2954633
 ## sample estimates:
 ## Sorensen dissimilarity 
-##              0.1428571 
+##              0.1538462 
 ## attr(,&quot;se&quot;)
 ## standard error 
-##     0.04779919</code></pre>
+##      0.0443787</code></pre>
 </div>
 <div id="all-pairwise-computes" class="section level1" number="4">
 <h1><span class="header-section-number">4</span> All Pairwise Computes</h1>
@@ -2111,13 +2112,13 @@ getNboot(boot.testResult)</code></pre>
           geneUniverse = humanEntrezIDs, orgPackg = &quot;org.Hs.eg.db&quot;)
 round(totalDiss, 2)</code></pre>
 <pre><code>##               atlas cangenes  cis miscellaneous sanger Vogelstein waldman
-## atlas          0.00        1 0.76          0.45   0.45       0.44    0.40
+## atlas          0.00        1 0.76          0.49   0.37       0.38    0.37
 ## cangenes       1.00        0 1.00          1.00   1.00       1.00    1.00
-## cis            0.76        1 0.00          0.69   0.67       0.71    0.74
-## miscellaneous  0.45        1 0.69          0.00   0.44       0.49    0.28
-## sanger         0.45        1 0.67          0.44   0.00       0.14    0.47
-## Vogelstein     0.44        1 0.71          0.49   0.14       0.00    0.48
-## waldman        0.40        1 0.74          0.28   0.47       0.48    0.00</code></pre>
+## cis            0.76        1 0.00          0.69   0.72       0.73    0.76
+## miscellaneous  0.49        1 0.69          0.00   0.46       0.52    0.29
+## sanger         0.37        1 0.72          0.46   0.00       0.15    0.45
+## Vogelstein     0.38        1 0.73          0.52   0.15       0.00    0.45
+## waldman        0.37        1 0.76          0.29   0.45       0.45    0.00</code></pre>
 <p>Similarly, the following code performs all pairwise tests:</p>
 <pre class="r"><code>allTests &lt;- equivTestSorensen(allOncoGeneLists, d0 = 0.2857, 
                               onto = &quot;MF&quot;, GOLevel = 5, 
@@ -2125,51 +2126,51 @@ round(totalDiss, 2)</code></pre>
                               orgPackg = &quot;org.Hs.eg.db&quot;)
 getPvalue(allTests)</code></pre>
 <pre><code>##           cangenes.atlas.p-value                cis.atlas.p-value 
-##                              NaN                      0.999999999 
+##                              NaN                      1.000000000 
 ##             cis.cangenes.p-value      miscellaneous.atlas.p-value 
-##                              NaN                      0.987655731 
+##                              NaN                      0.998231735 
 ##   miscellaneous.cangenes.p-value        miscellaneous.cis.p-value 
 ##                              NaN                      0.999894013 
 ##             sanger.atlas.p-value          sanger.cangenes.p-value 
-##                      0.990549965                              NaN 
+##                      0.919688219                              NaN 
 ##               sanger.cis.p-value     sanger.miscellaneous.p-value 
-##                      0.999889111                      0.973079331 
+##                      0.999999142                      0.984991465 
 ##         Vogelstein.atlas.p-value      Vogelstein.cangenes.p-value 
-##                      0.986530586                              NaN 
+##                      0.949193143                              NaN 
 ##           Vogelstein.cis.p-value Vogelstein.miscellaneous.p-value 
-##                      0.999996190                      0.994763728 
+##                      0.999999941                      0.999072617 
 ##        Vogelstein.sanger.p-value            waldman.atlas.p-value 
-##                      0.001402234                      0.959649373 
+##                      0.001483644                      0.921125359 
 ##         waldman.cangenes.p-value              waldman.cis.p-value 
-##                              NaN                      0.999999921 
+##                              NaN                      0.999999994 
 ##    waldman.miscellaneous.p-value           waldman.sanger.p-value 
-##                      0.472457677                      0.993675934 
+##                      0.540542350                      0.990217132 
 ##       waldman.Vogelstein.p-value 
-##                      0.996522105</code></pre>
+##                      0.994228782</code></pre>
 <pre class="r"><code>getDissimilarity(allTests, simplify = FALSE)</code></pre>
 <pre><code>##                   atlas cangenes       cis miscellaneous    sanger Vogelstein
-## atlas         0.0000000        1 0.7647059     0.4492754 0.4520548  0.4358974
+## atlas         0.0000000        1 0.7627119     0.4933333 0.3720930  0.3829787
 ## cangenes      1.0000000        0 1.0000000     1.0000000 1.0000000  1.0000000
-## cis           0.7647059        1 0.0000000     0.6875000 0.6666667  0.7073171
-## miscellaneous 0.4492754        1 0.6875000     0.0000000 0.4444444  0.4915254
-## sanger        0.4520548        1 0.6666667     0.4444444 0.0000000  0.1428571
-## Vogelstein    0.4358974        1 0.7073171     0.4915254 0.1428571  0.0000000
-## waldman       0.3975904        1 0.7391304     0.2812500 0.4705882  0.4794521
+## cis           0.7627119        1 0.0000000     0.6875000 0.7209302  0.7254902
+## miscellaneous 0.4933333        1 0.6875000     0.0000000 0.4576271  0.5223881
+## sanger        0.3720930        1 0.7209302     0.4576271 0.0000000  0.1538462
+## Vogelstein    0.3829787        1 0.7254902     0.5223881 0.1538462  0.0000000
+## waldman       0.3695652        1 0.7551020     0.2923077 0.4473684  0.4523810
 ##                 waldman
-## atlas         0.3975904
+## atlas         0.3695652
 ## cangenes      1.0000000
-## cis           0.7391304
-## miscellaneous 0.2812500
-## sanger        0.4705882
-## Vogelstein    0.4794521
+## cis           0.7551020
+## miscellaneous 0.2923077
+## sanger        0.4473684
+## Vogelstein    0.4523810
 ## waldman       0.0000000</code></pre>
 </div>
 <div id="session-information." class="section level1 unnumbered">
 <h1>Session information.</h1>
 <p>All software and respective versions used to produce this document are listed below.</p>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 4.3.3 (2024-02-29 ucrt)
-## Platform: x86_64-w64-mingw32/x64 (64-bit)
+<pre><code>## R version 4.4.1 (2024-06-14 ucrt)
+## Platform: x86_64-w64-mingw32/x64
 ## Running under: Windows 11 x64 (build 22631)
 ## 
 ## Matrix products: default
@@ -2188,58 +2189,54 @@ getPvalue(allTests)</code></pre>
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] org.Hs.eg.db_3.17.0  AnnotationDbi_1.62.2 IRanges_2.34.1      
-## [4] S4Vectors_0.38.1     Biobase_2.60.0       BiocGenerics_0.46.0 
-## [7] BiocStyle_2.28.0     goSorensen_1.7.0    
+##  [1] knitr_1.49           GO.db_3.20.0         ggrepel_0.9.6       
+##  [4] ggplot2_3.5.1        org.Hs.eg.db_3.20.0  AnnotationDbi_1.68.0
+##  [7] IRanges_2.40.0       S4Vectors_0.44.0     Biobase_2.66.0      
+## [10] BiocGenerics_0.52.0  BiocStyle_2.34.0     goSorensen_1.8.1    
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] RColorBrewer_1.1-3      jsonlite_1.8.7          rstudioapi_0.15.0      
-##   [4] magrittr_2.0.3          rmarkdown_2.24          farver_2.1.1           
-##   [7] fs_1.6.3                zlibbioc_1.46.0         vctrs_0.6.3            
-##  [10] memoise_2.0.1           RCurl_1.98-1.12         CompQuadForm_1.4.3     
-##  [13] ggtree_3.8.2            htmltools_0.5.6         usethis_2.2.2          
-##  [16] gridGraphics_0.5-1      sass_0.4.7              bslib_0.5.1            
-##  [19] htmlwidgets_1.6.2       desc_1.4.2              plyr_1.8.8             
-##  [22] cachem_1.0.8            commonmark_1.9.0        igraph_1.5.1           
-##  [25] mime_0.12               lifecycle_1.0.4         pkgconfig_2.0.3        
-##  [28] gson_0.1.0              Matrix_1.6-5            R6_2.5.1               
-##  [31] fastmap_1.1.1           GenomeInfoDbData_1.2.10 shiny_1.7.5            
-##  [34] digest_0.6.33           aplot_0.2.0             enrichplot_1.20.1      
-##  [37] colorspace_2.1-0        patchwork_1.2.0         ps_1.7.5               
-##  [40] rprojroot_2.0.3         pkgload_1.3.2.1         RSQLite_2.3.1          
-##  [43] fansi_1.0.4             httr_1.4.7              polyclip_1.10-4        
-##  [46] compiler_4.3.3          remotes_2.4.2.1         bit64_4.0.5            
-##  [49] withr_2.5.0             downloader_0.4          BiocParallel_1.34.2    
-##  [52] viridis_0.6.4           DBI_1.1.3               pkgbuild_1.4.2         
-##  [55] ggforce_0.4.1           MASS_7.3-60.0.1         sessioninfo_1.2.2      
-##  [58] HDO.db_0.99.1           tools_4.3.3             scatterpie_0.2.1       
-##  [61] ape_5.7-1               httpuv_1.6.11           glue_1.6.2             
-##  [64] callr_3.7.3             nlme_3.1-164            GOSemSim_2.26.1        
-##  [67] promises_1.2.1          shadowtext_0.1.2        grid_4.3.3             
-##  [70] reshape2_1.4.4          fgsea_1.26.0            generics_0.1.3         
-##  [73] gtable_0.3.4            tidyr_1.3.0             data.table_1.14.8      
-##  [76] tidygraph_1.2.3         xml2_1.3.5              utf8_1.2.3             
-##  [79] XVector_0.40.0          ggrepel_0.9.3           pillar_1.9.0           
-##  [82] stringr_1.5.0           goProfiles_1.62.0       yulab.utils_0.0.8      
-##  [85] later_1.3.1             splines_4.3.3           dplyr_1.1.2            
-##  [88] tweenr_2.0.2            treeio_1.24.3           lattice_0.22-5         
-##  [91] bit_4.0.5               tidyselect_1.2.0        GO.db_3.17.0           
-##  [94] Biostrings_2.68.1       miniUI_0.1.1.1          knitr_1.43             
-##  [97] gridExtra_2.3           bookdown_0.35           xfun_0.40              
-## [100] graphlayouts_1.0.0      devtools_2.4.5          stringi_1.7.12         
-## [103] yaml_2.3.7              lazyeval_0.2.2          ggfun_0.1.2            
-## [106] evaluate_0.21           codetools_0.2-19        ggraph_2.1.0           
-## [109] tibble_3.2.1            qvalue_2.32.0           BiocManager_1.30.22    
-## [112] ggplotify_0.1.2         cli_3.6.1               xtable_1.8-4           
-## [115] jquerylib_0.1.4         munsell_0.5.0           processx_3.8.2         
-## [118] roxygen2_7.2.3          Rcpp_1.0.11             GenomeInfoDb_1.36.2    
-## [121] png_0.1-8               parallel_4.3.3          ellipsis_0.3.2         
-## [124] ggplot2_3.4.3           blob_1.2.4              prettyunits_1.1.1      
-## [127] clusterProfiler_4.8.2   profvis_0.3.8           DOSE_3.26.1            
-## [130] urlchecker_1.0.1        bitops_1.0-7            tidytree_0.4.5         
-## [133] viridisLite_0.4.2       scales_1.2.1            purrr_1.0.2            
-## [136] crayon_1.5.2            rlang_1.1.1             cowplot_1.1.1          
-## [139] fastmatch_1.1-4         KEGGREST_1.40.0</code></pre>
+##   [1] RColorBrewer_1.1-3      rstudioapi_0.17.1       jsonlite_1.8.9         
+##   [4] magrittr_2.0.3          magick_2.8.5            ggtangle_0.0.4         
+##   [7] rmarkdown_2.29          farver_2.1.2            fs_1.6.5               
+##  [10] zlibbioc_1.52.0         vctrs_0.6.5             memoise_2.0.1          
+##  [13] CompQuadForm_1.4.3      ggtree_3.14.0           tinytex_0.54           
+##  [16] htmltools_0.5.8.1       usethis_3.1.0           gridGraphics_0.5-1     
+##  [19] sass_0.4.9              bslib_0.8.0             htmlwidgets_1.6.4      
+##  [22] desc_1.4.3              plyr_1.8.9              cachem_1.1.0           
+##  [25] commonmark_1.9.2        igraph_2.1.1            mime_0.12              
+##  [28] lifecycle_1.0.4         pkgconfig_2.0.3         Matrix_1.7-0           
+##  [31] R6_2.5.1                fastmap_1.2.0           gson_0.1.0             
+##  [34] GenomeInfoDbData_1.2.12 shiny_1.9.1             digest_0.6.37          
+##  [37] aplot_0.2.3             enrichplot_1.26.2       colorspace_2.1-1       
+##  [40] patchwork_1.3.0         rprojroot_2.0.4         pkgload_1.4.0          
+##  [43] RSQLite_2.3.8           labeling_0.4.3          fansi_1.0.6            
+##  [46] httr_1.4.7              compiler_4.4.1          remotes_2.5.0          
+##  [49] bit64_4.5.2             withr_3.0.2             BiocParallel_1.40.0    
+##  [52] DBI_1.2.3               pkgbuild_1.4.5          R.utils_2.12.3         
+##  [55] sessioninfo_1.2.2       tools_4.4.1             ape_5.8                
+##  [58] httpuv_1.6.15           R.oo_1.27.0             glue_1.8.0             
+##  [61] nlme_3.1-164            GOSemSim_2.32.0         promises_1.3.0         
+##  [64] grid_4.4.1              reshape2_1.4.4          fgsea_1.32.0           
+##  [67] generics_0.1.3          gtable_0.3.6            R.methodsS3_1.8.2      
+##  [70] tidyr_1.3.1             data.table_1.16.2       xml2_1.3.6             
+##  [73] utf8_1.2.4              XVector_0.46.0          pillar_1.9.0           
+##  [76] stringr_1.5.1           goProfiles_1.68.0       yulab.utils_0.1.8      
+##  [79] later_1.3.2             splines_4.4.1           dplyr_1.1.4            
+##  [82] treeio_1.30.0           lattice_0.22-6          bit_4.5.0              
+##  [85] tidyselect_1.2.1        Biostrings_2.74.0       miniUI_0.1.1.1         
+##  [88] bookdown_0.41           xfun_0.49               devtools_2.4.5         
+##  [91] stringi_1.8.4           UCSC.utils_1.2.0        yaml_2.3.10            
+##  [94] lazyeval_0.2.2          ggfun_0.1.7             evaluate_1.0.1         
+##  [97] codetools_0.2-20        tibble_3.2.1            qvalue_2.38.0          
+## [100] BiocManager_1.30.25     ggplotify_0.1.2         cli_3.6.3              
+## [103] xtable_1.8-4            jquerylib_0.1.4         munsell_0.5.1          
+## [106] roxygen2_7.3.2          Rcpp_1.0.13-1           GenomeInfoDb_1.42.0    
+## [109] png_0.1-8               parallel_4.4.1          ellipsis_0.3.2         
+## [112] blob_1.2.4              clusterProfiler_4.14.3  profvis_0.4.0          
+## [115] DOSE_4.0.0              urlchecker_1.0.1        tidytree_0.4.6         
+## [118] scales_1.3.0            purrr_1.0.2             crayon_1.5.3           
+## [121] rlang_1.1.4             cowplot_1.1.3           fastmatch_1.1-4        
+## [124] KEGGREST_1.46.0</code></pre>
 </div>
 <div id="bibliography." class="section level1 unnumbered">
 <h1>Bibliography.</h1>

@@ -19,7 +19,7 @@ In addition:
 
 - We enhance the vignette "An introduction to the goSorensen package" by incorporating the newly introduced functions and updating the example results with the latest version of Bioconductor. 
 
-## version 1.7.0
+## version 1.8.0
 We add the following function:
 
 - __enrichedIn__: This function generates a binary matrix in which the rows represent GO terms, and the columns represent lists. The matrix uses the values TRUE or FALSE to indicate whether each GO term is enriched or not for each list. 

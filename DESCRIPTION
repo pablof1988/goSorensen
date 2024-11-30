@@ -2,7 +2,7 @@ Package: goSorensen
 Type: Package
 Title: Statistical inference based on the Sorensen-Dice dissimilarity
         and the Gene Ontology (GO)
-Version: 1.7.0
+Version: 1.8.1
 Description: This package implements inferential methods to compare gene lists in terms of their biological meaning as expressed in the GO. The compared gene lists are characterized by cross-tabulation frequency tables of enriched GO items. Dissimilarity between gene lists is evaluated using the Sorensen-Dice index.
     The fundamental guiding principle is that two gene lists are taken as similar if they share a great proportion of common enriched GO items.
 Authors@R: 
@@ -16,40 +16,25 @@ Authors@R:
 	  person("Miquel", "Salicru", role = "ctb", 
 	          comment = c(ORCID = "0000-0001-9644-5626")))
 Depends: R (>= 4.3)
-Imports: 
-        clusterProfiler,
-        goProfiles,
-        org.Hs.eg.db, 
-        parallel,
-        stats, 
+Imports: clusterProfiler, goProfiles, org.Hs.eg.db, parallel, stats,
         stringr
-Suggests:
-    BiocManager,
-    BiocStyle,
-    knitr,
-    rmarkdown,
-    org.At.tair.db,
-    org.Ag.eg.db,
-    org.Bt.eg.db,
-    org.Ce.eg.db,
-    org.Cf.eg.db,
-    org.Dm.eg.db,
-    org.Dr.eg.db,
-    org.EcSakai.eg.db,
-    org.EcK12.eg.db,
-    org.Gg.eg.db,
-    org.Mm.eg.db,
-    org.Mmu.eg.db,
-    org.Rn.eg.db,
-    org.Sc.sgd.db,
-    org.Ss.eg.db,
-    org.Pt.eg.db,
-    org.Xl.eg.db
+Suggests: BiocManager, BiocStyle, knitr, rmarkdown, org.At.tair.db,
+        org.Ag.eg.db, org.Bt.eg.db, org.Ce.eg.db, org.Cf.eg.db,
+        org.Dm.eg.db, org.Dr.eg.db, org.EcSakai.eg.db, org.EcK12.eg.db,
+        org.Gg.eg.db, org.Mm.eg.db, org.Mmu.eg.db, org.Rn.eg.db,
+        org.Sc.sgd.db, org.Ss.eg.db, org.Pt.eg.db, org.Xl.eg.db
 VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8
 LazyData: false
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 NeedsCompilation: no
-Packaged: 2022-04-16 10:28:45 UTC; jordi
-biocViews: Annotation, GO, GeneSetEnrichment, Software, Microarray, Pathways, GeneExpression, MultipleComparison, GraphAndNetwork, Reactome, Clustering, KEGG
+Packaged: 2024-11-29 21:35:16 UTC; Pablo Flores
+biocViews: Annotation, GO, GeneSetEnrichment, Software, Microarray,
+        Pathways, GeneExpression, MultipleComparison, GraphAndNetwork,
+        Reactome, Clustering, KEGG
+Author: Pablo Flores [aut, cre] (<https://orcid.org/0000-0002-7156-8547>),
+  Jordi Ocana [aut, ctb] (0000-0002-4736-699),
+  Alexandre Sanchez-Pla [ctb] (<https://orcid.org/0000-0002-8673-7737>),
+  Miquel Salicru [ctb] (<https://orcid.org/0000-0001-9644-5626>)
+Maintainer: Pablo Flores <p_flores@espoch.edu.ec>

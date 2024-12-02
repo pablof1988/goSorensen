@@ -22,7 +22,8 @@ Suggests: BiocManager, BiocStyle, knitr, rmarkdown, org.At.tair.db,
         org.Ag.eg.db, org.Bt.eg.db, org.Ce.eg.db, org.Cf.eg.db,
         org.Dm.eg.db, org.Dr.eg.db, org.EcSakai.eg.db, org.EcK12.eg.db,
         org.Gg.eg.db, org.Mm.eg.db, org.Mmu.eg.db, org.Rn.eg.db,
-        org.Sc.sgd.db, org.Ss.eg.db, org.Pt.eg.db, org.Xl.eg.db
+        org.Sc.sgd.db, org.Ss.eg.db, org.Pt.eg.db, org.Xl.eg.db, GO.db, ggplot2,
+        ggrepel
 VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8

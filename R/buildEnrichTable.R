@@ -157,7 +157,7 @@ buildEnrichTable.character <- function(x, y, listNames = c("gene.list1", "gene.l
   }
   tab <- tab[c(2,1),c(2,1)]
   if (check.table){
-    goSorensen:::nice2x2Table.table(tab)
+    nice2x2Table.table(tab)
   }
   dimnames(tab) <- list(c(TRUE, FALSE), c(TRUE, FALSE))
   names(dimnames(tab)) <- paste0("Enriched in ", listNames)

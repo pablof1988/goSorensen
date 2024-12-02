@@ -36,6 +36,7 @@
 #' All these functions are generic, adequate for different (S3) classes representing the before cited
 #' GO term enrichment cross-tabulations.
 #'
-#' @docType "_PACKAGE"
+#' @docType package
 #' @name gosorensen
+"_PACKAGE"
 NULL

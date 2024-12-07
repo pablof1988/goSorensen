@@ -119,13 +119,13 @@
 #' @examples
 #' # Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
 #' # of GO terms in ontology BP at level 3.
-#' data(tab_atlas.sanger_BP3)
-#' ?tab_atlas.sanger_BP3
-#' duppSorensen(tab_atlas.sanger_BP3)
-#' dSorensen(tab_atlas.sanger_BP3) + qnorm(0.95) * seSorensen(tab_atlas.sanger_BP3)
+#' data(cont_atlas.sanger_BP4)
+#' ?cont_atlas.sanger_BP4
+#' duppSorensen(cont_atlas.sanger_BP4)
+#' dSorensen(cont_atlas.sanger_BP4) + qnorm(0.95) * seSorensen(cont_atlas.sanger_BP4)
 #' # Using the bootstrap approximation instead of the normal approximation to
 #' # the sampling distribution of (^d - d) / se(^d):
-#' duppSorensen(tab_atlas.sanger_BP3, boot = TRUE)
+#' duppSorensen(cont_atlas.sanger_BP4, boot = TRUE)
 #'
 #' # Contingency table as a numeric vector:
 #' duppSorensen(c(56, 1, 30, 47))

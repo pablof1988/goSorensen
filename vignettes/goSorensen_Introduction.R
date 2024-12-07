@@ -1,130 +1,283 @@
 ## ----style, echo = FALSE, results = 'asis'------------------------------------
 BiocStyle::markdown()
 
+## ----css, echo=FALSE, results='asis'------------------------------------------
+cat("
+<style>
+/* Ocultar inicialmente el contenido colapsable */
+.collapsible-content {
+    display: none;
+}
+
+/* Cambiar el puntero del ratón en los encabezados colapsables */
+.collapsible-header {
+    cursor: pointer;
+}
+
+.collapsible-header:hover {
+    text-decoration: underline;
+}
+
+/* Título de Nivel 1 */
+h1 {
+    font-size: 1.2em; 
+    color: #0e5775; 
+    font-weight: bold;
+}
+
+/* Título de Nivel 2 */
+h2.collapsible-header {
+    font-size: 1.1em; 
+    color: #12769f; 
+    margin-left: 20px; 
+    font-weight: bold;
+}
+
+/* Título de Nivel 3 */
+h3.collapsible-header {
+    font-size: 1.0em; 
+    color: #16a3dc; 
+    margin-left: 40px; 
+    font-weight: bold;
+}
+
+/* Mantén el contenido alineado con los encabezados */
+.collapsible-content {
+    margin-left: inherit;
+}
+
+/* Ajuste opcional: evitar modificar el tamaño o color del encabezado */
+</style>
+")
+
+## ----js, echo=FALSE, results='asis'-------------------------------------------
+cat("
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const excludedSections = ['Abstract', 'Package', 'Author Information', 'Date'];
+
+    // Busca los encabezados principales
+    const headers = document.querySelectorAll('h2, h3');
+    headers.forEach(header => {
+        const headerText = header.textContent.trim();
+
+        // Excluir encabezados específicos
+        if (excludedSections.some(section => headerText.includes(section))) {
+            return;
+        }
+
+        // Encuentra todo el contenido hasta el próximo encabezado
+        const content = [];
+        let next = header.nextElementSibling;
+        while (next && !/^H[1-6]$/.test(next.tagName)) {
+            content.push(next);
+            next = next.nextElementSibling;
+        }
+
+        // Crear contenedor colapsable
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'collapsible-content';
+        content.forEach(node => contentWrapper.appendChild(node));
+
+        // Agregar funcionalidad de colapsar/expandir
+        header.classList.add('collapsible-header');
+        header.addEventListener('click', () => {
+            const isVisible = contentWrapper.style.display === 'block';
+            contentWrapper.style.display = isVisible ? 'none' : 'block';
+        });
+
+        // Insertar el contenido después del encabezado
+        header.parentNode.insertBefore(contentWrapper, next);
+    });
+});
+</script>
+")
+
 ## ----setup, include=FALSE-----------------------------------------------------
-knitr::opts_chunk$set(dpi=25,fig.width=7)
+knitr::opts_chunk$set(
+  comment = ""
+)
 
 ## ----env, message = FALSE, warning = FALSE, echo = TRUE-----------------------
 library(goSorensen)
 
-## ---- eval=FALSE--------------------------------------------------------------
-#  if (!requireNamespace("goSorensen", quietly = TRUE)) {
-#      BiocManager::install("goSorensen")
-#  }
-#  library(goSorensen)
+## ----eval=FALSE---------------------------------------------------------------
+# if (!requireNamespace("goSorensen", quietly = TRUE)) {
+#     BiocManager::install("goSorensen")
+# }
+# library(goSorensen)
 
 ## -----------------------------------------------------------------------------
 data("allOncoGeneLists")
 
 ## -----------------------------------------------------------------------------
-length(allOncoGeneLists)
 sapply(allOncoGeneLists, length)
 
-# First 20 gene identifiers of gene lists Vogelstein and sanger:
-allOncoGeneLists[["Vogelstein"]][1:20]
-allOncoGeneLists[["sanger"]][1:20]
+# First 15 gene identifiers of gene lists atlas and sanger:
+allOncoGeneLists[["atlas"]][1:15]
+allOncoGeneLists[["sanger"]][1:15]
 
-## ---- message = FALSE, warning = FALSE, eval = FALSE--------------------------
-#  if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) {
-#      BiocManager::install("org.Hs.eg.db")
-#  }
-#  library(org.Hs.eg.db)
+## ----message = FALSE, warning = FALSE, eval = FALSE---------------------------
+# if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) {
+#     BiocManager::install("org.Hs.eg.db")
+# }
 
-## ---- message = FALSE, warning = FALSE, eval = TRUE---------------------------
+## ----message = FALSE, warning = FALSE, eval = TRUE----------------------------
 library(org.Hs.eg.db)
 
-## ---- message = FALSE, warning = FALSE, echo = TRUE---------------------------
+## ----message = FALSE, warning = FALSE, echo = TRUE----------------------------
 humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
 
-## ---- warning=FALSE, message=FALSE--------------------------------------------
-# Build the enrichment contingency table between gene lists Vogelstein and 
-# sanger for the MF ontology at GO level 5:
-enrichTab <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]],
-                              allOncoGeneLists[["sanger"]],
-                              geneUniverse = humanEntrezIDs, 
-                              orgPackg = "org.Hs.eg.db",
-                              onto = "MF", GOLevel = 5, 
-                              listNames = c("Vogelstein", "sanger"))
-enrichTab
+## ----echo=FALSE---------------------------------------------------------------
+options(max.print = 50)
 
-# Equivalence test for an equivalence (or negligibility) limit 0.2857
-testResult <- equivTestSorensen(enrichTab, d0 = 0.2857)
-testResult
-
-## -----------------------------------------------------------------------------
-equivTestSorensen(allOncoGeneLists[["Vogelstein"]],
-                  allOncoGeneLists[["sanger"]], d0 = 0.2857,
-                  geneUniverse = humanEntrezIDs, 
-                  orgPackg = "org.Hs.eg.db",
-                  onto = "MF", GOLevel = 5, 
-                  listNames = c("Vogelstein", "sanger"))
-
-## -----------------------------------------------------------------------------
-boot.testResult <- equivTestSorensen(enrichTab, d0 = 0.2857, boot = TRUE)
-boot.testResult
-
-## -----------------------------------------------------------------------------
-# The Sorensen dissimilarity from the contingency table:
-dSorensen(enrichTab)
-# The Sorensen dissimilarity from the gene lists:
-dSorensen(allOncoGeneLists[["Vogelstein"]], 
-          allOncoGeneLists[["sanger"]],
-          geneUniverse = humanEntrezIDs, 
-          orgPackg = "org.Hs.eg.db",
-          onto = "MF", GOLevel = 5, 
-          listNames = c("Vogelstein", "sanger"))
-
-# The standard error from the contingency table::
-seSorensen(enrichTab)
-# or from the gene lists:
-seSorensen(allOncoGeneLists[["Vogelstein"]], 
-           allOncoGeneLists[["sanger"]],
+## ----eval=TRUE----------------------------------------------------------------
+enrichedAtlas <- enrichedIn(allOncoGeneLists[["atlas"]],
            geneUniverse = humanEntrezIDs, 
            orgPackg = "org.Hs.eg.db",
-           onto = "MF", GOLevel = 5, 
-           listNames = c("Vogelstein", "sanger"))
-
-# Upper limit of the confidence interval from the contingency table:
-duppSorensen(enrichTab)
-duppSorensen(enrichTab, conf.level = 0.90)
-duppSorensen(enrichTab, conf.level = 0.90, boot = TRUE)
-
-# Upper limit of the confidence interval from the gene lists:
-duppSorensen(allOncoGeneLists[["Vogelstein"]], 
-             allOncoGeneLists[["sanger"]],    
-             geneUniverse = humanEntrezIDs, 
-             orgPackg = "org.Hs.eg.db", 
-             onto = "MF", GOLevel = 5, 
-             listNames = c("Vogelstein", "sanger"))
+           onto = "BP", GOLevel = 4)
+enrichedAtlas
 
 ## -----------------------------------------------------------------------------
-getDissimilarity(testResult)
-getSE(testResult)
-getPvalue(testResult)
-getTable(testResult)
-getUpper(testResult)
-
-# In the bootstrap approach, only these differ:
-getPvalue(boot.testResult)
-getUpper(boot.testResult)
-# (Only available for bootstrap tests) efective number of bootstrap resamples:
-getNboot(boot.testResult)
+fullEnrichedAtlas <- enrichedIn(allOncoGeneLists[["atlas"]],
+           geneUniverse = humanEntrezIDs, 
+           orgPackg = "org.Hs.eg.db",
+           onto = "BP", GOLevel = 4, 
+           onlyEnriched = FALSE)
+fullEnrichedAtlas
 
 ## -----------------------------------------------------------------------------
-upgrade(testResult, d0 = 0.4444, conf.level = 0.99, boot = TRUE)
+# number of GO terms in enrichedAtlas
+length(enrichedAtlas)
+
+# number of GO terms fullEnrichedAtlas
+length(fullEnrichedAtlas)
+
+## ----echo=FALSE---------------------------------------------------------------
+options(max.print = 100)
+
+## ----eval=FALSE---------------------------------------------------------------
+# enrichedInBP4 <- enrichedIn(allOncoGeneLists,
+#                                geneUniverse = humanEntrezIDs,
+#                                orgPackg = "org.Hs.eg.db",
+#                                onto = "BP", GOLevel = 4)
+# enrichedInBP4
+
+## ----echo=FALSE---------------------------------------------------------------
+data("enrichedInBP4")
+enrichedInBP4
+
+## ----eval=FALSE---------------------------------------------------------------
+# fullEnrichedInBP4 <- enrichedIn(allOncoGeneLists,
+#                                geneUniverse = humanEntrezIDs,
+#                                orgPackg = "org.Hs.eg.db",
+#                                onto = "BP", GOLevel = 4,
+#                                onlyEnriched = FALSE)
+# fullEnrichedInBP4
+
+## ----echo=FALSE---------------------------------------------------------------
+data("fullEnrichedInBP4")
+fullEnrichedInBP4
 
 ## -----------------------------------------------------------------------------
-totalDiss <- dSorensen(allOncoGeneLists, onto = "MF", GOLevel = 5, 
-          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-round(totalDiss, 2)
+# number of GO terms (rows) in enrichedInBP4
+nrow(enrichedInBP4)
+
+# number of GO terms (rows) in fullEnrichedInBP4
+nrow(fullEnrichedInBP4)
+
+## ----eval=FALSE---------------------------------------------------------------
+# cont_atlas.sanger_BP4 <- buildEnrichTable(allOncoGeneLists$atlas,
+#                                           allOncoGeneLists$sanger,
+#                                           listNames = c("atlas", "sanger"),
+#                                           geneUniverse = humanEntrezIDs,
+#                                           orgPackg = "org.Hs.eg.db",
+#                                           onto = "BP",
+#                                           GOLevel = 4)
+# cont_atlas.sanger_BP4
+
+## ----echo=FALSE---------------------------------------------------------------
+data("cont_atlas.sanger_BP4")
+cont_atlas.sanger_BP4
+
+## ----eval=FALSE---------------------------------------------------------------
+# cont_all_BP4 <- buildEnrichTable(allOncoGeneLists,
+#                                  geneUniverse = humanEntrezIDs,
+#                                  orgPackg = "org.Hs.eg.db",
+#                                  onto = "BP",
+#                                  GOLevel = 4)
+
+## ----eval=FALSE---------------------------------------------------------------
+# allContTabs <- allBuildEnrichTable(allOncoGeneLists,
+#                                    geneUniverse = humanEntrezIDs,
+#                                    orgPackg = "org.Hs.eg.db",
+#                                    ontos = c("BP", "CC", "MF"),
+#                                    GOLevels = 3:10)
+# allContTabs
+
+## ----eval=FALSE---------------------------------------------------------------
+# eqTest_atlas.sanger_BP4 <- equivTestSorensen(allOncoGeneLists$atlas,
+#                                              allOncoGeneLists$sanger,
+#                                              listNames = c("atlas", "sanger"),
+#                                              geneUniverse = humanEntrezIDs,
+#                                              orgPackg = "org.Hs.eg.db",
+#                                              onto = "BP", GOLevel = 4,
+#                                              d0 = 0.4444,
+#                                              conf.level = 0.95)
+# eqTest_atlas.sanger_BP4
+
+## ----echo=FALSE---------------------------------------------------------------
+data("eqTest_atlas.sanger_BP4")
+eqTest_atlas.sanger_BP4
 
 ## -----------------------------------------------------------------------------
-allTests <- equivTestSorensen(allOncoGeneLists, d0 = 0.2857, 
-                              onto = "MF", GOLevel = 5, 
-                              geneUniverse = humanEntrezIDs, 
-                              orgPackg = "org.Hs.eg.db")
-getPvalue(allTests)
-getDissimilarity(allTests, simplify = FALSE)
+equivTestSorensen(cont_atlas.sanger_BP4, 
+                  d0 = 0.4444, 
+                  conf.level = 0.95)
+
+## -----------------------------------------------------------------------------
+upgrade(eqTest_atlas.sanger_BP4, d0 = 0.2857, 
+        conf.level = 0.99, boot = TRUE)
+
+## ----eval=FALSE---------------------------------------------------------------
+# eqTest_all_BP4 <- equivTestSorensen(allOncoGeneLists,
+#                                     geneUniverse = humanEntrezIDs,
+#                                     orgPackg = "org.Hs.eg.db",
+#                                     onto = "BP",
+#                                     GOLevel = 4,
+#                                     d0 = 0.4444,
+#                                     conf.level = 0.95)
+
+## ----eval=FALSE---------------------------------------------------------------
+# eqTest_all_BP4 <- equivTestSorensen(cont_all_BP4,
+#                                     d0 = 0.4444,
+#                                     conf.level = 0.95)
+
+## ----echo=FALSE---------------------------------------------------------------
+data(eqTest_all_BP4)
+
+## ----echo=FALSE---------------------------------------------------------------
+options(digits = 4)
+
+## -----------------------------------------------------------------------------
+getDissimilarity(eqTest_all_BP4, simplify = FALSE)
+
+## -----------------------------------------------------------------------------
+getPvalue(eqTest_all_BP4, simplify = FALSE)
+
+## ----eval=FALSE---------------------------------------------------------------
+# allEqTests <- allEquivTestSorensen(allOncoGeneLists,
+#                                    geneUniverse = humanEntrezIDs,
+#                                    orgPackg = "org.Hs.eg.db",
+#                                    ontos = c("BP", "CC", "MF"),
+#                                    GOLevels = 3:10,
+#                                    d0 = 0.4444,
+#                                    conf.level = 0.95)
+
+## ----eval=FALSE---------------------------------------------------------------
+# allEqTests <- allEquivTestSorensen(allContTabs,
+#                                    d0 = 0.4444,
+#                                    conf.level = 0.95)
 
 ## ----sessionInfo--------------------------------------------------------------
 sessionInfo()

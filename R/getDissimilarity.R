@@ -30,54 +30,54 @@
 #' In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{seq.int(4,6)}.
 #'
 #' @examples
-#' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
-#' # 'waldman' and 'atlas', at level 4 of the BP ontology:
-#' data(waldman_atlas.BP.4)
-#' waldman_atlas.BP.4
-#' class(waldman_atlas.BP.4)
+#' # Dataset 'eqTest_atlas.sanger_BP4' contains the result of the equivalence test between gene lists
+#' # 'sanger' and 'atlas', at level 4 of the BP ontology:
+#' data(eqTest_atlas.sanger_BP4)
+#' eqTest_atlas.sanger_BP4
+#' class(eqTest_atlas.sanger_BP4)
 #' # This may correspond to the result of code like:
-#' # waldman_atlas.BP.4 <- equivTestSorensen(
-#' #   allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
+#' # eqTest_atlas.sanger_BP4 <- equivTestSorensen(
+#' #   allOncoGeneLists[["sanger"]], allOncoGeneLists[["atlas"]],
 #' #   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #   onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
+#' #   onto = "BP", GOLevel = 4, listNames = c("sanger", "atlas"))
 #' # (But results may vary according to GO updating)
-#' getDissimilarity(waldman_atlas.BP.4)
+#' getDissimilarity(eqTest_atlas.sanger_BP4)
 #'
 #' # All pairwise equivalence tests at level 4 of the BP ontology:
-#' data(BP.4)
-#' ?BP.4
-#' class(BP.4)
+#' data(eqTest_all_BP4)
+#' ?eqTest_all_BP4
+#' class(eqTest_all_BP4)
 #' # This may correspond to a call like:
-#' # BP.4 <- equivTestSorensen(allOncoGeneLists,
+#' # eqTest_all_BP4 <- equivTestSorensen(allOncoGeneLists,
 #' #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #' #                           onto = "BP", GOLevel = 4)
-#' getDissimilarity(BP.4)
-#' getDissimilarity(BP.4, simplify = FALSE)
+#' getDissimilarity(eqTest_all_BP4)
+#' getDissimilarity(eqTest_all_BP4, simplify = FALSE)
 #'
 #' # Equivalence test iterated over all GO ontologies and levels 3 to 10:
-#' data(cancerEquivSorensen)
-#' ?cancerEquivSorensen
-#' class(cancerEquivSorensen)
+#' data(allEqTests)
+#' ?allEqTests
+#' class(allEqTests)
 #' # This may correspond to code like:
 #' # (By default, the tests are iterated over all GO ontologies and for levels 3 to 10)
-#' # cancerEquivSorensen <- allEquivTestSorensen(allOncoGeneLists,
+#' # allEqTests <- allEquivTestSorensen(allOncoGeneLists,
 #' #                                             geneUniverse = humanEntrezIDs,
 #' #                                             orgPackg = "org.Hs.eg.db")
 #' # All Sorensen-Dice dissimilarities:
-#' getDissimilarity(cancerEquivSorensen)
-#' getDissimilarity(cancerEquivSorensen, simplify = FALSE)
+#' getDissimilarity(allEqTests)
+#' getDissimilarity(allEqTests, simplify = FALSE)
 #'
 #' # Dissimilarities only for some GO ontologies, levels or pairs of gene lists:
-#' getDissimilarity(cancerEquivSorensen, GOLevel = "level 6")
-#' getDissimilarity(cancerEquivSorensen, GOLevel = 6)
-#' getDissimilarity(cancerEquivSorensen, GOLevel = seq.int(4,6))
-#' getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
-#' getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
-#' getDissimilarity(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP")
-#' getDissimilarity(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
-#' getDissimilarity(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
-#'                  listNames = c("waldman", "sanger"))
-#' getDissimilarity(cancerEquivSorensen$BP$`level 4`)
+#' getDissimilarity(allEqTests, GOLevel = "level 6")
+#' getDissimilarity(allEqTests, GOLevel = 6)
+#' getDissimilarity(allEqTests, GOLevel = seq.int(4,6))
+#' getDissimilarity(allEqTests, GOLevel = "level 6", simplify = FALSE)
+#' getDissimilarity(allEqTests, GOLevel = "level 6", listNames = c("waldman", "sanger"))
+#' getDissimilarity(allEqTests, GOLevel = seq.int(4,6), onto = "BP")
+#' getDissimilarity(allEqTests, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
+#' getDissimilarity(allEqTests, GOLevel = "level 6", onto = "BP",
+#'                  listNames = c("atlas", "sanger"))
+#' getDissimilarity(allEqTests$BP$`level 4`)
 #'
 
 #'

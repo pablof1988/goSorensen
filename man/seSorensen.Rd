@@ -117,12 +117,12 @@ $lk$l1$t(k,1), $lk$l2$t(k,2), ..., $lk$l(k-1)t(k,k-1)
 
 }}
 \examples{
-# Gene lists 'atlas' and 'sanger' in 'Cangenes' dataset. Table of joint enrichment
-# of GO terms in ontology BP at level 3.
-data(tab_atlas.sanger_BP3)
-tab_atlas.sanger_BP3
-dSorensen(tab_atlas.sanger_BP3)
-seSorensen(tab_atlas.sanger_BP3)
+# Gene lists 'atlas' and 'sanger' in 'allOncoGeneLists' dataset. Table of joint enrichment
+# of GO terms in ontology BP at level 4.
+data(cont_atlas.sanger_BP4)
+cont_atlas.sanger_BP4
+dSorensen(cont_atlas.sanger_BP4)
+seSorensen(cont_atlas.sanger_BP4)
 
 # Contingency table as a numeric vector:
 seSorensen(c(56, 1, 30, 47))
@@ -139,16 +139,15 @@ seSorensen(c(56, 1, 30))
 #            onto = "BP", GOLevel = 3,
 #            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Essentially, the above code makes the same as:
-# ctab_atlas.sanger_BP3 <- buildEnrichTable(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
-#                                     onto = "BP", GOLevel = 3,
+# cont_atlas.sanger_BP4 <- buildEnrichTable(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
+#                                     onto = "BP", GOLevel = 4,
 #                                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# ctab_atlas.sanger_BP3
-# seSorensen(ctab_atlas.sanger_BP3)
-# tab_atlas.sanger_BP3 and ctab_atlas.sanger_BP3 have exactly the same result.
+# cont_atlas.sanger_BP4
+# seSorensen(cont_atlas.sanger_BP4)
 
 # All pairwise standard errors (quite time consuming):
 # seSorensen(allOncoGeneLists,
-#            onto = "BP", GOLevel = 3,
+#            onto = "BP", GOLevel = 4,
 #            geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 }
 \seealso{

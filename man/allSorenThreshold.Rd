@@ -99,11 +99,11 @@ Iterate \code{sorenThreshold} along the specified GO ontologies and GO levels
 #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #
 # Much faster:
-# Object allTabs of class "allTableList" contains all the pairwise contingency tables of
+# Object allContTabs of class "allTableList" contains all the pairwise contingency tables of
 # joint enrichment for the gene lists in \code{allOncoGeneLists}, obtained along all three GO
 # ontologies and along GO levels 3 to 10:
-data(allTabs)
-dSors <- allSorenThreshold(allTabs, ontos = c("MF", "BP"), GOLevels = seq.int(4,6))
+data(allContTabs)
+dSors <- allSorenThreshold(allContTabs, ontos = c("MF", "BP"), GOLevels = seq.int(4,6))
 dSors$BP$`level 5`
 
 }

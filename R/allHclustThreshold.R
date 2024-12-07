@@ -19,10 +19,10 @@
 #' # Object \code{allTabs} of class "allTableList" contains all the pairwise contingency tables of
 #' # joint enrichment for the gene lists in \code{allOncoGeneLists}, obtained along all three GO
 #' # ontologies and along GO levels 3 to 10:
-#' data(allTabs)
+#' data(allContTabs)
 #' # Compute the Sorensen-Dice equivalence threshold dissimilarity (only for the MF and CC
 #' # ontologies and from levels 4 to 6):
-#' dists <- allSorenThreshold(allTabs, ontos = c("MF", "CC"), GOLevels = seq.int(4,6))
+#' dists <- allSorenThreshold(allContTabs, ontos = c("MF", "CC"), GOLevels = seq.int(4,6))
 #' hclusts <- allHclustThreshold(dists)
 #' hclusts$MF$`level 6`
 #' plot(hclusts$MF$`level 6`)

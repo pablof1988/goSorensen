@@ -130,12 +130,12 @@
 #'
 #' @examples
 #' # Gene lists 'atlas' and 'sanger' in 'allOncoGeneLists' dataset. Table of joint enrichment
-#' # of GO terms in ontology BP at level 3.
-#' data(tab_atlas.sanger_BP3)
-#' tab_atlas.sanger_BP3
-#' equivTestSorensen(tab_atlas.sanger_BP3)
+#' # of GO terms in ontology BP at level 4.
+#' data(cont_atlas.sanger_BP4)
+#' cont_atlas.sanger_BP4
+#' equivTestSorensen(cont_atlas.sanger_BP4)
 #' # Bootstrap test:
-#' equivTestSorensen(tab_atlas.sanger_BP3, boot = TRUE)
+#' equivTestSorensen(cont_atlas.sanger_BP4, boot = TRUE)
 #'
 #' # Equivalence tests from scratch, directly from gene lists:
 #' # (These examples may be considerably time consuming due to many enrichment
@@ -150,27 +150,27 @@
 #' # Computing the equivalence test:
 #' # equivTestSorensen(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
 #' #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #                   onto = "BP", GOLevel = 3)
+#' #                   onto = "BP", GOLevel = 4)
 #' # Bootstrap instead of normal approximation test:
 #' # equivTestSorensen(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
 #' #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #                   onto = "BP", GOLevel = 3,
+#' #                   onto = "BP", GOLevel = 4,
 #' #                   boot = TRUE)
 #'
 #' # Essentially, the above code makes:
-#' # ctab_atlas.sanger_BP3 <- buildEnrichTable(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
+#' # ccont_atlas.sanger_BP4 <- buildEnrichTable(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
 #' #                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #                                   onto = "BP", GOLevel = 3)
-#' # ctab_atlas.sanger_BP3
-#' # equivTestSorensen(ctab_atlas.sanger_BP3)
-#' # equivTestSorensen(ctab_atlas.sanger_BP3, boot = TRUE)
+#' #                                   onto = "BP", GOLevel = 4)
+#' # ccont_atlas.sanger_BP4
+#' # equivTestSorensen(ccont_atlas.sanger_BP4)
+#' # equivTestSorensen(ccont_atlas.sanger_BP4, boot = TRUE)
 #' # (Note that building first the contingency table may be advantageous to save time!)
-#' # The object tab_atlas.sanger_BP3 and ctab_atlas.sanger_BP3 are exactly the same
+#' # The object cont_atlas.sanger_BP4 and ccont_atlas.sanger_BP4 are exactly the same
 #'
 #' # All pairwise equivalence tests:
 #' # equivTestSorensen(allOncoGeneLists,
 #' #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #                   onto = "BP", GOLevel = 3)
+#' #                   onto = "BP", GOLevel = 4)
 #'
 #'
 #' # Equivalence test on a contingency table represented as a numeric vector:

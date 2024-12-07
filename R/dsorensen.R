@@ -82,10 +82,10 @@
 #' @examples
 #' # Gene lists 'atlas' and 'sanger' in 'allOncoGeneLists' dataset. Table of joint enrichment
 #' # of GO terms in ontology BP at level 3.
-#' data(tab_atlas.sanger_BP3)
-#' tab_atlas.sanger_BP3
-#' ?tab_atlas.sanger_BP3
-#' dSorensen(tab_atlas.sanger_BP3)
+#' data(cont_atlas.sanger_BP4)
+#' cont_atlas.sanger_BP4
+#' ?cont_atlas.sanger_BP4
+#' dSorensen(cont_atlas.sanger_BP4)
 #'
 #' # Table represented as a vector:
 #' conti4 <- c(56, 1, 30, 471)
@@ -115,13 +115,13 @@
 #' #           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #' 
 #' # Essentially, the above code makes the same as:
-#' # tab_atlas.sanger_BP3 <- buildEnrichTable(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
-#' #                                     onto = "BP", GOLevel = 3,
+#' # cont_atlas.sanger_BP4 <- buildEnrichTable(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
+#' #                                     onto = "BP", GOLevel = 4,
 #' #                                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-#' # dSorensen(tab_atlas.sanger_BP3)
+#' # dSorensen(cont_atlas.sanger_BP4)
 #' # (Quite time consuming, all pairwise dissimilarities:)
 #' # dSorensen(allOncoGeneLists,
-#' #           onto = "BP", GOLevel = 3,
+#' #           onto = "BP", GOLevel = 4,
 #' #           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 #' @md
 

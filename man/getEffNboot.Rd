@@ -78,66 +78,66 @@ In the second case ("numeric"), the GO levels must be specified like\code{6} or 
 }}
 \examples{
 # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
-# 'waldman' and 'atlas', at level 4 of the BP ontology:
-data(waldman_atlas.BP.4)
-waldman_atlas.BP.4
-class(waldman_atlas.BP.4)
+# 'sanger' and 'atlas', at level 4 of the BP ontology:
+data(eqTest_atlas.sanger_BP4)
+eqTest_atlas.sanger_BP4
+class(eqTest_atlas.sanger_BP4)
 # This may correspond to the result of code like:
-# waldman_atlas.BP.4 <- equivTestSorensen(
-#   allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
+# eqTest_atlas.sanger_BP4 <- equivTestSorensen(
+#   allOncoGeneLists[["sanger"]], allOncoGeneLists[["atlas"]],
 #   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#   onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
+#   onto = "BP", GOLevel = 4, listNames = c("sanger", "atlas"))
 #
 # (But results may vary according to GO updating)
 
 # Not a bootstrap test, first upgrade to a bootstrap test:
-boot.waldman_atlas.BP.4 <- upgrade(waldman_atlas.BP.4, boot = TRUE)
+boot.sanger_atlas.BP.4 <- upgrade(eqTest_atlas.sanger_BP4, boot = TRUE)
 
-getEffNboot(waldman_atlas.BP.4)
-getEffNboot(boot.waldman_atlas.BP.4)
-getNboot(boot.waldman_atlas.BP.4)
+#getEffNboot(eqTest_atlas.sanger_BP4)
+getEffNboot(boot.sanger_atlas.BP.4)
+getNboot(boot.sanger_atlas.BP.4)
 
 # All pairwise equivalence tests at level 4 of the BP ontology
-data(BP.4)
-?BP.4
-class(BP.4)
+data(eqTest_all_BP4)
+?eqTest_all_BP4
+class(eqTest_all_BP4)
 # This may correspond to a call like:
-# BP.4 <- equivTestSorensen(allOncoGeneLists,
+# eqTest_all_BP4 <- equivTestSorensen(allOncoGeneLists,
 #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #                           onto = "BP", GOLevel = 4)
-boot.BP.4 <- upgrade(BP.4, boot = TRUE)
-getEffNboot(BP.4)
+boot.BP.4 <- upgrade(eqTest_all_BP4, boot = TRUE)
+getEffNboot(eqTest_all_BP4)
 getEffNboot(boot.BP.4)
 getNboot(boot.BP.4)
 getEffNboot(boot.BP.4, simplify = FALSE)
 
 # Bootstrap equivalence test iterated over all GO ontologies and levels 3 to 10.
-# data(cancerEquivSorensen)
-# ?cancerEquivSorensen
-# class(cancerEquivSorensen)
+# data(allEqTests)
+# ?allEqTests
+# class(allEqTests)
 # This may correspond to code like:
 # (By default, the tests are iterated over all GO ontologies and for levels 3 to 10)
-# cancerEquivSorensen <- allEquivTestSorensen(allOncoGeneLists,
+# allEqTests <- allEquivTestSorensen(allOncoGeneLists,
 #                                             geneUniverse = humanEntrezIDs,
 #                                             orgPackg = "org.Hs.eg.db",
 #                                             boot = TRUE)
-# boot.cancerEquivSorensen <- upgrade(cancerEquivSorensen, boot = TRUE)
+# boot.allEqTests <- upgrade(allEqTests, boot = TRUE)
 # Number of effective bootstrap replicates for all tests:
-# getEffNboot(boot.cancerEquivSorensen)
-# getEffNboot(boot.cancerEquivSorensen, simplify = FALSE)
+# getEffNboot(boot.allEqTests)
+# getEffNboot(boot.allEqTests, simplify = FALSE)
 
 # Number of effective bootstrap replicates for specific GO ontologies, levels or pairs
 # of gene lists:
-# getEffNboot(boot.cancerEquivSorensen, GOLevel = "level 6")
-# getEffNboot(boot.cancerEquivSorensen, GOLevel = 6)
-# getEffNboot(boot.cancerEquivSorensen, GOLevel = seq.int(4,6))
-# getEffNboot(boot.cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
-# getEffNboot(boot.cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
-# getEffNboot(boot.cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP")
-# getEffNboot(boot.cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
-# getEffNboot(boot.cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
-#             listNames = c("waldman", "sanger"))
-# getEffNboot(boot.cancerEquivSorensen$BP$`level 4`)
+# getEffNboot(boot.allEqTests, GOLevel = "level 6")
+# getEffNboot(boot.allEqTests, GOLevel = 6)
+# getEffNboot(boot.allEqTests, GOLevel = seq.int(4,6))
+# getEffNboot(boot.allEqTests, GOLevel = "level 6", simplify = FALSE)
+# getEffNboot(boot.allEqTests, GOLevel = "level 6", listNames = c("waldman", "sanger"))
+# getEffNboot(boot.allEqTests, GOLevel = seq.int(4,6), onto = "BP")
+# getEffNboot(boot.allEqTests, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
+# getEffNboot(boot.allEqTests, GOLevel = "level 6", onto = "BP",
+#             listNames = c("atlas", "sanger"))
+# getEffNboot(boot.allEqTests$BP$`level 4`)
 
 }
 \seealso{

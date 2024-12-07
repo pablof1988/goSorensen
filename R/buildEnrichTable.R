@@ -151,10 +151,10 @@ buildEnrichTable.character <- function(x, y, listNames = c("gene.list1", "gene.l
     colnames(enrich) <- listNames
   }
   tab <- table(enrich[,1], enrich[,2], dnn = dnnNames)
-  tab[1,1] <-  attr(enrich, "nTerms") - sum(tab[seq.int(2,4,1)])
   if (!all(dim(tab) == 2)) {
     tab <- completeTable(tab)
   }
+  tab[1,1] <-  attr(enrich, "nTerms") - sum(tab[seq.int(2,4,1)])
   tab <- tab[c(2,1),c(2,1)]
   if (check.table){
     nice2x2Table.table(tab)
@@ -166,11 +166,6 @@ buildEnrichTable.character <- function(x, y, listNames = c("gene.list1", "gene.l
   if (storeEnrichedIn) {
     attr(tab, "enriched") <- enrich
   }
-  # if(showEnrichedIn){
-  #   enrichCross <- cbind(enrich1, enrich2)
-  #   colnames(enrichCross) <- listNames
-  #   assign(paste0("enrichedIn_", onto, GOLevel), enrichCross, envir = .GlobalEnv)
-  # }
   return(tab)
 }
 
@@ -197,10 +192,10 @@ buildEnrichTable.list <- function(x,
     oneVsOthers <- lapply(seq_len(iLst1-1), function(iLst2, ...) {
       tab <- table(allEnrichs[,iLst1], allEnrichs[,iLst2],
                    dnn = paste0("Enriched_in_", lstNams[c(iLst1, iLst2)]))
-      tab[1,1] <-  attr(allEnrichs, "nTerms") - sum(tab[-1])
       if (!all(dim(tab) == 2)) {
         tab <- completeTable(tab)
       }
+      tab[1,1] <-  attr(allEnrichs, "nTerms") - sum(tab[-1])
       tab <- tab[c(2,1),c(2,1)]
       if (check.table){
         nice2x2Table.table(tab)

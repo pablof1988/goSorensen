@@ -128,10 +128,10 @@ humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
 # sorenThreshold(allOncoGeneLists,
 #                geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Much faster:
-# Object \code{allTabsBP.4} of class "tableList" contains all the pairwise contingency
+# Object \code{cont_all_BP4} of class "tableList" contains all the pairwise contingency
 # tables of joint enrichment for the gene lists in \code{allOncoGeneLists}, for the BP
 # GO ontology at level 4:
-data("allTabsBP.4")
-sorenThreshold(allTabsBP.4)
+data("cont_all_BP4")
+sorenThreshold(cont_all_BP4)
 
 }

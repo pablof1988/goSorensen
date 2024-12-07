@@ -7,6 +7,8 @@
 #' of function \code{nice2x2Table}.
 #' @param ontos "character", GO ontologies to analyse. Defaults to \code{c("BP", "CC", "MF")}.
 #' @param GOLevels "integer", GO levels to analyse inside each of these GO ontologies.
+#' @param storeEnrichedIn logical, for each ontology and level under study, the matrix of enriched
+#' (GO terms) x (gene lists) TRUE/FALSE values, must be stored in the result?
 #' @param trace Logical. If TRUE (default), the (usually very time consuming) process of function
 #' \code{allbuildEnrichTable} is traced along the specified GO ontologies and levels.
 #' @param ... extra parameters for function \code{buildEnrichTable}.
@@ -22,28 +24,43 @@
 #' @examples
 #' # This example is highly time-consuming. It scans two GO ontologies and three
 #' # GO levels inside them to obtain the contingency tables of joint enrichment.
-#' 
+#'
 #' # Obtaining ENTREZ identifiers for the gene universe of humans:
 #' # library(org.Hs.eg.db)
 #' # humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
-#' 
+#'
 #' # Gene lists to be explored for enrichment:
 #' # data(allOncoGeneLists)
-#' 
-#' # Computing Contingency Tables for all the possible pairwise comparisons for 
+#'
+#' # Computing Contingency Tables for all the possible pairwise comparisons for
 #' # the ontologies MF, BP, and the GO levels from 4 to 6:
-#' # allBuildEnrichTable(allOncoGeneLists,
-#' #                     geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #                     ontos = c("MF", "BP"), GOLevels = seq.int(4,6))
-#' # When the "ontos" and "GOLevels" arguments are not supplied, the function computes 
-#' # by default every possible contingency table between the lists being compared for 
-#' # the three ontologies (BP, CC, MF) and GO levels from 3 to 10. 
+#' # someOntosAndLevels <- allBuildEnrichTable(allOncoGeneLists,
+#' #                                           geneUniverse = humanEntrezIDs, 
+#' #                                           orgPackg = "org.Hs.eg.db",
+#' #                                           ontos = c("MF", "BP"), 
+#' #                                           GOLevels = seq.int(4,6))
+#' # someOntosAndLevels$BP$`level 4`
+#' # attr(someOntosAndLevels$BP$`level 4`, "enriched")
+#' #
+#' # To avoid storage-consuming redundancies, the table of GO terms x gene lists 
+#' # enrichment is not stored for the full set of gene list pairs at each 
+#' # ontology and level
+#' # someOntosAndLevels$BP$`level 4`$Vogelstein
+#' # attr(someOntosAndLevels$BP$`level 4`$Vogelstein, "enriched")
+#' # someOntosAndLevels$BP$`level 4`$Vogelstein$atlas
+#' # attr(someOntosAndLevels$BP$`level 4`$Vogelstein$atlas, "enriched")
+#' #
+#' # When the "ontos" and/or "GOLevels" arguments are not supplied, the function 
+#' # computes by default every possible contingency table between the lists 
+#' # being compared for the three ontologies (BP, CC, MF) and/or GO levels from
+#' # 3 to 10.
 #'
 #' @export
 allBuildEnrichTable <- function(x, check.table = TRUE,
                                 ontos = c("BP", "CC", "MF"),
                                 GOLevels = seq.int(3,10),
-                                trace = TRUE, 
+                                storeEnrichedIn = TRUE,
+                                trace = TRUE,
                                 ...)
 {
   allOntos <- lapply(ontos, function(onto) {
@@ -55,7 +72,9 @@ allBuildEnrichTable <- function(x, check.table = TRUE,
         cat("\n Level ", lev, "\n")
       }
       result <- buildEnrichTable(x, check.table = check.table,
-                                 onto = onto, GOLevel = lev, ...)
+                                 onto = onto, GOLevel = lev,
+                                 storeEnrichedIn = storeEnrichedIn,
+                                 ...)
       return(result)
     })
     names(thisOnto) <- paste("level", GOLevels)

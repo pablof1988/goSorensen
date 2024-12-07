@@ -41,39 +41,39 @@ equivalence test for new values of any of the parameters \code{d0} or \code{conf
 
 }}
 \examples{
-# Result of the equivalence test between gene lists 'waldman' and 'atlas', in dataset
+# Result of the equivalence test between gene lists 'sanger' and 'atlas', in dataset
 # 'allOncoGeneLists', at level 4 of the BP ontology:
-data(waldman_atlas.BP.4)
-waldman_atlas.BP.4
-class(waldman_atlas.BP.4)
+data(eqTest_atlas.sanger_BP4)
+eqTest_atlas.sanger_BP4
+class(eqTest_atlas.sanger_BP4)
 # This may correspond to the result of code like:
 # data(allOncoGeneLists)
 # library(org.Hs.eg.db)
 # humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
-# waldman_atlas.BP.4 <- equivTestSorensen(
-#   allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
+# eqTest_atlas.sanger_BP4 <- equivTestSorensen(
+#   allOncoGeneLists[["sanger"]], allOncoGeneLists[["atlas"]],
 #   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#   onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
-upgrade(waldman_atlas.BP.4, d0 = 1/(1 + 10/9)) # d0 = 0.4737
-upgrade(waldman_atlas.BP.4, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
-upgrade(waldman_atlas.BP.4, d0 = 1/(1 + 2*1.25), conf.level = 0.99)
+#   onto = "BP", GOLevel = 4, listNames = c("sanger", "atlas"))
+upgrade(eqTest_atlas.sanger_BP4, d0 = 1/(1 + 10/9)) # d0 = 0.4737
+upgrade(eqTest_atlas.sanger_BP4, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
+upgrade(eqTest_atlas.sanger_BP4, d0 = 1/(1 + 2*1.25), conf.level = 0.99)
 
 # All pairwise equivalence tests at level 4 of the BP ontology
-data(BP.4)
-?BP.4
-class(BP.4)
+data(eqTest_all_BP4)
+?eqTest_all_BP4
+class(eqTest_all_BP4)
 # This may correspond to a call like:
 # data(allOncoGeneLists)
 # library(org.Hs.eg.db)
 # humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
-# BP.4 <- equivTestSorensen(allOncoGeneLists,
+# eqTest_all_BP4 <- equivTestSorensen(allOncoGeneLists,
 #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #                           onto = "BP", GOLevel = 4)
-upgrade(BP.4, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
+upgrade(eqTest_all_BP4, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
 
-data(cancerEquivSorensen)
-?cancerEquivSorensen
-class(cancerEquivSorensen)
-upgrade(cancerEquivSorensen, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
+data(allEqTests)
+?allEqTests
+class(allEqTests)
+upgrade(allEqTests, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
 
 }

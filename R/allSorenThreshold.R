@@ -61,7 +61,10 @@ allSorenThreshold.list <- function(x, geneUniverse, orgPackg,
                                    trace = TRUE, alpha = 0.05, precis = 0.001,
                                    ...)
 {
-  tabs <- allBuildEnrichTable(x, ontos = ontos, GOLevels = GOLevels, trace = trace, ...)
+  tabs <- allBuildEnrichTable(x, geneUniverse = geneUniverse, orgPackg = orgPackg, 
+                              boot = boot, nboot = nboot, boot.seed = boot.seed, 
+                              ontos = ontos, GOLevels = GOLevels, trace = trace, 
+                              alpha = alpha, precis = precis, ...)
   return(allSorenThreshold.allTableList(tabs, ontos = ontos, GOLevels = GOLevels, trace = trace))
 }
 

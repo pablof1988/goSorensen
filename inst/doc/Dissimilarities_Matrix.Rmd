@@ -293,7 +293,7 @@ boot_dissMatrx_BP4
 
 An important and useful attribute of this dissimilarity matrix (whether calculated using the normal or bootstrap distribution) is `attr(, "all2x2Tables")`, which contains the enrichment contingency tables for all possible pairs of lists among the set of gene lists being compared. These contingency tables, in turn, include the matrix of GO terms enrichment within the attribute `attr(, "enriched")`.
 
-For more details about the matrix of GO terms enrichment, the enrichment contingency tables and the equivalence tests (including computation, outputs, attributes, etc.), refer to the vignette __An Introduction to the goSorensen R Package__.
+For more details about the matrix of GO terms enrichment, the enrichment contingency tables and the equivalence tests (including computation, outputs, attributes, etc.), refer to the vignette [An Introduction to the goSorensen R Package](goSorensen_Introduction.html).
 
 #### NOTE: {.unnumbered}
 To provide users with a quick visualization, the `goSorensen` package includes the objects `cont_all_BP4` and `dismatBP4`, which can be accessed using `data(cont_all_BP4)` and `data(dismatBP4)`. 

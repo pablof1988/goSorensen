@@ -5,8 +5,8 @@
 #' identifiers.
 #' In the "list" interface, each element of the list must be a "character" vector of
 #' Entrez identifiers
-#' @param orgPackg A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details see \href{../doc/README.html}{README File}.
-#' @param geneUniverse character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details see \href{../doc/README.html}{README File}.
+#' @param orgPackg A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.
+#' @param geneUniverse character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.
 #' @param onto string describing the ontology. Belongs to c('BP', 'MF', 'CC')
 #' @param GOLevel GO level, an integer
 #' @param pAdjustMeth string describing the adjust method. Belongs to c('BH', 'BY', 'Bonf')

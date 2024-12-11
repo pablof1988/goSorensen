@@ -11,8 +11,8 @@
 #' @param listNames a character(2) with the gene lists names originating the cross-tabulated
 #' enrichment frequencies. Only in the "character" or default interface.
 #' @param check.table Logical The resulting table must be checked. Defaults to TRUE.
-#' @param orgPackg A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details see \href{../doc/README.html}{README File}.
-#' @param geneUniverse character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details see \href{../doc/README.html}{README File}.
+#' @param orgPackg A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.
+#' @param geneUniverse character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.
 #' @param onto string describing the ontology. Either "BP", "MF" or "CC".
 #' @param GOLevel An integer, the GO ontology level.
 #' @param storeEnrichedIn logical, the matrix of enriched (GO terms) x (gene lists) TRUE/FALSE values,

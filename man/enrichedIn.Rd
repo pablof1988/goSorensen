@@ -63,9 +63,9 @@ Entrez identifiers}
 
 \item{...}{Additional parameters}
 
-\item{geneUniverse}{character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details see \href{../doc/README.html}{README File}.}
+\item{geneUniverse}{character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
 
-\item{orgPackg}{A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details see \href{../doc/README.html}{README File}.}
+\item{orgPackg}{A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
 
 \item{onto}{string describing the ontology. Belongs to c('BP', 'MF', 'CC')}
 

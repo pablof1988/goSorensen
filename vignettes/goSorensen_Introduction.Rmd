@@ -2,7 +2,7 @@
 title: "An Introduction to goSorensen R-Package"
 author:
 - name: Jordi Ocaña
-  email: jocana@ub.edu
+  email: jocana@ateneu.ub.edu
   affiliation: Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona
 - name: Pablo Flores
   email: p_flores@espoch.edu.ec

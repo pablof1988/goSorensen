@@ -5,7 +5,7 @@ author:
   email: p_flores@espoch.edu.ec
   affiliation: Escuela Superior Politécnica de Chimborazo (ESPOCH), Facultad de Ciencias, Carrera de Estadística.
 - name: Jordi Ocaña
-  email: jocana@ub.edu
+  email: jocana@ateneu.ub.edu
   affiliation: Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona
 header-includes:
   -\usepackage{amsmath}

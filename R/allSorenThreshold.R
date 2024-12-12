@@ -65,7 +65,10 @@ allSorenThreshold.list <- function(x, geneUniverse, orgPackg,
                               boot = boot, nboot = nboot, boot.seed = boot.seed, 
                               ontos = ontos, GOLevels = GOLevels, trace = trace, 
                               alpha = alpha, precis = precis, ...)
-  return(allSorenThreshold.allTableList(tabs, ontos = ontos, GOLevels = GOLevels, trace = trace))
+  return(allSorenThreshold.allTableList(tabs, geneUniverse = geneUniverse, orgPackg = orgPackg,
+                                        boot = boot, nboot = nboot, boot.seed = boot.seed,
+                                        ontos = ontos, GOLevels = GOLevels, trace = trace,
+                                        alpha = alpha, precis = precis, ...))
 }
 
 #' @describeIn allSorenThreshold S3 method for class "allTableList"

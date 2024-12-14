@@ -1,5 +1,5 @@
 ---
-title: "An Irrelevance - Threshold Matrix of Dissimilarities."
+title: "Working with the Irrelevance-threshold Matrix of Dissimilarities."
 author:
 - name: Pablo Flores
   email: p_flores@espoch.edu.ec
@@ -12,15 +12,17 @@ header-includes:
   -\usepackage{mathtools}
 package: goSorensen
 abstract: >
-  This vignette illustrates the calculation, visualisation, and interpretation of a dissimilarity matrix between gene lists, based on the irrelevance threshold that makes them equivalent. This matrix is derived from the statistical method implemented in `goSorensen` to identify significant equivalence between two or more gene lists, based on Sorensen dissimilarity and joint GO term enrichment frequencies.
+  This vignette illustrates the calculation, visualisation, and interpretation of a dissimilarity matrix between gene lists. It is based on the concept of "irrelevance threshold", the equivalence limit that would declare them equivalent. This matrix is derived from the statistical method implemented in `goSorensen` to test for equivalence between two or more gene lists, based on the Sorensen--Dice dissimilarity and joint GO term enrichment frequencies.
   
 
-  We begin with a brief introduction to the meaning of the matrix, followed by an explanation of the process for calculating it. Then, we visualize the dissimilarity matrix using interpretable statistical graphics, such as a dendrogram and the biplot generated from a multidimensional scaling (MDS) analysis. Characterizing the dimensions of the MDS biplot allows us to identify the biological functions (GO terms) associated with the observed dissimilarities and, consequently, with the formation of clusters. 
+  We begin with a brief introduction to the meaning of the matrix, followed by an explanation of the process for calculating it. Then, we visualize the dissimilarity matrix using interpretable statistical graphics, such as a dendrogram and the biplot generated from a multidimensional scaling (MDS) analysis. Characterizing the dimensions of the MDS biplot allows us to identify the biological functions (GO terms) associated with the observed dissimilarities.
+
 output:
   BiocStyle::html_document:
     toc: false
+bibliography: references.bib
 vignette: >
-  %\VignetteIndexEntry{An Irrelevance Threshold Matrix of Dissimilarities.}
+  %\VignetteIndexEntry{Working with te Irrelevance-threshold Matrix of Dissimilarities.}
   %\VignetteEngine{knitr::rmarkdown}
   %%\VignetteKeywords{GO, dissimilarities, lists, genes}
   %\VignetteEncoding{UTF-8}
@@ -189,18 +191,18 @@ library(goSorensen)
 	\label{it-diss}
 \end{equation} 
 
-Given a set of lists $L_1, L_2, \dots, L_s$  to be compared, the matrix  $\mathfrak{D}$ contains the dissimilarities $\mathfrak{d}_{ij}$, which quantify how different or distant the pairs of lists  $L_i$ and $L_j$ are. These dissimilarities are computed based on the irrelevance threshold that makes the compared lists significantly equivalent (in the statistical sense), which means that the values in this matrix have validity in the inferential realm rather than merely in the descriptive realm.
+Given $s$ gene lists, $L_1, L_2, \dots, L_s$, each element $\mathfrak{d}_{ij}$ of the matrix  $\mathfrak{D}$ tries to quantify how different or distant are the lists  $L_i$ and $L_j$ in the following terms: "A higher equivalence threshold than this would cause these lists to be declared equivalent". These dissimilarities are based on the irrelevance (equivalence) threshold that would make them statistically significant, in the sense of the equivalence tests introduced in @flores2022equivalence: "[**_An equivalence test between features lists, based on the Sorensen - Dice index and the joint frequencies of GO term enrichment_**](https://rdcu.be/cOISz)." This concept was introduced in an attempt to give this dissimilarity a more inferential meaning, not merely descriptive as could be the Sorensen--Dice dissimilarity used directly.
 
-We propose the following algorithm to determine the matrix
+But analyzing simultaneously $s$ gene lists poses a multiple testing problem, so the algorithm to obtain the matrix should be expressed as:
 
-- Step 1. Establish $h = s(s-1)$ equivalence hypothesis tests. Each test $ET_I$ (with $I = 1, \ldots, h$) compares some specific pair of lists $L_{i}, L_{j}$ (with $i, j = 1, 2, \ldots, s$).
+- Step 1. Establish $h = s(s-1) / 2$ equivalence hypothesis tests. Each test $ET_I$ (with $I = 1, \ldots, h$) compares the pair of lists $L_{i}, L_{j}$ (with $i, j = 1, 2, \ldots, s, i \neq j$). Equivalence is declared when the null hypothesis of non-equivalence is rejected.
 
-- Step 2. Let $\mathfrak{d}_h$ be the smallest irrelevance limit that makes all the null hypotheses corresponding to the $h$ equivalence tests be rejected (All the $s$ lists are equivalent):
-	$$\mathfrak{d}_h = \text{min} \left(\mathfrak{d}: P_v(\mathfrak{d})_{(I)} \leq \frac{\alpha}{h+1-I}; \hspace{0.5cm} I=1, 2, \ldots,h \right).$$
+- Step 2. According to a criterion of type I error control in multiple testing, let $\mathfrak{d}_h$ be the smallest irrelevance limit for which all $h$ null hypothesis are rejected. The default adjusting criterion in `goSorensen` is the Holm's method ("holm" option in the R function `p.adjust`). So, $\mathfrak{d}_h$ is computed as:
+	$$\mathfrak{d}_h = \text{min} \left(\mathfrak{d}: P_{(I)}(\mathfrak{d}) \leq \frac{\alpha}{h+1-I}; \hspace{0.5cm} I=1, 2, \ldots,h \right).$$
 	
-- Step 3. Obtain $\mathfrak{d}_h$ and use it as the irrelevance limit between the lists $L_i, L_j$ corresponding to the last position in a vector of ordered p-values $P_v(\mathfrak{d}_{h})_{(I)}$, i.e. $\mathfrak{d}_{ij} = \mathfrak{d}_{h}.$
+- Step 3. Use $\mathfrak{d}_h$ as the irrelevance limit dissimilarity between the lists $L_i, L_j$ corresponding to the last position in the vector of ordered p-values $P_{(1)}(\mathfrak{d}_{h}) \le \ldots \le P_{(h)}(\mathfrak{d}_{h})$, i.e. $\mathfrak{d}_{ij} = \mathfrak{d}_{h}.$
 
-- Step 4. Set $h = h-1$, excluding the comparison between the lists $L_i, L_j$ from Step $3$, and go back to Step $2$ until $h=0$.
+- Step 4. Set $h = h - 1$, excluding the comparison between the lists $L_i, L_j$ from Step $3$, and go back to Step $2$ until $h=0$.
 
 ## Data Used in this Vignette.
 The dataset used in this vignette, `allOncoGeneLists`, is derived from gene lists compiled at <http://www.bushmanlab.org/links/genelists>, which contains an extensive collection of gene lists associated with cancer. The `goSorensen` package loads this dataset using the command `data(allOncoGeneLists)`:
@@ -218,7 +220,7 @@ sapply(allOncoGeneLists, length)
 ```
 
 
-# Performing the Irrelevance - Threshold Matrix of Dissimilarities. 
+# Obtaining the Irrelevance-threshold Matrix of Dissimilarities. 
 
 ## For a Specific Ontology and one GO level.
 One method to compute the dissimilarity matrix $\mathfrak{D}$ for a given ontology and level (e.g., ontology BP, level 4) is to directly input the gene lists into the `sorenThreshold` function:
@@ -264,7 +266,7 @@ dissMatrx_BP4 <- sorenThreshold(cont_all_BP4,
 dissMatrx_BP4
 ```
 
-Both alternatives yield the same results; however, the latter approach (whenever possible) is much faster, as it eliminates the internal time required to generate the contingency tables since they are provided as arguments to the function `sorenThreshold`.
+Both alternatives yield the same results; however, the latter approach (whenever possible, if all contingency tables are already available) is much faster, as it eliminates the internal time required to generate the contingency tables since they are provided as arguments to the function `sorenThreshold`.
 
 The dissimilarity matrix `dissMatrx_BP4` is obtained using equivalence tests based on the normal asymptotic distribution. If the user prefers the tests to be based on the bootstrap distribution, they should set the argument `boot = TRUE` (the default is `FALSE`), as shown below:
 ```{r, eval=FALSE}
@@ -291,7 +293,7 @@ boot_dissMatrx_BP4 <- sorenThreshold(cont_all_BP4,
 boot_dissMatrx_BP4
 ```
 
-An important and useful attribute of this dissimilarity matrix (whether calculated using the normal or bootstrap distribution) is `attr(, "all2x2Tables")`, which contains the enrichment contingency tables for all possible pairs of lists among the set of gene lists being compared. These contingency tables, in turn, include the matrix of GO terms enrichment within the attribute `attr(, "enriched")`.
+An important and useful attribute of this dissimilarity matrix (whether calculated using the normal or bootstrap distribution) is `attr(, "all2x2Tables")`, which contains the enrichment contingency tables for all possible pairs of lists among the set of gene lists being compared. These contingency tables, in turn, include the matrix of GO terms enrichment in its attribute `attr(, "enriched")`.
 
 For more details about the matrix of GO terms enrichment, the enrichment contingency tables and the equivalence tests (including computation, outputs, attributes, etc.), refer to the vignette [An Introduction to the goSorensen R Package](goSorensen_Introduction.html).
 
@@ -302,7 +304,7 @@ Note that gene lists, GO terms, and Bioconductor may change over time. So, consi
 
 
 ## For More than One Ontology and GO Level.
-When we want to calculate dissimilarity matrices for multiple ontologies and GO levels, we use the `allSorenThreshold` function. The first option is to provide the lists of genes to compare as the main input, as shown below:
+To calculate dissimilarity matrices for multiple ontologies and GO levels, we use the `allSorenThreshold` function. The first option is to provide the lists of genes to compare as the main input, as shown below:
 
 ```{r, warning=FALSE, message=FALSE, comment=NA, eval=FALSE}
 # For example, for GO levels 3 to 10 and for the ontologies BP, CC and MF:
@@ -315,7 +317,7 @@ allDissMatrx <- allSorenThreshold(allOncoGeneLists,
 ```
 
 
-Another option is previously compute all the enrichment contingency tables from `allOncoGeneLists` using the function `allBuildEnrichTable.` The result is an object of class `allTableList`, from which we can obtain the dissimilarity matrix as follows:
+Another option is previously computing all the enrichment contingency tables from `allOncoGeneLists` using the function `allBuildEnrichTable.` The result is an object of class `allTableList`, from which we can obtain the dissimilarity matrix as follows:
 
 ```{r, warning=FALSE, message=FALSE, comment=NA, eval=FALSE}
 # Previously compute the enrichment contingency tables:
@@ -337,7 +339,7 @@ Remember that, by default, these matrices are obtained from equivalence tests ba
 Given the large number of outcomes produced in `allDissMatrx`, displaying all of them is not feasible. However, for a quick visualization, the `goSorensen` package includes the object `allDissMatrx`, which can be accessed using `data(allDissMatrx)`.
 
 
-# Representing a Dissimilarity Matrix in Statistic Graphs.
+# Representing a Dissimilarity Matrix in Statistical Graphs.
 ## Dendrogram.
 Below, we present a dendrogram of the dissimilarity matrix for the specific case of the `allOncoGeneLists` dataset, for the BP ontology and GO Level 4, which was computed in Section 2.1 of this vignette (object `dissMatrx_BP4`):
 
@@ -346,13 +348,13 @@ clust.threshold <- hclustThreshold(dissMatrx_BP4)
 plot(clust.threshold)
 ```
 
-Since the dissimilarities used to form the biplot are based on an inferential measure of significant equivalence, we can deduce that the closer two or more lists are (forming groups), the stronger the evidence suggesting that these lists are functionally similar.
+Since the dissimilarities used to form the biplot are based on an inferential measure of significant equivalence, we can deduce that the closer two or more lists are (forming groups), the stronger the evidence suggesting that these lists are functionally similar, and the opposite for distant lists.
 
 For example, in this particular dendrogram, two groups appear to be formed, as two pairs of lists are very close to each other. The first group consists of sanger and vogelstein, while the second group includes miscellaneous and waldman. So, it can then be inferred that the pairs of lists within each group provide stronger evidence of equivalence. 
 
 ## MDS-Biplot.
 
-Multidimensional Scaling (MDS) transforms the initial dissimilarity matrix into Euclidean distances, preserving as much of the original variability as possible. In this case, we compute the first two dimensions, which capture the highest proportion of the original variability. Similar to the dendrogram, we use the dissimilarity matrix `dissMatrx_BP4` computed in Section 2.1 of this vignette:
+Multidimensional Scaling (MDS) transforms the initial dissimilarity matrix into Euclidean distances, preserving as much of the original variability as possible. In this case, we compute the first two dimensions, which capture the highest proportion of the original variability. Like in the dendrogram example, we use the dissimilarity matrix `dissMatrx_BP4` computed in Section 2.1 of this vignette:
 
 ```{r, warning=FALSE, message=FALSE}
 # multidimensional scaling analysis:
@@ -376,13 +378,11 @@ graph
 
 The biplot suggests that the closest lists (clusters) are Waldman-Vogelstein and Sanger-Miscellaneous; therefore, there is stronger evidence for equivalence among these lists.
 
-Characterizing the axes of the biplot on which these groups are formed is of great interest, as it can help determine the biological functions associated with the formation of these groups. Specifically, it allows us to identify the GO terms involved in the evidence supporting the biological similarity between the compared gene lists.
-
-In the following section, we propose a 5-step procedure to characterize the axes of the biplot and identify the GO terms associated with the formation of these groups.
+Characterizing the axes of the biplot on which these groups are formed is of great interest, as it can help determine the biological functions associated with the formation of these groups. Specifically, it allows us to identify the GO terms involved in the evidence supporting the biological similarity between the compared gene lists. In the following section, we propose a 5-step procedure to characterize the axes of the biplot and identify the GO terms associated with the formation of these groups. This is a very preliminary version of a work in progress.
 
 # Characterizing MDS-Biplot Dimensions.
 
-In this vignette, we will apply the 5-step procedure to Dimension 1. However, the technique would be the same if we were to apply it to Dimension 2.
+In this vignette, we will apply the 5-step procedure to Dimension 1. However, the technique would be the same if we were to apply it to Dimension 2 or any other dimension.
 
 ## Step 1. Split the biplot axis:  
 Split the axis (in this case, Dimension 1) in three parts to identify the lists located at the extremes. 
@@ -510,10 +510,5 @@ datatable(data.frame(GO_term = names(result),
           filter = "top", rownames = FALSE)
 ```
 
-## Session information. {.unnumbered}
 
-All software and respective versions used to produce this document are listed below.
-
-```{r sessionInfo}
-sessionInfo()
-```
+# References {.unnumbered}

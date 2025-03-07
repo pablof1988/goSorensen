@@ -204,12 +204,16 @@ getUpper(bootTst)
 # #                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # # allPairDiss
 #
-# # Still time consuming but faster: build all tables computing in parallel:
+# # Still time consuming but potentially faster: compute in parallel (more precisely,
+# # build all enrichment tables in parallel):
 # allPairDiss <- dSorensen(allOncoGeneLists,
-#                          onto = "BP", GOLevel = 5,
+#                          onto = "BP", GOLevel = 4,
 #                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #                          parallel = TRUE)
 # allPairDiss
+# # Not always parallelization results in speed-up, take into account the trade-off between
+# # parallelization initialization and possible gain in speed. For a few gene lists (like
+# # in this example, 7 lists, a negative speed-up will be the most common scenario)
 
 # Standard errors:
 # seSorensen(allOncoGeneLists,

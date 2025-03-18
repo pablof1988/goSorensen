@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2025-03-08" />
+<meta name="date" content="2025-03-18" />
 
 <title>An Introduction to goSorensen R-Package</title>
 
@@ -737,12 +737,12 @@ function toggle_visibility(id1) {
 <p class="author-name">Jordi Ocaña<span class="affil-mark">1*</span> and Pablo Flores<span class="affil-mark">2**</span></p>
 <p class="author-affiliation"><span class="affil-mark">1</span>Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona<br><span class="affil-mark">2</span>Escuela Superior Politécnica de Chimborazo (ESPOCH), Facultad de Ciencias, Carrera de Estadística.</p>
 <p class="author-email"><span class="affil-mark">*</span><a href="mailto:jocana@ateneu.ub.edu">jocana@ateneu.ub.edu</a><br><span class="affil-mark">**</span><a href="mailto:p_flores@espoch.edu.ec">p_flores@espoch.edu.ec</a></p>
-<h4 class="date">8 March 2025</h4>
+<h4 class="date">18 March 2025</h4>
 <h4 class="abstract">Abstract</h4>
 <p>This vignette provides an introduction to <a href="https://bioconductor.org/packages/release/bioc/html/goSorensen.html"><strong><em>goSorensen</em></strong></a> R-package. The main goal of goSorensen is to implement an inferential statistical method to compare gene lists (to prove equivalence, in the sense of equivalence tests, e.g. <span class="citation">Wellek (<a href="#ref-wellek2002testing">2010</a>)</span>) in terms of their biological significance as expressed in the Gene Ontology GO. This method is presented in <span class="citation">Flores et al. (<a href="#ref-flores2022equivalence">2022</a>)</span>: “<a href="https://rdcu.be/cOISz"><strong><em>An equivalence test between features lists, based on the Sorensen - Dice index and the joint frequencies of GO term enrichment</em></strong></a>.”</p>
 <p>For a given ontology (BP, CC, or MF) and GO level, both enriched and non-enriched GO terms are identified for the compared lists. This enrichment can be summarized in contingency tables for each pair of compared lists. The dissimilarity between gene lists is assessed using a measure based on the Sorensen-Dice index. The fundamental guiding principle is that two gene lists are considered similar if they share a significant proportion of common enriched GO terms.</p>
 <h4 class="package">Package</h4>
-<p>goSorensen 1.8.1</p>
+<p>goSorensen 1.9.0</p>
 
 </div>
 
@@ -1352,7 +1352,7 @@ locale:
 [3] LC_MONETARY=English_Canada.utf8 LC_NUMERIC=C                   
 [5] LC_TIME=English_Canada.utf8    
 
-time zone: Europe/Paris
+time zone: America/Coral_Harbour
 tzcode source: internal
 
 attached base packages:
@@ -1363,7 +1363,7 @@ other attached packages:
  [1] org.Hs.eg.db_3.20.0  DT_0.33              GO.db_3.20.0        
  [4] AnnotationDbi_1.68.0 IRanges_2.40.0       S4Vectors_0.44.0    
  [7] Biobase_2.66.0       BiocGenerics_0.52.0  ggrepel_0.9.6       
-[10] ggplot2_3.5.1        BiocStyle_2.34.0     goSorensen_1.8.1    
+[10] ggplot2_3.5.1        BiocStyle_2.34.0     goSorensen_1.9.0    
 
 loaded via a namespace (and not attached):
   [1] RColorBrewer_1.1-3      rstudioapi_0.17.1       jsonlite_1.8.9         

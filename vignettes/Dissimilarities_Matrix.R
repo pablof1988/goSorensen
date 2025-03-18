@@ -183,7 +183,7 @@ dissMatrx_BP4
 # boot_dissMatrx_BP4
 
 ## ----echo=FALSE---------------------------------------------------------------
-sorenThreshold(cont_all_BP4, boot = T, trace = FALSE)
+sorenThreshold(cont_all_BP4, boot = TRUE, trace = FALSE)
 
 ## -----------------------------------------------------------------------------
 boot_dissMatrx_BP4 <- sorenThreshold(cont_all_BP4, 

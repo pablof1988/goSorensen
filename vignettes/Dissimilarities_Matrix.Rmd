@@ -281,7 +281,7 @@ boot_dissMatrx_BP4
 ```
 
 ```{r, echo=FALSE}
-sorenThreshold(cont_all_BP4, boot = T, trace = FALSE)
+sorenThreshold(cont_all_BP4, boot = TRUE, trace = FALSE)
 ```
 
 Or, it is faster if we already have the enrichment contingency tables:

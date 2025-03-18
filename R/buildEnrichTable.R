@@ -11,11 +11,13 @@
 #' @param listNames a character(2) with the gene lists names originating the cross-tabulated
 #' enrichment frequencies. Only in the "character" or default interface.
 #' @param check.table Logical The resulting table must be checked. Defaults to TRUE.
-#' @param orgPackg A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details see \href{../doc/README.html}{README File}.
-#' @param geneUniverse character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details see \href{../doc/README.html}{README File}.
+#' @param orgPackg A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.
+#' @param geneUniverse character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.
 #' @param onto string describing the ontology. Either "BP", "MF" or "CC".
 #' @param GOLevel An integer, the GO ontology level.
-#' @param showEnrichedIn Boolean. If TRUE (default), the cross-table of enriched and non-enriched GO terms vs  Gene Lists names (obtained from the \code{enrichedIn} function) is automatically saved in the Global Environment.
+#' @param storeEnrichedIn logical, the matrix of enriched (GO terms) x (gene lists) TRUE/FALSE values,
+#' must be stored in the result? See the details section
+# @param showEnrichedIn Boolean. If TRUE (default), the cross-table of enriched and non-enriched GO terms vs  Gene Lists names (obtained from the \code{enrichedIn} function) is automatically saved in the Global Environment.
 #' @param pAdjustMeth string describing the adjust method, either "BH", "BY" or "Bonf", defaults to 'BH'.
 #' @param pvalCutoff adjusted pvalue cutoff on enrichment tests to report
 #' @param qvalCutoff qvalue cutoff on enrichment tests to report as significant.
@@ -53,23 +55,32 @@
 #' $lk$l1$t(k,1), $lk$l2$t(k,2), ..., $lk$l(k-1)t(K,k-1)
 #'
 #' @details
-#' The arguments 'parallel' and 'nOfCores' are ignored in the 'default' and "character" interfaces,
-#' but included for possible future developments; they only apply to the "list" interface.
-#' In the "list" interface, 'parallel' defaults to FALSE but there is the possibility of some time
-#' saving when the number of gene lists (the length of 'x' in the "list" interface) is high.
-#' The trade off between the time spent initializing parallel computing and the possible time gain
-#' due to parallelization must be considered in each application and computer.
-#' 
+#' If the argument \code{storeEnrichedIn} is TRUE (the default value), the result of
+#' \code{buildEnrichTable} includes an additional attribute \code{enriched} with a matrix
+#' of TRUE/FALSE values. Each of its rows indicates if a given GO term is enriched or not in each one
+#' of the gene lists (columns). To save space, only GO terms enriched in almost one of the gene lists
+#' are included in this matrix.
+#'
+#' Also to avoid redundancies and to save space, the result of \code{buildEnrichTable.list}
+#' (an object of class "tableList", which is itself an aggregate of 2x2 contingency tables
+#' of class "table") has the attribute \code{enriched} but its table members do not have
+#' this attribute.
+#'
+#' The default value of argument \code{parallel} ís "FALSE" and you
+#' may consider the trade of between the time spent in initializing parallelization and the possible
+#' time gain when parallelizing. It is difficult to establish a general guideline, but parallelizing
+#' is only worthwhile when analyzing many gene lists, on the order of 30 or more, although it depends
+#' on each computer and each application.
 
 #' @examples
 #' # Obtaining ENTREZ identifiers for the gene universe of humans:
 #' library(org.Hs.eg.db)
 #' humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
-#' 
+#'
 #' # Gene lists to be explored for enrichment:
 #' data(allOncoGeneLists)
 #' ?allOncoGeneLists
-#' 
+#'
 #' # Table of joint GO term enrichment between gene lists Vogelstein and sanger,
 #' # for ontology MF at GO level 6.
 #' vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]],
@@ -77,11 +88,16 @@
 #'                                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #'                                 onto = "MF", GOLevel = 6, listNames = c("Vogelstein", "sanger"))
 #' vog.VS.sang
+#' attr(vog.VS.sang, "enriched")
+#'
 #' # All tables of mutual enrichment:
 #' all.tabs <- buildEnrichTable(allOncoGeneLists,
 #'                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #'                              onto = "MF", GOLevel = 6)
+#' attr(all.tabs, "enriched")
 #' all.tabs$waldman
+#' all.tabs$waldman$atlas
+#' attr(all.tabs$waldman$atlas, "enriched")
 
 #' @export
 buildEnrichTable <- function(x, ...) {
@@ -92,7 +108,8 @@ buildEnrichTable <- function(x, ...) {
 #' @export
 buildEnrichTable.default <- function(x, y,
                                      listNames = c("gene.list1", "gene.list2"),
-                                     check.table = TRUE, geneUniverse, orgPackg, onto, GOLevel, showEnrichedIn = TRUE,
+                                     check.table = TRUE, geneUniverse, orgPackg, onto, GOLevel,
+                                     storeEnrichedIn = TRUE,
                                      pAdjustMeth = "BH", pvalCutoff = 0.01, qvalCutoff = 0.05,
                                      parallel = FALSE, nOfCores = 1, ...){
   if (!requireNamespace(orgPackg, quietly = TRUE)) {
@@ -100,7 +117,7 @@ buildEnrichTable.default <- function(x, y,
          call. = FALSE)
   }
   buildEnrichTable.character(as.character(x), as.character(y), listNames, check.table,
-                             geneUniverse, orgPackg, onto, GOLevel,
+                             geneUniverse, orgPackg, onto, GOLevel, storeEnrichedIn,
                              pAdjustMeth, pvalCutoff, qvalCutoff,
                              parallel, nOfCores, ...)
 }
@@ -108,9 +125,11 @@ buildEnrichTable.default <- function(x, y,
 #' @describeIn buildEnrichTable S3 method for class "character"
 #' @export
 buildEnrichTable.character <- function(x, y, listNames = c("gene.list1", "gene.list2"),
-                                      geneUniverse, orgPackg, onto, GOLevel, showEnrichedIn = TRUE, 
-                                      check.table = TRUE, pAdjustMeth = "BH", pvalCutoff = 0.01, 
-                                      qvalCutoff = 0.05, parallel = FALSE, nOfCores = 1, ...) {
+                                       check.table = TRUE, geneUniverse, orgPackg, onto, GOLevel,
+                                       storeEnrichedIn = TRUE,
+                                       pAdjustMeth = "BH", pvalCutoff = 0.01, qvalCutoff = 0.05,
+                                       parallel = FALSE, nOfCores = min(detectCores() - 1), ...)
+{
   if (!requireNamespace(orgPackg, quietly = TRUE)) {
     stop(paste("Genomic annotation of the organism to analyse is in package", orgPackg, ". Please, install this package before to use this function."),
          call. = FALSE)
@@ -123,20 +142,19 @@ buildEnrichTable.character <- function(x, y, listNames = c("gene.list1", "gene.l
   stopifnot("Argument 'check.table' must be logical" = is.logical(check.table))
   stopifnot("Arguments 'pValCutoff' and 'qValCutoff' must be numeric between 0 and 1" =
               (0 < pvalCutoff) && (pvalCutoff < 1) && (0 < qvalCutoff) && (qvalCutoff < 1))
-  enrich1 <- enrichedIn(x, geneUniverse, orgPackg, onto, GOLevel,
-                        pAdjustMeth, pvalCutoff, qvalCutoff)
-  enrich2 <- enrichedIn(y, geneUniverse, orgPackg, onto, GOLevel,
-                        pAdjustMeth, pvalCutoff, qvalCutoff)
-  
+  enrich <- enrichedIn(list(x, y), geneUniverse, orgPackg, onto, GOLevel,
+                       pAdjustMeth, pvalCutoff, qvalCutoff, parallel, nOfCores)
   if (is.null(listNames)) {
     dnnNames <- paste0("Enriched_in_", c("list_1", "list_2"))
   }else{
     dnnNames <- paste0("Enriched_in_", listNames)
+    colnames(enrich) <- listNames
   }
-  tab <- table(enrich1, enrich2, dnn=dnnNames)
+  tab <- table(enrich[,1], enrich[,2], dnn = dnnNames)
   if (!all(dim(tab) == 2)) {
     tab <- completeTable(tab)
   }
+  tab[1,1] <-  attr(enrich, "nTerms") - sum(tab[seq.int(2,4,1)])
   tab <- tab[c(2,1),c(2,1)]
   if (check.table){
     nice2x2Table.table(tab)
@@ -145,10 +163,8 @@ buildEnrichTable.character <- function(x, y, listNames = c("gene.list1", "gene.l
   names(dimnames(tab)) <- paste0("Enriched in ", listNames)
   attr(tab, "onto") <- onto
   attr(tab, "GOLevel") <- GOLevel
-  if(showEnrichedIn){
-    enrichCross <- cbind(enrich1, enrich2)
-    colnames(enrichCross) <- listNames
-    assign(paste0("enrichedIn_", onto, GOLevel), enrichCross, envir = .GlobalEnv)
+  if (storeEnrichedIn) {
+    attr(tab, "enriched") <- enrich
   }
   return(tab)
 }
@@ -157,11 +173,13 @@ buildEnrichTable.character <- function(x, y, listNames = c("gene.list1", "gene.l
 # @importFrom parallel detectCores makeCluster clusterExport clusterEvalQ parLapply stopCluster
 #' @export
 buildEnrichTable.list <- function(x,
-                                 check.table = TRUE, geneUniverse, orgPackg, onto, GOLevel,
-                                 showEnrichedIn = TRUE, pAdjustMeth = "BH", pvalCutoff = 0.01, 
-                                 qvalCutoff = 0.05, parallel = FALSE,
-                                 nOfCores = min(detectCores() - 1, length(x) - 1),
-                                 ...){
+                                  check.table = TRUE, geneUniverse, orgPackg, onto, GOLevel,
+                                  # showEnrichedIn = TRUE,
+                                  storeEnrichedIn = TRUE,
+                                  pAdjustMeth = "BH", pvalCutoff = 0.01,
+                                  qvalCutoff = 0.05, parallel = FALSE,
+                                  nOfCores = min(detectCores() - 1, length(x) - 1),
+                                  ...){
   if (!requireNamespace(orgPackg, quietly = TRUE)) {
     stop(paste("Genomic annotation of the organism to analyse is in package", orgPackg, ". Please, install this package before to use this function."),
          call. = FALSE)
@@ -177,6 +195,7 @@ buildEnrichTable.list <- function(x,
       if (!all(dim(tab) == 2)) {
         tab <- completeTable(tab)
       }
+      tab[1,1] <-  attr(allEnrichs, "nTerms") - sum(tab[-1])
       tab <- tab[c(2,1),c(2,1)]
       if (check.table){
         nice2x2Table.table(tab)
@@ -195,8 +214,11 @@ buildEnrichTable.list <- function(x,
   attr(allTables, "GOLevel") <- GOLevel
   names(allTables) <- lstNams[seq.int(2,numLists)]
   class(allTables) <- c("tableList", "list")
-  if(showEnrichedIn){
-    assign(paste0("enrichedIn_", onto, GOLevel), allEnrichs, envir = .GlobalEnv)
+  # if(showEnrichedIn){
+  #   assign(paste0("enrichedIn_", onto, GOLevel), allEnrichs, envir = .GlobalEnv)
+  # }
+  if (storeEnrichedIn) {
+    attr(allTables, "enriched") <- allEnrichs
   }
   return(allTables)
 }

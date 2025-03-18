@@ -44,11 +44,11 @@
 #' # the three ontologies (BP, CC, MF) and GO levels from 3 to 10. 
 #' #
 #' # Much faster:
-#' # Object \code{allTabs} of class "allTableList" contains all the pairwise contingency tables of
+#' # Object \code{allContTabs} of class "allTableList" contains all the pairwise contingency tables of
 #' # joint enrichment for the gene lists in \code{allOncoGeneLists}, obtained along all three GO
 #' # ontologies and along GO levels 3 to 10:
-#' data(allTabs)
-#' tests <- allEquivTestSorensen(allTabs, ontos = c("MF", "BP"), GOLevels = seq.int(4,6))
+#' data(allContTabs)
+#' tests <- allEquivTestSorensen(allContTabs, ontos = c("MF", "BP"), GOLevels = seq.int(4,6))
 #' tests$BP$`level 5`
 #' getPvalue(tests)
 #'

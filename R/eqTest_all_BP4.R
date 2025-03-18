@@ -1,0 +1,13 @@
+#' Example of the output produced by the function \code{equivTestSorensen}. It contains all the possible equivalence tests for the lists from \code{allOncoGeneLists} at level 4 of ontology BP.
+#'
+#' @description
+#' From the seven lists contained  in \code{allOncoGeneLists}, this object contains the 7(6)/2 = 21 possible outputs for the equivalence tests to compare all possible pairs of lists, using the normal asymptotic distribution.
+#' 
+#' @details
+#' The parameters considered to execute these tests are: irrelevance limit \code{d0 = 0.4444} and confidence level \code{conf.level = 0.95}.
+#' 
+#' Consider this object only as an illustrative example, which is valid exclusively for the data \code{\link{allOncoGeneLists}} contained in this package. Note that gene lists, GO terms, and Bioconductor may change over time. The current version of these results were generated with Bioconductor version 3.20.
+#' 
+#' @format An exclusive object from \code{goSorensen} of the class "equivSDhtestList" 
+#' @usage data(eqTest_all_BP4)
+"eqTest_all_BP4"

@@ -34,53 +34,53 @@
 #'
 #' @examples
 #' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
-#' # 'waldman' and 'atlas', at level 4 of the BP ontology:
-#' data(waldman_atlas.BP.4)
-#' waldman_atlas.BP.4
-#' class(waldman_atlas.BP.4)
+#' # 'sanger' and 'atlas', at level 4 of the BP ontology:
+#' data(eqTest_atlas.sanger_BP4)
+#' eqTest_atlas.sanger_BP4
+#' class(eqTest_atlas.sanger_BP4)
 #' # This may correspond to the result of code like:
-#' # waldman_atlas.BP.4 <- equivTestSorensen(
-#' #   allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
+#' # eqTest_atlas.sanger_BP4 <- equivTestSorensen(
+#' #   allOncoGeneLists[["sanger"]], allOncoGeneLists[["atlas"]],
 #' #   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #   onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
+#' #   onto = "BP", GOLevel = 4, listNames = c("sanger", "atlas"))
 #' # (But results may vary according to GO updating)
-#' getSE(waldman_atlas.BP.4)
+#' getSE(eqTest_atlas.sanger_BP4)
 #'
 #' # All pairwise equivalence tests at level 4 of the BP ontology:
-#' data(BP.4)
-#' ?BP.4
-#' class(BP.4)
+#' data(eqTest_all_BP4)
+#' ?eqTest_all_BP4
+#' class(eqTest_all_BP4)
 #' # This may correspond to a call like:
-#' # BP.4 <- equivTestSorensen(allOncoGeneLists,
+#' # eqTest_all_BP4 <- equivTestSorensen(allOncoGeneLists,
 #' #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #' #                           onto = "BP", GOLevel = 4)
-#' getSE(BP.4)
-#' getSE(BP.4, simplify = FALSE)
+#' getSE(eqTest_all_BP4)
+#' getSE(eqTest_all_BP4, simplify = FALSE)
 #'
 #' # Equivalence test iterated over all GO ontologies and levels 3 to 10:
-#' data(cancerEquivSorensen)
-#' ?cancerEquivSorensen
-#' class(cancerEquivSorensen)
+#' data(allEqTests)
+#' ?allEqTests
+#' class(allEqTests)
 #' # This may correspond to code like:
 #' # (By default, the tests are iterated over all GO ontologies and for levels 3 to 10)
-#' # cancerEquivSorensen <- allEquivTestSorensen(allOncoGeneLists,
+#' # allEqTests <- allEquivTestSorensen(allOncoGeneLists,
 #' #                                             geneUniverse = humanEntrezIDs,
 #' #                                             orgPackg = "org.Hs.eg.db")
 #' # All standard errors of the Sorensen-Dice dissimilarity estimates:
-#' getSE(cancerEquivSorensen)
-#' getSE(cancerEquivSorensen, simplify = FALSE)
+#' getSE(allEqTests)
+#' getSE(allEqTests, simplify = FALSE)
 #'
 #' # Standard errors for some GO ontologies, levels or pairs of gene lists:
-#' getSE(cancerEquivSorensen, GOLevel = "level 6")
-#' getSE(cancerEquivSorensen, GOLevel = 6)
-#' getSE(cancerEquivSorensen, GOLevel = seq.int(4,6))
-#' getSE(cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
-#' getSE(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
-#' getSE(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP")
-#' getSE(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
-#' getSE(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
+#' getSE(allEqTests, GOLevel = "level 6")
+#' getSE(allEqTests, GOLevel = 6)
+#' getSE(allEqTests, GOLevel = seq.int(4,6))
+#' getSE(allEqTests, GOLevel = "level 6", simplify = FALSE)
+#' getSE(allEqTests, GOLevel = "level 6", listNames = c("atlas", "sanger"))
+#' getSE(allEqTests, GOLevel = seq.int(4,6), onto = "BP")
+#' getSE(allEqTests, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
+#' getSE(allEqTests, GOLevel = "level 6", onto = "BP",
 #'       listNames = c("waldman", "sanger"))
-#' getSE(cancerEquivSorensen$BP$`level 4`)
+#' getSE(allEqTests$BP$`level 4`)
 #'
 
 #'

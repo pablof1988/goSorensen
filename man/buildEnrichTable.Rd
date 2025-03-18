@@ -19,7 +19,7 @@ buildEnrichTable(x, ...)
   orgPackg,
   onto,
   GOLevel,
-  showEnrichedIn = TRUE,
+  storeEnrichedIn = TRUE,
   pAdjustMeth = "BH",
   pvalCutoff = 0.01,
   qvalCutoff = 0.05,
@@ -32,17 +32,17 @@ buildEnrichTable(x, ...)
   x,
   y,
   listNames = c("gene.list1", "gene.list2"),
+  check.table = TRUE,
   geneUniverse,
   orgPackg,
   onto,
   GOLevel,
-  showEnrichedIn = TRUE,
-  check.table = TRUE,
+  storeEnrichedIn = TRUE,
   pAdjustMeth = "BH",
   pvalCutoff = 0.01,
   qvalCutoff = 0.05,
   parallel = FALSE,
-  nOfCores = 1,
+  nOfCores = min(detectCores() - 1),
   ...
 )
 
@@ -53,7 +53,7 @@ buildEnrichTable(x, ...)
   orgPackg,
   onto,
   GOLevel,
-  showEnrichedIn = TRUE,
+  storeEnrichedIn = TRUE,
   pAdjustMeth = "BH",
   pvalCutoff = 0.01,
   qvalCutoff = 0.05,
@@ -78,15 +78,16 @@ enrichment frequencies. Only in the "character" or default interface.}
 
 \item{check.table}{Logical The resulting table must be checked. Defaults to TRUE.}
 
-\item{geneUniverse}{character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details see \href{../doc/README.html}{README File}.}
+\item{geneUniverse}{character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
 
-\item{orgPackg}{A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details see \href{../doc/README.html}{README File}.}
+\item{orgPackg}{A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
 
 \item{onto}{string describing the ontology. Either "BP", "MF" or "CC".}
 
 \item{GOLevel}{An integer, the GO ontology level.}
 
-\item{showEnrichedIn}{Boolean. If TRUE (default), the cross-table of enriched and non-enriched GO terms vs  Gene Lists names (obtained from the \code{enrichedIn} function) is automatically saved in the Global Environment.}
+\item{storeEnrichedIn}{logical, the matrix of enriched (GO terms) x (gene lists) TRUE/FALSE values,
+must be stored in the result? See the details section}
 
 \item{pAdjustMeth}{string describing the adjust method, either "BH", "BY" or "Bonf", defaults to 'BH'.}
 
@@ -133,12 +134,22 @@ Creates a 2x2 enrichment contingency table from two gene lists, or all pairwise 
 tables for a "list" of gene lists.
 }
 \details{
-The arguments 'parallel' and 'nOfCores' are ignored in the 'default' and "character" interfaces,
-but included for possible future developments; they only apply to the "list" interface.
-In the "list" interface, 'parallel' defaults to FALSE but there is the possibility of some time
-saving when the number of gene lists (the length of 'x' in the "list" interface) is high.
-The trade off between the time spent initializing parallel computing and the possible time gain
-due to parallelization must be considered in each application and computer.
+If the argument \code{storeEnrichedIn} is TRUE (the default value), the result of
+\code{buildEnrichTable} includes an additional attribute \code{enriched} with a matrix
+of TRUE/FALSE values. Each of its rows indicates if a given GO term is enriched or not in each one
+of the gene lists (columns). To save space, only GO terms enriched in almost one of the gene lists
+are included in this matrix.
+
+Also to avoid redundancies and to save space, the result of \code{buildEnrichTable.list}
+(an object of class "tableList", which is itself an aggregate of 2x2 contingency tables
+of class "table") has the attribute \code{enriched} but its table members do not have
+this attribute.
+
+The default value of argument \code{parallel} ís "FALSE" and you
+may consider the trade of between the time spent in initializing parallelization and the possible
+time gain when parallelizing. It is difficult to establish a general guideline, but parallelizing
+is only worthwhile when analyzing many gene lists, on the order of 30 or more, although it depends
+on each computer and each application.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -165,9 +176,14 @@ vog.VS.sang <- buildEnrichTable(allOncoGeneLists[["Vogelstein"]],
                                 geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
                                 onto = "MF", GOLevel = 6, listNames = c("Vogelstein", "sanger"))
 vog.VS.sang
+attr(vog.VS.sang, "enriched")
+
 # All tables of mutual enrichment:
 all.tabs <- buildEnrichTable(allOncoGeneLists,
                              geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
                              onto = "MF", GOLevel = 6)
+attr(all.tabs, "enriched")
 all.tabs$waldman
+all.tabs$waldman$atlas
+attr(all.tabs$waldman$atlas, "enriched")
 }

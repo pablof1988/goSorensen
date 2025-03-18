@@ -1,6 +1,4 @@
-![](inst/extdata/logo.png){width=25% align=center}
-
-## Introduction
+## Introduction.
 
 This R package implements inferential methods to compare gene lists (proving equivalence) in terms of their biological significance as expressed in the Gene Ontology GO. The compared gene lists are characterized by cross-tabulation frequency tables of enriched GO terms. Dissimilarity between gene lists is evaluated using the Sorensen-Dice dissimilarity.
 The fundamental guiding principle is that two gene lists are taken as similar if they share a significant proportion of common enriched GO terms.
@@ -28,22 +26,21 @@ This inferential method, is developed and explained in the paper *An equivalence
 - `allHclustThreshold`:  Iterate `hclustThreshold` along the specified GO ontologies and GO levels.
 - `pruneClusts`:  Remove all NULL or non-representable as a dendrogram "equivClustSorensen" elements in an object of class "equivClustSorensenList".
 
-`goSorensen` package provides the following objects:
+`goSorensen` provides the following objects accessible by `data(...)`:
 
-- `allOncoGeneLists`: (Dataset) 7 gene lists possibly related with cancer
-- `pbtGeneLists`: (Dataset) 14 gene lists possibly related with kidney transplant rejection
-- `tab_atlas.sanger_BP3`: (Result) Contingency table of enriched GO terms at level 3 of ontology BP in two gene lists.
-- `allTabsBP.4`: (Result) Contingency table of enriched GO terms at level 4 of ontology BP in all the possible combinations of lists from `allOncoGeneLists`.
-- `allTabs`: (Result) Contingency table of enriched GO terms at level 3 to 10 of all the ontologies (BP, CC, MF) in all the possible combinations of lists from `allOncoGeneLists`.
-- `waldman_atlas.BP.4`: (Result) Equivalence test results at level 4 of ontology BP in two gene lists.
-- `BP.4`: (Result) Equivalence test results at level 4 of ontology BP in all the possible combinations of lists from `allOncoGeneLists`.
-- `cancerEquivSorensen`: (Result) Equivalence test results at level 3 to 10 of all the ontologies (BP, CC, MF) in all the possible combinations of lists from `allOncoGeneLists`.
+- `allOncoGeneLists`: (Dataset) 7 gene lists possibly related with cancer.
+- `pbtGeneLists`: (Dataset) 14 gene lists possibly related with kidney transplant rejection.
+- `enrichedInBP4`: (Result) A matrix of GO term enrichment, excluding the GO terms that are not enriched in either list from `allOncoGeneLists`, for the BP ontology at GO level 4.
+- `fullEnrichedInBP4`: A matrix of GO term enrichment, including the GO terms that are not enriched in either list from `allOncoGeneLists`, for the BP ontology at GO level 4.
+- `cont_atlas.sanger_BP4`: (Result) Enrichment contingency table of enriched GO terms at level 4 of ontology BP in two gene lists (atlas and sanger).
+- `cont_all_BP4`: (Result) Enrichment contingency tables of enriched GO terms at level 4 of ontology BP in all the possible combinations of lists from `allOncoGeneLists`.
+- `allContTabs`: (Result) Enrichment contingency tables of enriched GO terms at level 3 to 10 of all the ontologies (BP, CC, MF) in all the possible combinations of lists from `allOncoGeneLists`.
+- `eqTest_atlas.sanger_BP4`: (Result) Equivalence test results at level 4 of ontology BP in two gene lists (atlas and sanger), using the normal distribution.
+- `eqTest_all_BP4`: (Result) Equivalence tests results at level 4 of ontology BP in all the possible combinations of lists from `allOncoGeneLists`, using the normal distribution.
+- `allEqTests`: (Result) Equivalence tests results at level 3 to 10 of all the ontologies (BP, CC, MF) in all the possible combinations of lists from `allOncoGeneLists`, using the normal distribution.
+- `allEqTests_boot`: (Result) Equivalence tests results at level 3 to 10 of all the ontologies (BP, CC, MF) in all the possible combinations of lists from `allOncoGeneLists`, using the bootstrap distribution.
 
-The following graph illustrates the structure and relationship between the functions, objects and documentation contained in goSorensen.
-
-![](inst/extdata/gosorstructure.png){width=100% align=center}
-
-## Installation Instructions
+## Installation Instructions.
 
 `goSorensen` package must be installed with a working R version (>=4.3). Installation could take a few minutes on a regular desktop or laptop. Package can be installed from Bioconductor as follows:
 
@@ -89,7 +86,7 @@ The `goSorensen` functions require genome annotation via the `orgPackg` argument
 buildEnrichTable(..., orgPackg = "org.Mm.eg.db")
 ```
 
-### Gene Identifiers
+### Universe of Genes (Identifiers).
 
 `goSorensen` functions, such as `buidEnrichTable`, that entail identifying annotations in a GO term, which are essential for determining enrichment, require the user to provide, in the argument `geneUniverse`, a vector containing the identifiers of the universe of genes (wide genome) of the species being analysed. These gene identifiers can be readily obtained from the above-mentioned genomic annotation packages through the function `keys`. For instance, one can acquire the ENTREZ identifiers for the universe of genes in mice as follows: 
 
@@ -120,10 +117,10 @@ buildEnrichTable(..., orgPackg = "org.Mm.eg.db", geneUniverse = mouseEntrezIDs)
 ```
 
 
-## Contribution Guidelines
+## Contribution Guidelines.
 Contributions are welcome, if you wish to contribute or give ideas to improve the package, please you can contact with maintainer (Pablo Flores) to the address `p_flores@espoch.edu.ec`, and we can discuss your suggestion.
 
-## References
+## References.
 <div id="refs" class="references">
 <div id="goSorensen">
 

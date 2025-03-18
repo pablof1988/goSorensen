@@ -2,22 +2,22 @@ library(goSorensen)
 
 # A contingency table of GO terms mutual enrichment
 # between gene lists "atlas" and "sanger":
-data(tab_atlas.sanger_BP3)
-tab_atlas.sanger_BP3
-?tab_atlas.sanger_BP3
-class(tab_atlas.sanger_BP3)
+data("cont_atlas.sanger_BP4")
+cont_atlas.sanger_BP4
+?cont_atlas.sanger_BP4
+class(cont_atlas.sanger_BP4)
 
 # Sorensen-Dice dissimilarity on this contingency table:
 ?dSorensen
-dSorensen(tab_atlas.sanger_BP3)
+dSorensen(cont_atlas.sanger_BP4)
 
 # Standard error of this Sorensen-Dice dissimilarity estimate:
 ?seSorensen
-seSorensen(tab_atlas.sanger_BP3)
+seSorensen(cont_atlas.sanger_BP4)
 
 # Upper 95% confidence limit for the Sorensen-Dice dissimilarity:
 ?duppSorensen
-duppSorensen(tab_atlas.sanger_BP3)
+duppSorensen(cont_atlas.sanger_BP4)
 # This confidence limit is based on an assimptotic normal N(0,1)
 # approximation to the distribution of (dSampl - d) / se, where
 # dSampl stands for the sample dissimilarity, d for the true dissimilarity
@@ -25,13 +25,13 @@ duppSorensen(tab_atlas.sanger_BP3)
 
 # Upper confidence limit but using a Student's t instead of a N(0,1)
 # (just as an example, not recommended -no theoretical justification)
-df <- sum(tab_atlas.sanger_BP3[1:3]) - 2
-duppSorensen(tab_atlas.sanger_BP3, z.conf.level = qt(1 - 0.95, df))
+df <- sum(cont_atlas.sanger_BP4[1:3]) - 2
+duppSorensen(cont_atlas.sanger_BP4, z.conf.level = qt(1 - 0.95, df))
 
 # Upper confidence limit but using a bootstrap approximation
 # to the sampling distribution, instead of a N(0,1)
 set.seed(123)
-duppSorensen(tab_atlas.sanger_BP3, boot = TRUE)
+duppSorensen(cont_atlas.sanger_BP4, boot = TRUE)
 
 # Some computations on diverse data structures:
 badConti <- as.table(matrix(c(501, 27, 36, 12, 43, 15, 0, 0, 0),
@@ -88,7 +88,7 @@ duppSorensen(c(0,0,0,45))
 
 # Equivalence test, H0: d >= d0 vs  H1: d < d0 (d0 = 0.4444)
 ?equivTestSorensen
-equiv.atlas.sanger <- equivTestSorensen(tab_atlas.sanger_BP3)
+equiv.atlas.sanger <- equivTestSorensen(cont_atlas.sanger_BP4)
 equiv.atlas.sanger
 getTable(equiv.atlas.sanger)
 getPvalue(equiv.atlas.sanger)
@@ -204,12 +204,16 @@ getUpper(bootTst)
 # #                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # # allPairDiss
 #
-# # Still time consuming but faster: build all tables computing in parallel:
+# # Still time consuming but potentially faster: compute in parallel (more precisely,
+# # build all enrichment tables in parallel):
 # allPairDiss <- dSorensen(allOncoGeneLists,
-#                          onto = "BP", GOLevel = 5,
+#                          onto = "BP", GOLevel = 4,
 #                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #                          parallel = TRUE)
 # allPairDiss
+# # Not always parallelization results in speed-up, take into account the trade-off between
+# # parallelization initialization and possible gain in speed. For a few gene lists (like
+# # in this example, 7 lists, a negative speed-up will be the most common scenario)
 
 # Standard errors:
 # seSorensen(allOncoGeneLists,
@@ -251,16 +255,16 @@ getUpper(bootTst)
 # allTabsBP.4
 
 # Better, directly use the dataset available at this package, goSorensen:
-data(allTabsBP.4)
-allTabsBP.4
-class(allTabsBP.4)
+data("cont_all_BP4")
+cont_all_BP4
+class(cont_all_BP4)
 # 2) Then perform all required computatios from these enrichment contingency tables...
 # All pairwise tests:
-allTests <- equivTestSorensen(allTabsBP.4)
+allTests <- equivTestSorensen(cont_all_BP4)
 allTests
 class(allTests)
 set.seed(123)
-allBootTests <- equivTestSorensen(allTabsBP.4, boot = TRUE)
+allBootTests <- equivTestSorensen(cont_all_BP4, boot = TRUE)
 allBootTests
 class(allBootTests)
 getPvalue(allBootTests, simplify = FALSE)
@@ -270,9 +274,9 @@ getEffNboot(allBootTests)
 p.adjust(getPvalue(allBootTests), method = "holm")
 
 # If only partial statistics are desired:
-dSorensen(allTabsBP.4)
-duppSorensen(allTabsBP.4)
-seSorensen(allTabsBP.4)
+dSorensen(cont_all_BP4)
+duppSorensen(cont_all_BP4)
+seSorensen(cont_all_BP4)
 
 
 # Tipically, in a real study it would be interesting to scan tests

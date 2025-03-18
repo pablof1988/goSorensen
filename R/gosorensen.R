@@ -38,4 +38,5 @@
 #'
 #' @docType package
 #' @name gosorensen
+"_PACKAGE"
 NULL

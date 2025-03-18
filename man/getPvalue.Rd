@@ -63,52 +63,52 @@ In the second case ("numeric"), the GO levels must be specified like\code{6} or 
 }}
 \examples{
 # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
-# 'waldman' and 'atlas', at level 4 of the BP ontology:
-data(waldman_atlas.BP.4)
-waldman_atlas.BP.4
-class(waldman_atlas.BP.4)
+# 'sanger' and 'atlas', at level 4 of the BP ontology:
+data(eqTest_atlas.sanger_BP4)
+eqTest_atlas.sanger_BP4
+class(eqTest_atlas.sanger_BP4)
 # This may correspond to the result of code like:
-# waldman_atlas.BP.4 <- equivTestSorensen(
-#   allOncoGeneLists[["waldman"]], allOncoGeneLists[["atlas"]],
+# eqTest_atlas.sanger_BP4 <- equivTestSorensen(
+#   allOncoGeneLists[["sanger"]], allOncoGeneLists[["atlas"]],
 #   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#   onto = "BP", GOLevel = 4, listNames = c("waldman", "atlas"))
+#   onto = "BP", GOLevel = 4, listNames = c("sanger", "atlas"))
 # (But results may vary according to GO updating)
-getPvalue(waldman_atlas.BP.4)
+getPvalue(eqTest_atlas.sanger_BP4)
 
 # All pairwise equivalence tests at level 4 of the BP ontology
-data(BP.4)
-?BP.4
-class(BP.4)
+data(eqTest_all_BP4)
+?eqTest_all_BP4
+class(eqTest_all_BP4)
 # This may correspond to a call like:
-# BP.4 <- equivTestSorensen(allOncoGeneLists,
+# eqTest_all_BP4 <- equivTestSorensen(allOncoGeneLists,
 #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #                           onto = "BP", GOLevel = 4)
-getPvalue(BP.4)
-getPvalue(BP.4, simplify = FALSE)
+getPvalue(eqTest_all_BP4)
+getPvalue(eqTest_all_BP4, simplify = FALSE)
 
 # Equivalence test iterated over all GO ontologies and levels 3 to 10:
-data(cancerEquivSorensen)
-?cancerEquivSorensen
-class(cancerEquivSorensen)
+data(allEqTests)
+?allEqTests
+class(allEqTests)
 # This may correspond to code like:
 # (By default, the tests are iterated over all GO ontologies and for levels 3 to 10)
-# cancerEquivSorensen <- allEquivTestSorensen(allOncoGeneLists,
+# allEqTests <- allEquivTestSorensen(allOncoGeneLists,
 #                                             geneUniverse = humanEntrezIDs,
 #                                             orgPackg = "org.Hs.eg.db")
 # All p-values:
-getPvalue(cancerEquivSorensen)
-getPvalue(cancerEquivSorensen, simplify = FALSE)
+getPvalue(allEqTests)
+getPvalue(allEqTests, simplify = FALSE)
 
 # P-values only for some GO ontologies, levels or pairs of gene lists:
-getPvalue(cancerEquivSorensen, GOLevel = "level 6")
-getPvalue(cancerEquivSorensen, GOLevel = 6)
-getPvalue(cancerEquivSorensen, GOLevel = seq.int(4,6))
-getPvalue(cancerEquivSorensen, GOLevel = "level 6", simplify = FALSE)
-getPvalue(cancerEquivSorensen, GOLevel = "level 6", listNames = c("waldman", "sanger"))
-getPvalue(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP")
-getPvalue(cancerEquivSorensen, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
-getPvalue(cancerEquivSorensen, GOLevel = "level 6", onto = "BP",
+getPvalue(allEqTests, GOLevel = "level 6")
+getPvalue(allEqTests, GOLevel = 6)
+getPvalue(allEqTests, GOLevel = seq.int(4,6))
+getPvalue(allEqTests, GOLevel = "level 6", simplify = FALSE)
+getPvalue(allEqTests, GOLevel = "level 6", listNames = c("atlas", "sanger"))
+getPvalue(allEqTests, GOLevel = seq.int(4,6), onto = "BP")
+getPvalue(allEqTests, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
+getPvalue(allEqTests, GOLevel = "level 6", onto = "BP",
           listNames = c("waldman", "sanger"))
-getPvalue(cancerEquivSorensen$BP$`level 4`)
+getPvalue(allEqTests$BP$`level 4`)
 
 }

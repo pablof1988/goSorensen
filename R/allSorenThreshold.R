@@ -41,11 +41,11 @@
 #' #                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
 #' #
 #' # Much faster:
-#' # Object allTabs of class "allTableList" contains all the pairwise contingency tables of
+#' # Object allContTabs of class "allTableList" contains all the pairwise contingency tables of
 #' # joint enrichment for the gene lists in \code{allOncoGeneLists}, obtained along all three GO
 #' # ontologies and along GO levels 3 to 10:
-#' data(allTabs)
-#' dSors <- allSorenThreshold(allTabs, ontos = c("MF", "BP"), GOLevels = seq.int(4,6))
+#' data(allContTabs)
+#' dSors <- allSorenThreshold(allContTabs, ontos = c("MF", "BP"), GOLevels = seq.int(4,6))
 #' dSors$BP$`level 5`
 #'
 #' @export
@@ -61,8 +61,14 @@ allSorenThreshold.list <- function(x, geneUniverse, orgPackg,
                                    trace = TRUE, alpha = 0.05, precis = 0.001,
                                    ...)
 {
-  tabs <- allBuildEnrichTable(x, ontos = ontos, GOLevels = GOLevels, trace = trace, ...)
-  return(allSorenThreshold.allTableList(tabs, ontos = ontos, GOLevels = GOLevels, trace = trace))
+  tabs <- allBuildEnrichTable(x, geneUniverse = geneUniverse, orgPackg = orgPackg, 
+                              boot = boot, nboot = nboot, boot.seed = boot.seed, 
+                              ontos = ontos, GOLevels = GOLevels, trace = trace, 
+                              alpha = alpha, precis = precis, ...)
+  return(allSorenThreshold.allTableList(tabs, geneUniverse = geneUniverse, orgPackg = orgPackg,
+                                        boot = boot, nboot = nboot, boot.seed = boot.seed,
+                                        ontos = ontos, GOLevels = GOLevels, trace = trace,
+                                        alpha = alpha, precis = precis, ...))
 }
 
 #' @describeIn allSorenThreshold S3 method for class "allTableList"

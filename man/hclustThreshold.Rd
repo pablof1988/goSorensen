@@ -46,11 +46,11 @@ humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
 # First, compute the Sorensen-Dice threshold equivalence dissimilarity
 # for ontology BP at level 4:
 # # Very time consuming, it requires building all joint enrichment contingency tables
-dOncBP4 <- sorenThreshold(allOncoGeneLists, onto = "BP", GOLevel = 4,
-                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
+# dOncBP4 <- sorenThreshold(allOncoGeneLists, onto = "BP", GOLevel = 4,
+#                         geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
 # Better (much faster), using the previously tabulated contingency tables:
-data("allTabsBP.4")
-dOncBP4 <- sorenThreshold(allTabsBP.4)
+data("cont_all_BP4")
+dOncBP4 <- sorenThreshold(cont_all_BP4)
 clust.threshold <- hclustThreshold(dOncBP4)
 plot(clust.threshold, main = "AllOnco genelists, BP ontology at level 4",
      ylab = "Sorensen equivalence threshold")

@@ -33,3 +33,8 @@ In addition:
 - We add the vignette "__irrelevance-threshold_Matrix_Dissimilarities__." This vignette illustrates calculating, visualizing, and interpreting the irrelevance-threshold matrix of dissimilarities _D_. This matrix provides dissimilarities between pairs of compared lists. These dissimilarities are not only a descriptive measure but also based on the irrelevance threshold determining whether two lists are equivalent. So, this dissimilarity measure between the two lists is directly associated with their declaration of equivalence.
 
   The matrix _D_ can be represented in interpretable statistic graphs such as dendrograms or biplots, which help to visualize the formation of groups containing equivalent lists. Furthermore, interpreting the biplot dimensions gives us the biological functions responsible for the equivalence between lists.
+
+## version 1.10.0
+In this updated version, unless the user specifies otherwise in the _onlyEnriched_ argument of the _enrichedIn_ function, the enrichment matrix of GO terms includes only those terms that are enriched in at least one of the lists being compared, excluding all terms that are not enriched in any of the lists. This optimization significantly reduces computation times for enrichment analysis compared to previous versions, such as when generating enrichment contingency tables using _buildEnrichTable_.
+
+Additionally, with the latest versions of Bioconductor and its updated packages, we have revised the naming conventions and outputs for results obtained from the primary __goSorensen__ functions. These changes are summarized in two new bullet points, offering clearer guidance and improved usability for package users compared to earlier versions.

@@ -3,10 +3,13 @@
 #' @param x object of class "list". Each of its elements must be a "character" vector of gene
 #' identifiers (e.g., ENTREZ). Then all pairwise contingency tables of joint enrichment are built between
 #' these gene lists, iterating the process for all specified GO ontologies and GO levels.
+#' @param orgPackg A string with the name of the genomic annotation package corresponding to a specific species to be analysed, which must be previously installed and activated. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.
+#' @param geneUniverse character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.
 #' @param check.table Boolean. If TRUE (default), all resulting tables are checked by means
 #' of function \code{nice2x2Table}.
 #' @param ontos "character", GO ontologies to analyse. Defaults to \code{c("BP", "CC", "MF")}.
 #' @param GOLevels "integer", GO levels to analyse inside each of these GO ontologies.
+#' @param keyType character keytype of input gene, e.g., ENTREZID or SYMBOL
 #' @param storeEnrichedIn logical, for each ontology and level under study, the matrix of enriched
 #' (GO terms) x (gene lists) TRUE/FALSE values, must be stored in the result?
 #' @param trace Logical. If TRUE (default), the (usually very time consuming) process of function
@@ -57,8 +60,11 @@
 #'
 #' @export
 allBuildEnrichTable <- function(x, check.table = TRUE,
+                                geneUniverse, 
+                                orgPackg,
                                 ontos = c("BP", "CC", "MF"),
                                 GOLevels = seq.int(3,10),
+                                keyType = "ENTREZID",
                                 storeEnrichedIn = TRUE,
                                 trace = TRUE,
                                 ...)
@@ -72,6 +78,9 @@ allBuildEnrichTable <- function(x, check.table = TRUE,
         cat("\n Level ", lev, "\n")
       }
       result <- buildEnrichTable(x, check.table = check.table,
+                                 geneUniverse = geneUniverse,
+                                 orgPackg = orgPackg,
+                                 keyType = keyType,
                                  onto = onto, GOLevel = lev,
                                  storeEnrichedIn = storeEnrichedIn,
                                  ...)

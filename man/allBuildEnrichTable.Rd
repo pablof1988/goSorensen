@@ -7,8 +7,11 @@
 allBuildEnrichTable(
   x,
   check.table = TRUE,
+  geneUniverse,
+  orgPackg,
   ontos = c("BP", "CC", "MF"),
   GOLevels = seq.int(3, 10),
+  keyType = "ENTREZID",
   storeEnrichedIn = TRUE,
   trace = TRUE,
   ...
@@ -22,9 +25,15 @@ these gene lists, iterating the process for all specified GO ontologies and GO l
 \item{check.table}{Boolean. If TRUE (default), all resulting tables are checked by means
 of function \code{nice2x2Table}.}
 
+\item{geneUniverse}{character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
+
+\item{orgPackg}{A string with the name of the genomic annotation package corresponding to a specific species to be analysed, which must be previously installed and activated. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
+
 \item{ontos}{"character", GO ontologies to analyse. Defaults to \code{c("BP", "CC", "MF")}.}
 
 \item{GOLevels}{"integer", GO levels to analyse inside each of these GO ontologies.}
+
+\item{keyType}{character keytype of input gene, e.g., ENTREZID or SYMBOL}
 
 \item{storeEnrichedIn}{logical, for each ontology and level under study, the matrix of enriched
 (GO terms) x (gene lists) TRUE/FALSE values, must be stored in the result?}

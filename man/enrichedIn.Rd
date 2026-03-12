@@ -21,6 +21,7 @@ enrichedIn(x, ...)
   parallel = FALSE,
   nOfCores = 1,
   onlyEnriched = TRUE,
+  keyType = "ENTREZID",
   ...
 )
 
@@ -36,6 +37,7 @@ enrichedIn(x, ...)
   parallel = FALSE,
   nOfCores = 1,
   onlyEnriched = TRUE,
+  keyType = "ENTREZID",
   ...
 )
 
@@ -51,6 +53,7 @@ enrichedIn(x, ...)
   parallel = FALSE,
   nOfCores = min(detectCores() - 1, length(x)),
   onlyEnriched = TRUE,
+  keyType = "ENTREZID",
   ...
 )
 }
@@ -85,6 +88,8 @@ iii) qvalueCutoff on qvalues to be reported}
 
 \item{onlyEnriched}{logical. If TRUE (the default), the returned result only contains those GO terms
 enriched in almost one of the gene lists}
+
+\item{keyType}{character keytype of input gene, e.g., ENTREZID or SYMBOL}
 }
 \value{
 In the "character" interface, a length k vector of TRUE/FALSE values

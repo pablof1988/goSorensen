@@ -23,6 +23,7 @@ buildEnrichTable(x, ...)
   pAdjustMeth = "BH",
   pvalCutoff = 0.01,
   qvalCutoff = 0.05,
+  keyType = "ENTREZID",
   parallel = FALSE,
   nOfCores = 1,
   ...
@@ -41,6 +42,7 @@ buildEnrichTable(x, ...)
   pAdjustMeth = "BH",
   pvalCutoff = 0.01,
   qvalCutoff = 0.05,
+  keyType = "ENTREZID",
   parallel = FALSE,
   nOfCores = min(detectCores() - 1),
   ...
@@ -57,6 +59,7 @@ buildEnrichTable(x, ...)
   pAdjustMeth = "BH",
   pvalCutoff = 0.01,
   qvalCutoff = 0.05,
+  keyType = "ENTREZID",
   parallel = FALSE,
   nOfCores = min(detectCores() - 1, length(x) - 1),
   ...
@@ -80,7 +83,7 @@ enrichment frequencies. Only in the "character" or default interface.}
 
 \item{geneUniverse}{character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
 
-\item{orgPackg}{A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
+\item{orgPackg}{A string with the name of the genomic annotation package corresponding to a specific species to be analysed, which must be previously installed and activated. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
 
 \item{onto}{string describing the ontology. Either "BP", "MF" or "CC".}
 
@@ -96,6 +99,8 @@ must be stored in the result? See the details section}
 \item{qvalCutoff}{qvalue cutoff on enrichment tests to report as significant.
 Tests must pass i) pvalueCutoff on unadjusted pvalues, ii) pvalueCutoff on adjusted pvalues and
 iii) qvalueCutoff on qvalues to be reported}
+
+\item{keyType}{character keytype of input gene, e.g., ENTREZID or SYMBOL}
 
 \item{parallel}{Logical. Defaults to FALSE but put it at TRUE for parallel computation.}
 

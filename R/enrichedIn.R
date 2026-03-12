@@ -18,6 +18,7 @@
 #' @param nOfCores Number of cores for parallel computations. Only in "list" interface
 #' @param onlyEnriched logical. If TRUE (the default), the returned result only contains those GO terms
 #' enriched in almost one of the gene lists
+#' @param keyType character keytype of input gene, e.g., ENTREZID or SYMBOL
 #' @param ... Additional parameters
 #'
 #' @return In the "character" interface, a length k vector of TRUE/FALSE values
@@ -84,13 +85,15 @@ enrichedIn.default <- function (x, geneUniverse, orgPackg,
                                 pAdjustMeth = "BH", pvalCutoff = 0.01, qvalCutoff = 0.05,
                                 parallel = FALSE,
                                 nOfCores = 1,
-                                onlyEnriched = TRUE, ...){
+                                onlyEnriched = TRUE,
+                                keyType = "ENTREZID", ...){
   enrichedIn.character(as.character(x), geneUniverse = geneUniverse, orgPackg = orgPackg,
                        onto = onto, GOLevel = GOLevel,
                        pAdjustMeth = pAdjustMeth, pvalCutoff = pvalCutoff, qvalCutoff = qvalCutoff,
                        parallel = parallel,
                        nOfCores = nOfCores,
-                       onlyEnriched = onlyEnriched, ...)
+                       onlyEnriched = onlyEnriched,
+                       keyType = keyType, ...)
 }
 
 #' @describeIn enrichedIn S3 method for class "character"
@@ -100,7 +103,8 @@ enrichedIn.character <- function (x, geneUniverse, orgPackg,
                                   pAdjustMeth = "BH", pvalCutoff = 0.01, qvalCutoff = 0.05,
                                   parallel = FALSE,
                                   nOfCores = 1,
-                                  onlyEnriched = TRUE, ...)
+                                  onlyEnriched = TRUE,
+                                  keyType = "ENTREZID", ...)
 {
   if (!requireNamespace(orgPackg, quietly = TRUE)) {
     stop(paste("Genomic annotation of the organism to analyse is in package", orgPackg, ". Please, install this package before to use this function."),
@@ -111,7 +115,8 @@ enrichedIn.character <- function (x, geneUniverse, orgPackg,
   enriched <- clusterProfiler::enrichGO(gene = x,
                                         universe = geneUniverse, OrgDb = orgPackg,
                                         ont = onto, pAdjustMethod = pAdjustMeth,
-                                        pvalueCutoff = pvalCutoff, qvalueCutoff = qvalCutoff)
+                                        pvalueCutoff = pvalCutoff, qvalueCutoff = qvalCutoff,
+                                        keyType = keyType, ...)
   GOIDs <- as.character(as.data.frame(enriched)$ID)
   result <- is.element(allGOIDs, GOIDs)
   names(result) <- allGOIDs
@@ -130,7 +135,8 @@ enrichedIn.list <- function (x, geneUniverse, orgPackg,
                              pAdjustMeth = "BH", pvalCutoff = 0.01, qvalCutoff = 0.05,
                              parallel = FALSE,
                              nOfCores = min(detectCores() - 1, length(x)),
-                             onlyEnriched = TRUE, ...)
+                             onlyEnriched = TRUE,
+                             keyType = "ENTREZID", ...)
 {
   if (!requireNamespace(orgPackg, quietly = TRUE)) {
     stop(paste("Genomic annotation of the organism to analyse is in package", orgPackg, ". Please, install this package before to use this function."),
@@ -139,7 +145,7 @@ enrichedIn.list <- function (x, geneUniverse, orgPackg,
   allGOIDs <- goProfiles::getGOLevel(onto, GOLevel)
   nGOIDs <- length(allGOIDs)
   lenGeneLists <- length(x)
-  if (parallel) {
+  if(parallel) {
     on.exit(stopCluster(cl))
     if (.Platform$OS.type == "windows") {
       cl <- makeCluster(nOfCores)
@@ -157,7 +163,8 @@ enrichedIn.list <- function (x, geneUniverse, orgPackg,
       enriched <- clusterProfiler::enrichGO(gene = x[[iList]],
                                             universe = geneUniverse, OrgDb = orgPackg,
                                             ont = onto, pAdjustMethod = pAdjustMeth,
-                                            pvalueCutoff = pvalCutoff, qvalueCutoff = qvalCutoff)
+                                            pvalueCutoff = pvalCutoff, qvalueCutoff = qvalCutoff,
+                                            keyType = keyType, ...)
       GOIDs <- as.character(as.data.frame(enriched)$ID)
       return(is.element(allGOIDs, GOIDs))
     }, USE.NAMES = FALSE)
@@ -166,7 +173,8 @@ enrichedIn.list <- function (x, geneUniverse, orgPackg,
       enriched <- clusterProfiler::enrichGO(gene = x[[iList]],
                                             universe = geneUniverse, OrgDb = orgPackg,
                                             ont = onto, pAdjustMethod = pAdjustMeth,
-                                            pvalueCutoff = pvalCutoff, qvalueCutoff = qvalCutoff)
+                                            pvalueCutoff = pvalCutoff, qvalueCutoff = qvalCutoff,
+                                            keyType = keyType, ...)
       GOIDs <- as.character(as.data.frame(enriched)$ID)
       return(is.element(allGOIDs, GOIDs))
     }, FUN.VALUE = logical(nGOIDs), USE.NAMES = FALSE)

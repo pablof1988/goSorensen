@@ -10,7 +10,7 @@ Authors@R:
             email = "p_flores@espoch.edu.ec", 
             comment = c(ORCID = "0000-0002-7156-8547")),
     person("Jordi", "Ocana", role = c("aut", "ctb"), 
-            comment = c(ORCID = "0000-0002-4736-699")),
+            comment = c(ORCID = "0000-0002-4736-6996")),
     person("Alexandre", "Sanchez-Pla", role = "ctb", 
             comment = c(ORCID = "0000-0002-8673-7737")),
 	  person("Miquel", "Salicru", role = "ctb", 
@@ -28,7 +28,7 @@ VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8
 LazyData: false
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 NeedsCompilation: no
 Packaged: 2024-11-29 21:35:16 UTC; Pablo Flores
 biocViews: Annotation, GO, GeneSetEnrichment, Software, Microarray,

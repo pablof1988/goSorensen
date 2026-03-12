@@ -49,7 +49,7 @@ GO term enrichment cross-tabulations.
 
 Authors:
 \itemize{
-  \item Jordi Ocana (\href{https://orcid.org/0000-0002-4736-699}{ORCID}) [contributor]
+  \item Jordi Ocana (\href{https://orcid.org/0000-0002-4736-6996}{ORCID}) [contributor]
 }
 
 Other contributors:

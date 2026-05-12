@@ -2,45 +2,10 @@
 % Please edit documentation in R/equivtestsorensen.R
 \name{equivTestSorensen}
 \alias{equivTestSorensen}
-\alias{equivTestSorensen.table}
-\alias{equivTestSorensen.matrix}
-\alias{equivTestSorensen.numeric}
 \alias{equivTestSorensen.character}
-\alias{equivTestSorensen.list}
-\alias{equivTestSorensen.tableList}
 \title{Equivalence test based on the Sorensen-Dice dissimilarity}
 \usage{
 equivTestSorensen(x, ...)
-
-\method{equivTestSorensen}{table}(
-  x,
-  d0 = 1/(1 + 1.25),
-  conf.level = 0.95,
-  boot = FALSE,
-  nboot = 10000,
-  check.table = TRUE,
-  ...
-)
-
-\method{equivTestSorensen}{matrix}(
-  x,
-  d0 = 1/(1 + 1.25),
-  conf.level = 0.95,
-  boot = FALSE,
-  nboot = 10000,
-  check.table = TRUE,
-  ...
-)
-
-\method{equivTestSorensen}{numeric}(
-  x,
-  d0 = 1/(1 + 1.25),
-  conf.level = 0.95,
-  boot = FALSE,
-  nboot = 10000,
-  check.table = TRUE,
-  ...
-)
 
 \method{equivTestSorensen}{character}(
   x,
@@ -52,114 +17,112 @@ equivTestSorensen(x, ...)
   check.table = TRUE,
   ...
 )
-
-\method{equivTestSorensen}{list}(
-  x,
-  d0 = 1/(1 + 1.25),
-  conf.level = 0.95,
-  boot = FALSE,
-  nboot = 10000,
-  check.table = TRUE,
-  ...
-)
-
-\method{equivTestSorensen}{tableList}(
-  x,
-  d0 = 1/(1 + 1.25),
-  conf.level = 0.95,
-  boot = FALSE,
-  nboot = 10000,
-  check.table = TRUE,
-  ...
-)
 }
 \arguments{
-\item{x}{either an object of class "table", "matrix", "numeric", "character", "list"
-or "tableList".
+\item{x}{either an object of class "table", "matrix", "numeric", "character",
+"list" or "tableList".
 See the details section for more information.}
 
 \item{...}{extra parameters for function \code{buildEnrichTable}.}
 
+\item{y}{an object of class "character" representing a list of gene
+identifiers (e.g., ENTREZ).}
+
 \item{d0}{equivalence threshold for the Sorensen-Dice dissimilarity, d.
-The null hypothesis states that d >= d0, i.e., inequivalence between the compared
-gene lists and the alternative that d < d0, i.e., equivalence or dissimilarity
-irrelevance (up to a level d0).}
+The null hypothesis states that d >= d0, i.e., inequivalence between the
+compared gene lists and the alternative that d < d0, i.e., equivalence or
+dissimilarity irrelevance (up to a level d0).}
 
-\item{conf.level}{confidence level of the one-sided confidence interval, a value between 0 and 1.}
+\item{conf.level}{confidence level of the one-sided confidence interval, a
+value between 0 and 1.}
 
-\item{boot}{boolean. If TRUE, the confidence interval and the test p-value are computed by means
-of a bootstrap approach instead of the asymptotic normal approach. Defaults to FALSE.}
+\item{boot}{boolean. If TRUE, the confidence interval and the test p-value
+are computed by means of a bootstrap approach instead of the asymptotic
+normal approach. Defaults to FALSE.}
 
-\item{nboot}{numeric, number of initially planned bootstrap replicates. Ignored if
-\code{boot == FALSE}. Defaults to 10000.}
+\item{nboot}{numeric, number of initially planned bootstrap replicates.
+Ignored if \code{boot == FALSE}. Defaults to 10000.}
 
-\item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked to adequately
-represent a 2x2 contingency table (or an aggregate of them) or gene lists producing a correct
-table. This checking is performed by means of function \code{nice2x2Table}.}
-
-\item{y}{an object of class "character" representing a list of gene identifiers (e.g., ENTREZ).}
+\item{check.table}{Boolean. If TRUE (default), argument \code{x} is checked
+to adequately represent a 2x2 contingency table (or an aggregate of them) or
+gene lists producing a correct table. This checking is performed by means of
+function \code{nice2x2Table}.}
 }
 \value{
-For all interfaces (except for the "list" and "tableList" interfaces) the result is a list
-of class "equivSDhtest" which inherits from "htest", with the following components:
+See method-specific documentation.
+
+For all interfaces (except for the "list" and "tableList" interfaces), the
+result is a list of class "equivSDhtest" which inherits from "htest", with
+the following components:
 \describe{
-\item{statistic}{the value of the studentized statistic (dSorensen(x) - d0) / seSorensen(x)}
-\item{p.value}{the p-value of the test}
-\item{conf.int}{the one-sided confidence interval (0, dUpp]}
-\item{estimate}{the Sorensen dissimilarity estimate, dSorensen(x)}
-\item{null.value}{the value of d0}
-\item{stderr}{the standard error of the Sorensen dissimilarity estimate, seSorensen(x),
-used as denominator in the studentized statistic}
-\item{alternative}{a character string describing the alternative hypothesis}
-\item{method}{a character string describing the test}
-\item{data.name}{a character string giving the names of the data}
-\item{enrichTab}{the 2x2 contingency table of joint enrichment whereby the test was based}
+\item{statistic}{The value of the studentized statistic
+\eqn{(dSorensen(x) - d0) / seSorensen(x)}.}
+\item{p.value}{The p-value of the test.}
+\item{conf.int}{The one-sided confidence interval \eqn{(0, dUpp]}.}
+\item{estimate}{The Sorensen dissimilarity estimate, \eqn{dSorensen(x)}.}
+\item{null.value}{The value of \code{d0}.}
+\item{stderr}{The standard error of the Sorensen dissimilarity estimate,
+\eqn{seSorensen(x)}, used as denominator in the studentized statistic.}
+\item{alternative}{A character string describing the alternative
+hypothesis.}
+\item{method}{A character string describing the test.}
+\item{data.name}{A character string giving the names of the data.}
+\item{enrichTab}{The 2x2 contingency table of joint enrichment on which the
+test was based.}
 }
-For the "list" and "tableList" interfaces, the result is an "equivSDhtestList", a list
-of objects with all pairwise comparisons, each one being an object of "equivSDhtest" class.
+For the "list" and "tableList" interfaces, the result is an object of class
+"equivSDhtestList", a list of all pairwise comparisons, each one being an
+object of class
+"equivSDhtest".
 }
 \description{
-Equivalence test based on the Sorensen-Dice dissimilarity, computed either by an asymptotic
-normal approach or by a bootstrap approach.
+Equivalence test based on the Sorensen-Dice dissimilarity, computed either by
+an asymptotic normal approach or by a bootstrap approach.
 }
 \details{
-This function computes either the normal asymptotic or the bootstrap equivalence
-test based on the Sorensen-Dice dissimilarity, given a 2x2 arrangement of frequencies
-(either implemented as a "table", a "matrix" or a "numeric" object):
+This function computes either the normal asymptotic or the bootstrap
+equivalence test based on the Sorensen-Dice dissimilarity, given a 2x2
+arrangement of frequencies (either implemented as a "table", a "matrix" or a
+"numeric" object):
 
 \tabular{rr}{
 \eqn{n_{11}} \tab \eqn{n_{10}} \cr
 \eqn{n_{01}} \tab \eqn{n_{00}},
 }
 
-The subindex '11' corresponds to those GO terms enriched in both lists, '01' to terms enriched
-in the second list but not in the first one, '10' to terms enriched in the first list but not
-enriched in the second one and '00' corresponds to those GO terms non enriched in both gene
-lists, i.e., to the double negatives, a value which is ignored in the computations.
+The subindex '11' corresponds to those GO terms enriched in both lists, '01'
+to terms enriched in the second list but not in the first one, '10' to terms
+enriched in the first list but not enriched in the second one and '00'
+corresponds to those GO terms non enriched in both gene lists, i.e., to the
+double negatives, a value which is ignored in the computations.
 
-In the "numeric" interface, if \code{length(x) >= 4}, the values are interpreted
-as
+In the "numeric" interface, if \code{length(x) >= 4}, the values are
+interpreted as
 \eqn{(n_{11}, n_{01}, n_{10}, n_{00})}{%
-(n_11, n_01, n_10, n_00)}, always in this order and discarding extra values if necessary.
+(n_11, n_01, n_10, n_00)}, always in this order and discarding extra values
+if necessary.
 
-If \code{x} is an object of class "character", then \code{x} (and \code{y}) must represent
-two "character" vectors of valid gene identifiers (e.g., ENTREZ).
-Then the equivalence test is performed between \code{x} and \code{y}, after internally
-summarizing them as a 2x2 contingency table of joint enrichment.
-This last operation is performed by function \code{\link{buildEnrichTable}} and "valid gene
-identifiers (e.g., ENTREZ)" stands for the coherency of these gene identifiers with the arguments
-\code{geneUniverse} and \code{orgPackg} of \code{buildEnrichTable}, passed by the ellipsis
-argument \code{...} in \code{equivTestSorensen}.
+If \code{x} is an object of class "character", then \code{x} (and \code{y})
+must represent two "character" vectors of valid gene identifiers
+(e.g., ENTREZ).
+Then the equivalence test is performed between \code{x} and \code{y}, after
+internally summarizing them as a 2x2 contingency table of joint enrichment.
+This last operation is performed by function \code{\link{buildEnrichTable}}
+and "valid gene identifiers (e.g., ENTREZ)" stands for the coherency of these
+gene identifiers with the arguments \code{geneUniverse} and \code{orgPackg}
+of \code{buildEnrichTable}, passed by the ellipsis argument \code{...} in
+\code{equivTestSorensen}.
 
-If \code{x} is an object of class "list", each of its elements must be a "character" vector of gene
-identifiers (e.g., ENTREZ). Then all pairwise equivalence tests are performed between these gene lists.
+If \code{x} is an object of class "list", each of its elements must be a
+"character" vector of gene identifiers (e.g., ENTREZ). Then all pairwise
+equivalence tests are performed between these gene lists.
 
-Class "tableList" corresponds to objects representing all mutual enrichment contingency tables
-generated in a pairwise fashion:
-Given gene lists l1, l2, ..., lk, an object of class "tableList" (typically constructed by a call to function
-\code{\link{buildEnrichTable}}) is a list of lists of
-contingency tables tij generated from each pair of gene lists i and j, with the
-following structure:
+Class "tableList" corresponds to objects representing all mutual enrichment
+contingency tables generated in a pairwise fashion:
+Given gene lists l1, l2, ..., lk, an object of class "tableList" (typically
+constructed by a call to function \code{\link{buildEnrichTable}}) is a list
+of lists of contingency tables tij generated from each pair of gene lists i
+and j, with the following structure:
 
 $l2
 
@@ -173,107 +136,90 @@ $l3$l1$t31, $l3$l2$t32
 
 $lk$l1$tk1, $lk$l2$tk2, ..., $lk$l(k-1)tk(k-1)
 
-If \code{x} is an object of class "tableList", the test is performed over each one of these tables.
+If \code{x} is an object of class "tableList", the test is performed over
+each one of these tables.
 
-The test is based on the fact that the studentized statistic (^d - d) / ^se is approximately
-distributed as a standard normal. ^d stands for the sample Sorensen-Dice dissimilarity, d for
-its true (unknown) value and ^se for the estimate of its standard error.
-This result is asymptotically correct, but the true distribution of the studentized statistic
-is not exactly normal for finite samples, with a heavier left tail than expected under the
-Gaussian model, which may produce some type I error inflation.
+The test is based on the fact that the studentized statistic (^d - d) / ^se
+is approximately distributed as a standard normal. ^d stands for the sample
+Sorensen-Dice dissimilarity, d for its true (unknown) value and ^se for the
+estimate of its standard error.
+This result is asymptotically correct, but the true distribution of the
+studentized statistic is not exactly normal for finite samples, with a
+heavier left tail than expected under the Gaussian model, which may produce
+some type I error inflation.
 The bootstrap method provides a better approximation to this distribution.
-In the bootstrap approach, \code{nboot} new bootstrap contingency tables are generated from a
-multinomial distribution with parameters
+In the bootstrap approach, \code{nboot} new bootstrap contingency tables are
+generated from a multinomial distribution with parameters
 \code{size =} \eqn{ n = (n_{11} + n_{01} + n_{10} + n_{00})}{%
 (n11 + n01 + n10 + n00)} and probabilities
-\eqn{(n_{11} / n, n_{01} / n, n_{10}, n_{00} / n)}{\%}. Sometimes, some of these generated tables may
-present so low frequencies of enrichment that make them unable for Sorensen-Dice computations.
-As a consequence, the number of effective bootstrap samples may be lower than the number of
-initially planned ones, \code{nboot}, but our simulation studies concluded that this makes the
-test more conservative, less prone to reject a truly false null hypothesis of inequivalence,
-but in any case protects from inflating the type I error.
+\eqn{(n_{11} / n, n_{01} / n, n_{10} / n, n_{00} / n)}{\%}. Sometimes, some of
+these generated tables may present so low frequencies of enrichment that make
+them unable for Sorensen-Dice computations.
+As a consequence, the number of effective bootstrap samples may be lower than
+the number of initially planned ones, \code{nboot}, but our simulation
+studies concluded that this makes the test more conservative, less prone to
+reject a truly false null hypothesis of inequivalence, but in any case
+protects from inflating the type I error.
 
 In a bootstrap test result, use \code{getNboot} to access the
-number of initially planned bootstrap replicates and \code{getEffNboot} to access the number
-of finally effective bootstrap replicates.
+number of initially planned bootstrap replicates and \code{getEffNboot} to
+access the number of finally effective bootstrap replicates.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{equivTestSorensen(table)}: S3 method for class "table"
-
-\item \code{equivTestSorensen(matrix)}: S3 method for class "matrix"
-
-\item \code{equivTestSorensen(numeric)}: S3 method for class "numeric"
-
-\item \code{equivTestSorensen(character)}: S3 method for class "character"
-
-\item \code{equivTestSorensen(list)}: S3 method for class "list"
-
-\item \code{equivTestSorensen(tableList)}: S3 method for class "tableList"
+\item \code{equivTestSorensen(character)}: S3 default method.
 
 }}
 \examples{
-# Gene lists 'atlas' and 'sanger' in 'allOncoGeneLists' dataset. Table of joint enrichment
-# of GO terms in ontology BP at level 4.
-data(cont_atlas.sanger_BP4)
-cont_atlas.sanger_BP4
-equivTestSorensen(cont_atlas.sanger_BP4)
-# Bootstrap test:
-equivTestSorensen(cont_atlas.sanger_BP4, boot = TRUE)
+## The following example is highly time-consuming and is therefore not run
+## automatically during R CMD check.
 
-# Equivalence tests from scratch, directly from gene lists:
-# (These examples may be considerably time consuming due to many enrichment
-# tests to build the contingency tables of mutual enrichment)
-# data(allOncoGeneLists)
-# ?allOncoGeneLists
-
-# Obtaining ENTREZ identifiers for the gene universe of humans:
+\dontrun{
+## i) Obtaining ENTREZ identifiers for the gene universe of humans:
 library(org.Hs.eg.db)
 humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
 
-# Computing the equivalence test:
-# equivTestSorensen(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
-#                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#                   onto = "BP", GOLevel = 4)
-# Bootstrap instead of normal approximation test:
-# equivTestSorensen(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
-#                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#                   onto = "BP", GOLevel = 4,
-#                   boot = TRUE)
+## ii) Gene lists to be explored for analysis:
+data(allOncoGeneLists)
 
-# Essentially, the above code makes:
-# ccont_atlas.sanger_BP4 <- buildEnrichTable(allOncoGeneLists$atlas, allOncoGeneLists$sanger,
-#                                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#                                   onto = "BP", GOLevel = 4)
-# ccont_atlas.sanger_BP4
-# equivTestSorensen(ccont_atlas.sanger_BP4)
-# equivTestSorensen(ccont_atlas.sanger_BP4, boot = TRUE)
-# (Note that building first the contingency table may be advantageous to save time!)
-# The object cont_atlas.sanger_BP4 and ccont_atlas.sanger_BP4 are exactly the same
+# iii) Calculation of Calculation of the equivalence test of all joint
+# enrichment contingency tables obtained from the BP ontology at the GO 4
+# level.
+eqTest_all_BP4 <- equivTestSorensen(allOncoGeneLists,
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP",
+  GOLevel = 4,
+  d0 = 0.4444,
+  conf.level = 0.95
+)
+eqTest_all_BP4
+}
 
-# All pairwise equivalence tests:
-# equivTestSorensen(allOncoGeneLists,
-#                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#                   onto = "BP", GOLevel = 4)
+# Since running this example may take several minutes, the result has been
+# pre-computed and is accessible as the following:
+data(eqTest_all_BP4)
+eqTest_all_BP4
+# This shortcut applies only to this example; for your own gene-list data,
+# the computation must be performed explicitly.
 
+# For a complete overview of this function's use, see the section 4 of the
+# vignette "Introduction to goSorensen". You can do this by consulting the
+# general package documentation or by directly running the following code in
+# the R console:
+# vignette("goSorensen_Introduction", package = "goSorensen")
 
-# Equivalence test on a contingency table represented as a numeric vector:
-equivTestSorensen(c(56, 1, 30, 47))
-equivTestSorensen(c(56, 1, 30, 47), boot = TRUE)
-equivTestSorensen(c(56, 1, 30))
-# Error: all frequencies are needed for bootstrap:
-try(equivTestSorensen(c(56, 1, 30), boot = TRUE), TRUE)
 }
 \seealso{
 \code{\link{nice2x2Table}} for checking and reformatting data,
 \code{\link{dSorensen}} for computing the Sorensen-Dice dissimilarity,
-\code{\link{seSorensen}} for computing the standard error of the dissimilarity,
-\code{\link{duppSorensen}} for the upper limit of a one-sided confidence interval
-of the dissimilarity.
+\code{\link{seSorensen}} for computing the standard error of the
+dissimilarity, \code{\link{duppSorensen}} for the upper limit of a one-sided
+confidence interval of the dissimilarity.
 \code{\link{getTable}}, \code{\link{getPvalue}}, \code{\link{getUpper}},
-\code{\link{getSE}}, \code{\link{getNboot}} and \code{\link{getEffNboot}} for accessing specific
-fields in the result of these testing functions.
-\code{\link{update}} for updating the result of these testing functions with alternative
-equivalence limits, confidence levels or to convert a normal result in a bootstrap result or
-the reverse.
+\code{\link{getSE}}, \code{\link{getNboot}} and \code{\link{getEffNboot}} for
+accessing specific fields in the result of these testing functions.
+\code{\link{update}} for updating the result of these testing functions with
+alternative equivalence limits, confidence levels or to convert a normal
+result in a bootstrap result or the reverse.
 }

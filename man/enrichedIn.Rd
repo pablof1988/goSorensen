@@ -3,9 +3,8 @@
 \name{enrichedIn}
 \alias{enrichedIn}
 \alias{enrichedIn.default}
-\alias{enrichedIn.character}
-\alias{enrichedIn.list}
-\title{This function builds a cross-tabulation of enriched (TRUE) and non-enriched (FALSE) GO terms vs. gene lists}
+\title{This function builds a cross-tabulation of enriched (TRUE) and non-enriched
+(FALSE) GO terms vs. gene lists}
 \usage{
 enrichedIn(x, ...)
 
@@ -24,133 +23,137 @@ enrichedIn(x, ...)
   keyType = "ENTREZID",
   ...
 )
-
-\method{enrichedIn}{character}(
-  x,
-  geneUniverse,
-  orgPackg,
-  onto,
-  GOLevel,
-  pAdjustMeth = "BH",
-  pvalCutoff = 0.01,
-  qvalCutoff = 0.05,
-  parallel = FALSE,
-  nOfCores = 1,
-  onlyEnriched = TRUE,
-  keyType = "ENTREZID",
-  ...
-)
-
-\method{enrichedIn}{list}(
-  x,
-  geneUniverse,
-  orgPackg,
-  onto,
-  GOLevel,
-  pAdjustMeth = "BH",
-  pvalCutoff = 0.01,
-  qvalCutoff = 0.05,
-  parallel = FALSE,
-  nOfCores = min(detectCores() - 1, length(x)),
-  onlyEnriched = TRUE,
-  keyType = "ENTREZID",
-  ...
-)
 }
 \arguments{
-\item{x}{either an object of class "character" (or coerzable to "character") or "list".
-In the "character" interface, these values should represent Entrez gene (or, in general, feature)
-identifiers.
-In the "list" interface, each element of the list must be a "character" vector of
-Entrez identifiers}
+\item{x}{Either an object of class \code{"character"} (or coercible to
+\code{"character"}) or \code{"list"}.
+In the \code{"character"} interface, these values should represent Entrez
+gene identifiers (or, more generally, feature identifiers).
+In the \code{"list"} interface, each element of the list must be a
+character vector of identifiers.}
 
-\item{...}{Additional parameters}
+\item{...}{Additional parameters passed to internal method implementations.}
 
-\item{geneUniverse}{character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in \code{orgPackg}. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
+\item{geneUniverse}{Character vector containing the universe of genes from
+which the gene lists were extracted.
+  This vector must be obtained from the annotation package declared in
+  \code{orgPackg}.
+  For more details, refer to vignette
+  \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
 
-\item{orgPackg}{A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details, refer to vignette \href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
+\item{orgPackg}{A string with the name of the genomic annotation package
+corresponding to a specific species to be analyzed, which must be previously
+installed and activated.
+For more details, refer to vignette
+\href{../doc/goSorensen_Introduction.html}{goSorensen_Introduction}.}
 
 \item{onto}{string describing the ontology. Belongs to c('BP', 'MF', 'CC')}
 
-\item{GOLevel}{GO level, an integer}
+\item{GOLevel}{Integer GO level to analyze within the selected ontology.
+If \code{NULL}, the analysis is performed without restricting the
+enrichment computation to a specific GO level.}
 
-\item{pAdjustMeth}{string describing the adjust method. Belongs to c('BH', 'BY', 'Bonf')}
+\item{pAdjustMeth}{string describing the adjust method. Belongs to c('BH',
+'BY', 'Bonf')}
 
 \item{pvalCutoff}{adjusted pvalue cutoff on enrichment tests to report}
 
 \item{qvalCutoff}{qvalue cutoff on enrichment tests to report as significant.
-Tests must pass i) pvalueCutoff on unadjusted pvalues, ii) pvalueCutoff on adjusted pvalues and
-iii) qvalueCutoff on qvalues to be reported}
+Tests must pass i) pvalueCutoff on unadjusted pvalues, ii) pvalueCutoff on
+adjusted pvalues and iii) qvalueCutoff on qvalues to be reported}
 
-\item{parallel}{Logical. Only in "list" interface. Defaults to FALSE, put it at TRUE for parallel computation}
+\item{parallel}{Logical. Only in "list" interface. Defaults to FALSE, put it
+at TRUE for parallel computation}
 
-\item{nOfCores}{Number of cores for parallel computations. Only in "list" interface}
+\item{nOfCores}{Number of cores for parallel computations. Only in "list"
+interface}
 
-\item{onlyEnriched}{logical. If TRUE (the default), the returned result only contains those GO terms
+\item{onlyEnriched}{logical. If TRUE (the default), the returned result only
+contains those GO terms
 enriched in almost one of the gene lists}
 
-\item{keyType}{character keytype of input gene, e.g., ENTREZID or SYMBOL}
+\item{keyType}{Character string giving the type of gene identifier used in
+\code{x}, such as \code{"ENTREZID"} or \code{"SYMBOL"}.}
 }
 \value{
 In the "character" interface, a length k vector of TRUE/FALSE values
-corresponding to enrichment or not of the GO terms at level 'GOLev' in ontology 'onto'.
-If 'onlyEnriched' is FALSE, k corresponds to the total number of these GO terms. If 'onlyEnriched'
-is TRUE (default) k is the number of enriched GO terms (and then all values in the resulting
-vector are TRUE).
-In the "list" interface, a logical matrix of TRUE/FALSE values indicating enrichment or not,
-with k rows and s columns. s is the number of gene lists (the length of "list" 'x').
-If 'onlyEnriched' is FALSE, k corresponds to the total number of GO terms at level 'GOLev' in ontology
-'onto'. If 'onlyEnriched' is TRUE (default), the resulting matrix only contains the k rows
-corresponding to GO terms enriched in almost one of these s gene lists.
-In both interfaces ("character" or "list"), the result also has an attribute (\code{nTerms}) with
-the total number of GO terms at level 'GOLev' in ontology 'onto'.
+corresponding to enrichment or not of the GO terms at level 'GOLevel' in
+ontology 'onto'.
+If 'onlyEnriched' is FALSE, k corresponds to the total number of these GO
+terms. If 'onlyEnriched'
+is TRUE (default), k is the number of enriched GO terms (and then all values
+in the resulting vector are TRUE).
+In the "list" interface, a logical matrix of TRUE/FALSE values indicating
+enrichment or not, with k rows and s columns. s is the number of gene lists
+(the length of list 'x').
+If 'onlyEnriched' is FALSE, k corresponds to the total number of GO terms at
+level 'GOLevel' in ontology onto'. If 'onlyEnriched' is TRUE (default), the
+resulting matrix only contains the k rows corresponding to GO terms enriched
+in at least one of these s gene lists.
+In both interfaces ("character" or "list"), the result also has an attribute
+(\code{nTerms}) with the total number of GO terms at level 'GOLevel' in
+ontology 'onto'.
 }
 \description{
-This function builds a cross-tabulation of enriched (TRUE) and non-enriched (FALSE) GO terms vs. gene lists
+This function builds a cross-tabulation of enriched (TRUE) and non-enriched
+(FALSE) GO terms vs. gene lists
 }
 \details{
-When the function argument \code{onlyEnriched} is FALSE, commonly the result is a sparse
-but very large object. This function is primarily designed for internal use of function
-\code{buildEnrichTable}, with argument \code{onlyEnriched} always put at its default TRUE value.
-Then calls to \code{enrichedIn} result in much more compact objects, in general.
+When the function argument \code{onlyEnriched} is FALSE, commonly the result
+is a sparse but very large object. This function is primarily designed for
+internal use of function \code{buildEnrichTable}, with argument
+\code{onlyEnriched} always put at its default TRUE value.
+Then calls to \code{enrichedIn} result in much more compact objects, in
+general.
 
-Argument \code{parallel} only applies to interface "list". Its default value ís "FALSE" and you
-may consider the trade of between the time spent in initializing parallelization and the possible
-time gain when parallelizing. It is difficult to establish a general guideline, but parallelizing
-is only worthwhile when analyzing many gene lists, on the order of 30 or more, although it depends
-a lot on each processor.
+Argument \code{parallel} only applies to interface "list". Its default value
+is "FALSE" and you may consider the trade of between the time spent in
+initializing parallelization and the possible time gain when parallelizing.
+It is difficult to establish a general guideline, but parallelizing
+is only worthwhile when analyzing many gene lists, on the order of 30 or
+more, although it depends a lot on each processor.
+
+AnnotationDbi::select(org.Hs.eg.db, ...)
 }
 \section{Methods (by class)}{
 \itemize{
 \item \code{enrichedIn(default)}: S3 default method
 
-\item \code{enrichedIn(character)}: S3 method for class "character"
-
-\item \code{enrichedIn(list)}: S3 method for class "list"
-
 }}
 \examples{
-# Obtaining ENTREZ identifiers for the gene universe of humans:
+## The following example is highly time-consuming and is therefore not run
+## automatically during R CMD check.
+
+\dontrun{
+## i) Obtaining ENTREZ identifiers for the gene universe of humans:
 library(org.Hs.eg.db)
 humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
 
-# Gene lists to be explored for enrichment:
+## ii) Gene lists to be explored for analysis:
 data(allOncoGeneLists)
-?allOncoGeneLists
 
-# Computing the cross table:
-enrichd <- enrichedIn(allOncoGeneLists[["Vogelstein"]],
-                      geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                      onto = "MF", GOLevel = 6)
-enrichd
+# iii) Computing the threshold enrichment matrix directly from gene lists at
+# GO level 4 and BP ontology:
+enrichedInBP4 <- enrichedIn(allOncoGeneLists,
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP",
+  GOLevel = 4
+)
+enrichedInBP4
+}
 
-# Cross table of enriched GO terms (GO ontology MF, level 6) for all gene
-# lists in 'allOncoGeneLists':
-enrichedAllOncoMF.6 <- enrichedIn(allOncoGeneLists,
-                          geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-                          onto = "MF", GOLevel = 6)
-enrichedAllOncoMF.6
-object.size(enrichedAllOncoMF.6)
-# How many GO terms were tested for enrichment at ontology MF and level 6:
-attr(enrichedAllOncoMF.6, "nTerms")
+# Since running this example may take several minutes, the result has been
+# pre-computed and is accessible as the following:
+data(enrichedInBP4)
+enrichedInBP4
+# This shortcut applies only to this example; for your own gene-list data,
+# the computation must be performed explicitly.
+
+# For a complete overview of this function's use, see the section 2 of the
+# vignette 'Introduction to goSorensen'. You can do this by consulting the
+# general package documentation or by directly running the following code in
+# the R console:
+# vignette("goSorensen_Introduction", package = "goSorensen")
+
 }

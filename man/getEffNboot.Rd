@@ -93,7 +93,7 @@ class(eqTest_atlas.sanger_BP4)
 # Not a bootstrap test, first upgrade to a bootstrap test:
 boot.sanger_atlas.BP.4 <- upgrade(eqTest_atlas.sanger_BP4, boot = TRUE)
 
-#getEffNboot(eqTest_atlas.sanger_BP4)
+# getEffNboot(eqTest_atlas.sanger_BP4)
 getEffNboot(boot.sanger_atlas.BP.4)
 getNboot(boot.sanger_atlas.BP.4)
 

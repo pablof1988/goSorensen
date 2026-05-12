@@ -37,43 +37,55 @@ allSorenThreshold(x, ...)
 )
 }
 \arguments{
-\item{x}{either an object of class "list" or an object of class "allTableList". In the first
-case, each of its elements must be a "character" vector of gene identifiers (e.g., ENTREZ). In the second case,
-the object corresponds to all contingency tables of joint enrichment along one or more GO
-ontologies and one or more GO levels.}
+\item{x}{either an object of class "list" or an object of class
+"allTableList". In the first case, each of its elements must be a "character"
+vector of gene identifiers (e.g., ENTREZ). In the second case, the object
+corresponds to all contingency tables of joint enrichment along one or more
+GO ontologies and one or more GO levels.}
 
 \item{...}{extra parameters for function \code{buildEnrichTable}.}
 
-\item{geneUniverse}{character vector containing the universe of genes from where gene lists have been extracted. This vector must be obtained from the annotation package declared in orgPackg. For more details see \href{../doc/README.html}{README File}.}
+\item{geneUniverse}{character vector containing the universe of genes from
+where gene lists have been extracted. This vector must be obtained from the
+annotation package declared in orgPackg. For more details see
+\href{https://github.com/pablof1988/goSorensen/blob/master/README.md}{README File}.}
 
-\item{orgPackg}{A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details see \href{../doc/README.html}{README File}.}
+\item{orgPackg}{A string with the name of the genomic annotation package
+corresponding to a specific species to be analyzed, which must be previously
+installed and activated. For more details see
+\href{https://github.com/pablof1988/goSorensen/blob/master/README.md}{README File}.}
 
-\item{boot}{boolean. If TRUE, the confidence intervals and the test p-values are computed by means
-of a bootstrap approach instead of the asymptotic normal approach. Defaults to FALSE.}
+\item{boot}{boolean. If TRUE, the confidence intervals and the test p-values
+are computed by means
+of a bootstrap approach instead of the asymptotic normal approach. Defaults
+to FALSE.}
 
-\item{nboot}{numeric, number of initially planned bootstrap replicates. Ignored if
-\code{boot == FALSE}. Defaults to 10000.}
+\item{nboot}{numeric, number of initially planned bootstrap replicates.
+Ignored if \code{boot == FALSE}. Defaults to 10000.}
 
-\item{boot.seed}{starting random seed for all bootstrap iterations. Defaults to 6551.
-see the details section}
+\item{boot.seed}{starting random seed for all bootstrap iterations.
+Defaults to 6551. see the details section}
 
 \item{ontos}{"character", GO ontologies to analyse.}
 
-\item{GOLevels}{"integer", GO levels to analyse inside each one of these GO ontologies.}
+\item{GOLevels}{"integer", GO levels to analyse inside each one of these GO
+ontologies.}
 
-\item{trace}{Logical. If TRUE (default), the (usually very time consuming) process
-is traced along the specified GO ontologies and levels.}
+\item{trace}{Logical. If TRUE (default), the (usually very time consuming)
+process is traced along the specified GO ontologies and levels.}
 
-\item{alpha}{simultaneous nominal significance level for the equivalence tests to be repeteadly performed,
-defaults to 0.05}
+\item{alpha}{simultaneous nominal significance level for the equivalence
+tests to be repeteadly performed, defaults to 0.05}
 
-\item{precis}{numerical precision in the iterative search of the equivalence threshold dissimilarities,}
+\item{precis}{numerical precision in the iterative search of the equivalence
+threshold dissimilarities,}
 }
 \value{
-An object of class "distList". It is a list with as many components as GO ontologies have been
-analysed. Each of these elements is itself a list with as many components as GO levels have been
-analysed. Finally, the elements of these lists are objects of class "dist" with the Sorensen-Dice
-equivalence threshold dissimilarity.
+An object of class "distList". It is a list with as many components as GO
+ontologies have been analysed. Each of these elements is itself a list with
+as many components as GO levels have been analysed. Finally, the elements of
+these lists are objects of class "dist" with the Sorensen-Dice equivalence
+threshold dissimilarity.
 }
 \description{
 Iterate \code{sorenThreshold} along the specified GO ontologies and GO levels
@@ -86,24 +98,41 @@ Iterate \code{sorenThreshold} along the specified GO ontologies and GO levels
 
 }}
 \examples{
-# # This example is highly time-consuming. It scans two GO ontologies and three
-# # GO levels inside them to perform the equivalence test.
+## The following example is highly time-consuming and is therefore not run
+## automatically during R CMD check.
 
-# Obtaining ENTREZ identifiers for the gene universe of humans:
-# library(org.Hs.eg.db)
-# humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
+\dontrun{
+## i) Obtaining ENTREZ identifiers for the gene universe of humans:
+library(org.Hs.eg.db)
+humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
 
-# # Gene lists to be explored for enrichment:
-# data("allOncoGeneLists")
-# allSorenThreshold(allOncoGeneLists,
-#                   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#
-# Much faster:
-# Object allContTabs of class "allTableList" contains all the pairwise contingency tables of
-# joint enrichment for the gene lists in \code{allOncoGeneLists}, obtained along all three GO
-# ontologies and along GO levels 3 to 10:
-data(allContTabs)
-dSors <- allSorenThreshold(allContTabs, ontos = c("MF", "BP"), GOLevels = seq.int(4,6))
-dSors$BP$`level 5`
+## ii) Gene lists to be explored for analysis:
+data(allOncoGeneLists)
+
+# iii) # Calculation of all dissimilarity matrices derived from joint
+# enrichment contingency tables across GO levels 3 to 10 for the BP, CC, and
+# MF ontologies:
+allDissMatrx <- allSorenThreshold(allOncoGeneLists,
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  ontos = c("BP", "CC", "MF"),
+  GOLevels = 3:10,
+  trace = FALSE
+)
+allDissMatrx
+}
+
+# Since running this example may take several minutes, the result has been
+# pre-computed and is accessible as the following:
+data(allDissMatrx)
+allDissMatrx
+# This shortcut applies only to this example; for your own gene-list data,
+# the computation must be performed explicitly.
+
+# For a complete overview of this function's use, see the section 2 of the
+# vignette "Working with the Irrelevance-threshold Matrix of Dissimilarities"
+# You can do this by consulting the general package documentation or by
+# directly running the following code in the R console:
+# vignette("Dissimilarities_Matrix", package = "goSorensen")
 
 }

@@ -1,52 +1,38 @@
 #' Update the result of a Sorensen-Dice equivalence test.
 #'
-#' Recompute the test (or tests) from an object of class "equivSDhtest", "equivSDhtestList" or
-#' "AllEquivSDhtest" (i.e.,the output of functions "equivTestSorensen" or "allEquivTestSorensen").
-#' Using the same table or tables of enrichment frequencies in 'x', obtain again the result of the
-#' equivalence test for new values of any of the parameters \code{d0} or \code{conf.level} or
-#' \code{boot} or \code{nboot} or \code{check.table}.
+#' Recompute the test (or tests) from an object of class "equivSDhtest",
+#' "equivSDhtestList" or "AllEquivSDhtest" (i.e.,the output of functions
+#' "equivTestSorensen" or "allEquivTestSorensen").
+#' Using the same table or tables of enrichment frequencies in 'x', obtain again
+#' the result of the equivalence test for new values of any of the parameters
+#' \code{d0} or \code{conf.level} or \code{boot} or \code{nboot} or
+#' \code{check.table}.
 #'
-#' @param x an object of class "equivSDhtest", "equivSDhtestList" or "AllEquivSDhtest".
-#' @param ... any valid parameters for function "equivTestSorensen" for its interface "table",
-#' to recompute the test(s) according to these parameters.
+#' @param x an object of class "equivSDhtest", "equivSDhtestList" or
+#' "AllEquivSDhtest".
+#' @param ... any valid parameters for function "equivTestSorensen" for its
+#' interface "table", to recompute the test(s) according to these parameters.
 #'
 #' @return An object of the same class than \code{x}.
 #'
 #' @examples
-#' # Result of the equivalence test between gene lists 'sanger' and 'atlas', in dataset
-#' # 'allOncoGeneLists', at level 4 of the BP ontology:
-#' data(eqTest_atlas.sanger_BP4)
-#' eqTest_atlas.sanger_BP4
-#' class(eqTest_atlas.sanger_BP4)
-#' # This may correspond to the result of code like:
-#' # data(allOncoGeneLists)
-#' # library(org.Hs.eg.db)
-#' # humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
-#' # eqTest_atlas.sanger_BP4 <- equivTestSorensen(
-#' #   allOncoGeneLists[["sanger"]], allOncoGeneLists[["atlas"]],
-#' #   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #   onto = "BP", GOLevel = 4, listNames = c("sanger", "atlas"))
-#' upgrade(eqTest_atlas.sanger_BP4, d0 = 1/(1 + 10/9)) # d0 = 0.4737
-#' upgrade(eqTest_atlas.sanger_BP4, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
-#' upgrade(eqTest_atlas.sanger_BP4, d0 = 1/(1 + 2*1.25), conf.level = 0.99)
+#' # Manually define a 2 x 2 enrichment contingency table
+#' contTable <- as.table(matrix(c(127, 19, 159, 3018),
+#'   nrow = 2,
+#'   dimnames = list(
+#'     "Enriched in List 1" = c(TRUE, FALSE),
+#'     "Enriched in List 2" = c(TRUE, FALSE)
+#'   )
+#' ))
+#' contTable
 #'
-#' # All pairwise equivalence tests at level 4 of the BP ontology
-#' data(eqTest_all_BP4)
-#' ?eqTest_all_BP4
-#' class(eqTest_all_BP4)
-#' # This may correspond to a call like:
-#' # data(allOncoGeneLists)
-#' # library(org.Hs.eg.db)
-#' # humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
-#' # eqTest_all_BP4 <- equivTestSorensen(allOncoGeneLists,
-#' #                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#' #                           onto = "BP", GOLevel = 4)
-#' upgrade(eqTest_all_BP4, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
+#' # Compute the Sorensen equivalence test from the contingency table.
+#' # The result is an object of class "equivSDhtest".
+#' equivalenceTest <- equivTestSorensen(contTable)
+#' equivalenceTest
 #'
-#' data(allEqTests)
-#' ?allEqTests
-#' class(allEqTests)
-#' upgrade(allEqTests, d0 = 1/(1 + 2*1.25)) # d0 = 0.2857
+#' # Access the equivalence test results.
+#' upgrade(equivalenceTest)
 #'
 #' @export
 upgrade <- function(x, ...) {
@@ -92,14 +78,17 @@ upgrade.equivSDhtest <- function(x, ...) {
   } else {
     check.table <- newPars$check.table
   }
-  return(equivTestSorensen.table(tab, d0 = d0, conf.level = conf.level,
-                                 boot = boot, nboot = nboot, check.table = check.table))
+  return(equivTestSorensen.table(tab,
+    d0 = d0, conf.level = conf.level,
+    boot = boot, nboot = nboot,
+    check.table = check.table
+  ))
 }
 
 #' @describeIn upgrade S3 method for class "equivSDhtestList"
 #' @export
 upgrade.equivSDhtestList <- function(x, ...) {
-  result <- lapply(x, function(xi){
+  result <- lapply(x, function(xi) {
     resaux <- lapply(xi, function(testij) {
       tab <- getTable.equivSDhtest(testij)
       return(equivTestSorensen.table(tab, ...))

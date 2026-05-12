@@ -121,7 +121,7 @@ getNboot.equivSDhtest <- function(x, ...) {
 #' @describeIn getNboot S3 method for class "equivSDhtestList"
 #' @export
 getNboot.equivSDhtestList <- function(x, simplify = TRUE, ...) {
-  result <- lapply(x, function(xi){
+  result <- lapply(x, function(xi) {
     resaux <- lapply(xi, getNboot.equivSDhtest)
     names(resaux) <- names(xi)
     return(resaux)
@@ -137,7 +137,7 @@ getNboot.equivSDhtestList <- function(x, simplify = TRUE, ...) {
     rownames(resMat) <- namsMat
     colnames(resMat) <- namsMat
     return(resMat)
-  }else{
+  } else {
     return(result)
   }
 }
@@ -148,8 +148,10 @@ getNboot.AllEquivSDhtest <- function(x, onto, GOLevel, listNames, simplify = TRU
   if (missing(onto)) {
     onto <- names(x)
   }
-  stopifnot("GO ontology names must be one or more of 'BP', 'CC' or 'MF'" =
-              onto %in% c("BP","CC","MF"))
+  stopifnot(
+    "GO ontology names must be one or more of 'BP', 'CC' or 'MF'" =
+      onto %in% c("BP", "CC", "MF")
+  )
   if (missing(GOLevel)) {
     GOLevel <- names(x[[1]])
   } else {
@@ -159,8 +161,10 @@ getNboot.AllEquivSDhtest <- function(x, onto, GOLevel, listNames, simplify = TRU
   }
   allLists <- missing(listNames)
   if (!allLists) {
-    stopifnot("'listNames' must be a 'character' of length 2" =
-                is.character(listNames) && (length(listNames) == 2))
+    stopifnot(
+      "'listNames' must be a 'character' of length 2" =
+        is.character(listNames) && (length(listNames) == 2)
+    )
   }
   result <- lapply(onto, function(ionto) {
     resLev <- lapply(GOLevel, function(ilev) {

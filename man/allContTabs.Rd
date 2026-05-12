@@ -15,6 +15,7 @@ This object contains all the enrichment contingency tables to compare all possib
 }
 \details{
 The attribute \code{enriched} is present in each element of this output, meaning that there is an enrichment matrix, similar to the one obtained with the function \code{enrichedIn}, for each ontology and GO-Level contained in this object.
+The attribute \code{enriched} is present in each element of this output, meaning that there is an enrichment matrix, similar to the one obtained with the function \code{enrichedIn}, for each ontology and GO-Level contained in this object.
 
 Consider this object only as an illustrative example, which is valid exclusively for the data \code{\link{allOncoGeneLists}} contained in this package. Note that gene lists, GO terms, and Bioconductor may change over time. The current version of these results were generated with Bioconductor version 3.20.
 }

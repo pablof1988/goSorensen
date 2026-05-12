@@ -4,8 +4,8 @@
 \alias{sorenThreshold}
 \alias{sorenThreshold.list}
 \alias{sorenThreshold.tableList}
-\title{For a given level (2, 3, ...) in a GO ontology (BP, MF or CC), compute the equivalence threshold
-  dissimilarity matrix.}
+\title{For a given level (2, 3, ...) in a GO ontology (BP, MF or CC), compute the
+equivalence threshold dissimilarity matrix.}
 \usage{
 sorenThreshold(x, ...)
 
@@ -43,47 +43,56 @@ See the details section for more information.}
 
 \item{onto}{character, GO ontology ("BP", "MF" or "CC") under consideration}
 
-\item{GOLevel}{integer (2, 3, ...) level of a GO ontology where the GO profiles are built}
+\item{GOLevel}{integer (2, 3, ...) level of a GO ontology where the GO
+profiles are built}
 
-\item{geneUniverse}{character vector containing the universe of genes from where geneLists have been extracted. This vector must be extracted from the annotation package declared in \code{orgPackg}. For more details see \href{../doc/README.html}{README File}.}
+\item{geneUniverse}{character vector containing the universe of genes from
+where geneLists have been extracted. This vector must be extracted from the
+annotation package declared in \code{orgPackg}. For more details see
+\href{https://github.com/pablof1988/goSorensen/blob/master/README.md}{README File}.}
 
-\item{orgPackg}{A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details see \href{../doc/README.html}{README File}.}
+\item{orgPackg}{A string with the name of the genomic annotation package
+corresponding to a specific species to be analyzed, which must be previously
+installed and activated. For more details see
+\href{https://github.com/pablof1988/goSorensen/blob/master/README.md}{README File}.}
 
 \item{boot}{boolean. If TRUE, the p-values are computed by means
-of a bootstrap approach instead of the asymptotic normal approach. Defaults to FALSE.}
+of a bootstrap approach instead of the asymptotic normal approach. Defaults
+to FALSE.}
 
-\item{nboot}{numeric, number of initially planned bootstrap replicates. Ignored if
-\code{boot == FALSE}. Defaults to 10000}
+\item{nboot}{numeric, number of initially planned bootstrap replicates.
+Ignored if \code{boot == FALSE}. Defaults to 10000}
 
-\item{boot.seed}{starting random seed for all bootstrap iterations. Defaults to 6551.
-see the details section}
+\item{boot.seed}{starting random seed for all bootstrap iterations. Defaults
+to 6551. see the details section}
 
 \item{trace}{boolean, the full process must be traced? Defaults to TRUE}
 
-\item{alpha}{simultaneous nominal significance level for the equivalence tests to be repeteadly performed,
-defaults to 0.05}
+\item{alpha}{simultaneous nominal significance level for the equivalence
+tests to be repeteadly performed, defaults to 0.05}
 
-\item{precis}{numerical precision in the iterative search of the equivalence threshold dissimilarities,
-defaults to 0.001}
+\item{precis}{numerical precision in the iterative search of the equivalence
+threshold dissimilarities, defaults to 0.001}
 }
 \value{
-An object of class "dist", the equivalence threshold dissimilarity matrix based on the
-Sorensen-Dice dissimilarity.
+An object of class "dist", the equivalence threshold dissimilarity
+matrix based on the Sorensen-Dice dissimilarity.
 }
 \description{
-For a given level (2, 3, ...) in a GO ontology (BP, MF or CC), compute the equivalence threshold
-  dissimilarity matrix.
+For a given level (2, 3, ...) in a GO ontology (BP, MF or CC), compute the
+equivalence threshold dissimilarity matrix.
 }
 \details{
-If \code{x} is an object of class "list", each of its elements must be a "character" vector of gene
-identifiers (e.g., ENTREZ). Then all pairwise threshold dissimilarities between these gene lists are obtained.
+If \code{x} is an object of class "list", each of its elements must be a
+"character" vector of gene identifiers (e.g., ENTREZ). Then all pairwise
+threshold dissimilarities between these gene lists are obtained.
 
-Class "tableList" corresponds to objects representing all mutual enrichment contingency tables
-generated in a pairwise fashion:
-Given gene lists l1, l2, ..., lk, an object of class "tableList" (typically constructed by a call to function
-\code{\link{buildEnrichTable}}) is a list of lists of
-contingency tables tij generated from each pair of gene lists i and j, with the
-following structure:
+Class "tableList" corresponds to objects representing all mutual enrichment
+contingency tables generated in a pairwise fashion:
+Given gene lists l1, l2, ..., lk, an object of class "tableList" (typically
+constructed by a call to function \code{\link{buildEnrichTable}}) is a list
+of lists of contingency tables tij generated from each pair of gene lists i
+and j, with the following structure:
 
 $l2
 
@@ -97,17 +106,19 @@ $l3$l1$t31, $l3$l2$t32
 
 $lk$l1$tk1, $lk$l2$tk2, ..., $lk$l(k-1)tk(k-1)
 
-If \code{x} is an object of class "tableList", the threshold dissimilarity is obtained
-over each one of these tables.
+If \code{x} is an object of class "tableList", the threshold dissimilarity is
+obtained over each one of these tables.
 
-If \code{boot == TRUE}, all series of \code{nboot} bootstrap replicates start from the same random
-seed, provided by the argument \code{boot.seed}, except if \code{boot == NULL}.
+If \code{boot == TRUE}, all series of \code{nboot} bootstrap replicates start
+from the same random seed, provided by the argument \code{boot.seed}, except
+if \code{boot == NULL}.
 
-Do not confuse the resulting threshold dissimilarity matrix with the Sorensen-Dice dissimilarities
-computed in each equivalence test.
+Do not confuse the resulting threshold dissimilarity matrix with the
+Sorensen-Dice dissimilarities computed in each equivalence test.
 
-The dimension of the resulting matrix may be less than the number of original gene lists being
-compared, as the process may not converge for some pairs of gene lists.
+The dimension of the resulting matrix may be less than the number of original
+gene lists being compared, as the process may not converge for some pairs of
+gene lists.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -117,21 +128,39 @@ compared, as the process may not converge for some pairs of gene lists.
 
 }}
 \examples{
-# Gene lists to be explored for enrichment:
-data(allOncoGeneLists)
+## The following example is highly time-consuming and is therefore not run
+## automatically during R CMD check.
 
-# Obtaining ENTREZ identifiers for the gene universe of humans:
+\dontrun{
+## i) Obtaining ENTREZ identifiers for the gene universe of humans:
 library(org.Hs.eg.db)
 humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
 
-# This example is quite time consuming:
-# sorenThreshold(allOncoGeneLists,
-#                geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-# Much faster:
-# Object \code{cont_all_BP4} of class "tableList" contains all the pairwise contingency
-# tables of joint enrichment for the gene lists in \code{allOncoGeneLists}, for the BP
-# GO ontology at level 4:
-data("cont_all_BP4")
-sorenThreshold(cont_all_BP4)
+## ii) Gene lists to be explored for analysis:
+data(allOncoGeneLists)
 
+# iii) Computing the threshold dissimilarity matrix directly from gene lists at
+# GO level 4 and BP ontology:
+dissMatrx_BP4 <- sorenThreshold(allOncoGeneLists,
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP",
+  GOLevel = 4,
+  trace = FALSE
+)
+dissMatrx_BP4
+}
+
+# Since running this example may take several minutes, the result has been
+# pre-computed and is accessible as the following:
+data(dissMatrx_BP4)
+dissMatrx_BP4
+# This shortcut applies only to this example; for your own gene-list data,
+# the computation must be performed explicitly.
+
+# For a complete overview of this function's use, see the section 2 of the
+# vignette "Working with the Irrelevance-threshold Matrix of Dissimilarities"
+# You can do this by consulting the general package documentation or by
+# directly running the following code in the R console:
+# vignette("Dissimilarities_Matrix", package = "goSorensen")
 }

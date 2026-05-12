@@ -44,12 +44,22 @@ gosorensen package provides the following functions:
 All these functions are generic, adequate for different (S3) classes representing the before cited
 GO term enrichment cross-tabulations.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/pablof1988/goSorensen}
+  \item Report bugs at \url{https://github.com/pablof1988/goSorensen/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Pablo Flores \email{p_flores@espoch.edu.ec} (\href{https://orcid.org/0000-0002-7156-8547}{ORCID})
 
 Authors:
 \itemize{
+  \item Pablo Flores \email{p_flores@espoch.edu.ec} (\href{https://orcid.org/0000-0002-7156-8547}{ORCID})
   \item Jordi Ocana (\href{https://orcid.org/0000-0002-4736-6996}{ORCID}) [contributor]
+  \item Alex Mantilla (\href{https://orcid.org/0000-0001-7047-7072}{ORCID}) [contributor]
 }
 
 Other contributors:

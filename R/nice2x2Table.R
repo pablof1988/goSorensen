@@ -15,10 +15,10 @@
 #' In the "table" and "matrix" interfaces, the input parameter \code{x} must correspond
 #' to a two-dimensional array:
 #'
-#'\tabular{rr}{
+#' \tabular{rr}{
 #' \eqn{n_{11}} \tab \eqn{n_{10}} \cr
 #' \eqn{n_{01}} \tab \eqn{n_{00}},
-#'}
+#' }
 #' These values are interpreted (always in this order) as n11: number of GO terms enriched in both lists,
 #' n01: GO terms enriched in the second list but not in the first one, n10: terms not enriched in the second
 #' list but enriched in the first one and double negatives, n00.
@@ -28,17 +28,27 @@
 #' 3 or more, in the same order as before.
 #'
 #' @examples
-#' conti <- as.table(matrix(c(27, 36, 12, 501, 43, 15, 0, 0, 0), nrow = 3, ncol = 3,
-#'                          dimnames = list(c("a1","a2","a3"),
-#'                                          c("b1", "b2","b3"))))
-#' tryCatch(nice2x2Table(conti), error = function(e) {return(e)})
-#' conti2 <- conti[1,seq.int(1, min(2,ncol(conti))), drop = FALSE]
+#' conti <- as.table(matrix(c(27, 36, 12, 501, 43, 15, 0, 0, 0),
+#'   nrow = 3, ncol = 3,
+#'   dimnames = list(
+#'     c("a1", "a2", "a3"),
+#'     c("b1", "b2", "b3")
+#'   )
+#' ))
+#' tryCatch(nice2x2Table(conti), error = function(e) {
+#'   return(e)
+#' })
+#' conti2 <- conti[1, seq.int(1, min(2, ncol(conti))), drop = FALSE]
 #' conti2
-#' tryCatch(nice2x2Table(conti2), error = function(e) {return(e)})
+#' tryCatch(nice2x2Table(conti2), error = function(e) {
+#'   return(e)
+#' })
 #'
 #' conti3 <- matrix(c(12, 210), ncol = 2, nrow = 1)
 #' conti3
-#' tryCatch(nice2x2Table(conti3), error = function(e) {return(e)})
+#' tryCatch(nice2x2Table(conti3), error = function(e) {
+#'   return(e)
+#' })
 #'
 #' conti4 <- c(32, 21, 81, 1439)
 #' nice2x2Table(conti4)
@@ -48,10 +58,14 @@
 #' nice2x2Table(conti5)
 #'
 #' conti6 <- c(-12, 21, 8)
-#' tryCatch(nice2x2Table(conti6), error = function(e) {return(e)})
+#' tryCatch(nice2x2Table(conti6), error = function(e) {
+#'   return(e)
+#' })
 #'
 #' conti7 <- c(0, 0, 0, 32)
-#' tryCatch(nice2x2Table(conti7), error = function(e) {return(e)})
+#' tryCatch(nice2x2Table(conti7), error = function(e) {
+#'   return(e)
+#' })
 #'
 #' @export
 nice2x2Table <- function(x) {
@@ -61,7 +75,7 @@ nice2x2Table <- function(x) {
 #' @describeIn nice2x2Table S3 method for class "table"
 #' @export
 nice2x2Table.table <- function(x) {
-  stopifnot("Not a 2x2 table" = dim(x) == c(2,2))
+  stopifnot("Not a 2x2 table" = dim(x) == c(2, 2))
   stopifnot("Negative frequencies in a contingency table" = all(x >= 0))
   # stopifnot("Zero frequencies: Inadequate for Sorensen-Dice computations" = sum(x[seq_len(3)]) > 0)
   return(TRUE)
@@ -70,7 +84,7 @@ nice2x2Table.table <- function(x) {
 #' @describeIn nice2x2Table S3 method for class "matrix"
 #' @export
 nice2x2Table.matrix <- function(x) {
-  stopifnot("Not a 2x2 table" = dim(x) == c(2,2))
+  stopifnot("Not a 2x2 table" = dim(x) == c(2, 2))
   stopifnot("Negative frequencies in a contingency table" = all(x >= 0))
   # stopifnot("Zero frequencies: Inadequate for Sorensen-Dice computations" = sum(x[seq_len(3)]) > 0)
   return(TRUE)
@@ -79,7 +93,7 @@ nice2x2Table.matrix <- function(x) {
 #' @describeIn nice2x2Table S3 method for class "numeric"
 #' @export
 nice2x2Table.numeric <- function(x) {
-  stopifnot("Not a 2x2 table" = dim(x) == c(2,2))
+  stopifnot("Not a 2x2 table" = dim(x) == c(2, 2))
   stopifnot("Negative frequencies in a contingency table" = all(x >= 0))
   # stopifnot("All enrichment frequencies are null: Inadequate for Sorensen-Dice computations" = sum(x[seq_len(3)]) > 0)
   return(TRUE)

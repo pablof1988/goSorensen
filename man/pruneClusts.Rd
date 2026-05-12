@@ -2,25 +2,28 @@
 % Please edit documentation in R/pruneClusts.R
 \name{pruneClusts}
 \alias{pruneClusts}
-\title{Remove all NULL or unrepresentable as a dendrogram "equivClustSorensen" elements in
-an object of class "equivClustSorensenList"}
+\title{Remove all NULL or unrepresentable as a dendrogram "equivClustSorensen"
+elements in an object of class "equivClustSorensenList"}
 \usage{
 pruneClusts(x)
 }
 \arguments{
-\item{x}{An object of class "equivClustSorensenList" descending from "iterEquivClust" which itself
-descends from class "list". See the details section.}
+\item{x}{An object of class "equivClustSorensenList" descending from
+"iterEquivClust" which itself descends from class "list". See the details
+section.}
 }
 \value{
 An object of class "equivClustSorensenList".
 }
 \description{
-Remove all NULL or unrepresentable as a dendrogram "equivClustSorensen" elements in
-an object of class "equivClustSorensenList"
+Remove all NULL or unrepresentable as a dendrogram "equivClustSorensen"
+elements in an object of class "equivClustSorensenList"
 }
 \details{
-"equivClustSorensenList" objects are lists whose components are one or more of BP, CC or MF,
-the GO ontologies. Each of these elements is itself a list whose elements correspond to GO levels.
-Finally, the elements of these lists are objects of class "equivClustSorensen", descending
-from "equivClust" which itself descends from "hclust".
+"equivClustSorensenList" objects are lists whose components are one or more
+of BP, CC or MF, the GO ontologies. Each of these elements is itself a list
+whose elements correspond to GO levels.
+Finally, the elements of these lists are objects of class
+"equivClustSorensen", descending from "equivClust" which itself descends
+from "hclust".
 }

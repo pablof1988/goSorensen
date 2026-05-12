@@ -20,24 +20,24 @@ cat("
 
 /* Título de Nivel 1 */
 h1 {
-    font-size: 1.2em; 
-    color: #0e5775; 
+    font-size: 1.2em;
+    color: #0e5775;
     font-weight: bold;
 }
 
 /* Título de Nivel 2 */
 h2.collapsible-header {
-    font-size: 1.1em; 
-    color: #12769f; 
-    margin-left: 20px; 
+    font-size: 1.1em;
+    color: #12769f;
+    margin-left: 20px;
     font-weight: bold;
 }
 
 /* Título de Nivel 3 */
 h3.collapsible-header {
-    font-size: 1.0em; 
-    color: #16a3dc; 
-    margin-left: 40px; 
+    font-size: 1.0em;
+    color: #16a3dc;
+    margin-left: 40px;
     font-weight: bold;
 }
 
@@ -52,9 +52,9 @@ h3.collapsible-header {
 
 /* Estilo para el contenedor de referencias */
 #refs {
-    list-style-type: none; 
+    list-style-type: none;
     margin-left: 20px;
-    padding-left: 20px; 
+    padding-left: 20px;
     text-align: justify;
 }
 
@@ -69,9 +69,9 @@ h3.collapsible-header {
 }
 
 .sidenote {
-    text-align: justify; 
+    text-align: justify;
     float: right; /* Posiciona el pie de página en el lado derecho */
-    width: 28%; 
+    width: 28%;
     max-width: 28%; /* Ajusta el ancho relativo al contenedor principal */
     padding-left: 20px; /* Añade margen interno dentro del pie de página */
     box-sizing: border-box; /* Asegura que padding no desborde el ancho del contenedor */
@@ -130,123 +130,169 @@ knitr::opts_chunk$set(
 ## ----env, message = FALSE, warning = FALSE, echo = TRUE-----------------------
 library(goSorensen)
 
-## -----------------------------------------------------------------------------
+## ----data---------------------------------------------------------------------
 data("allOncoGeneLists")
 
-## -----------------------------------------------------------------------------
+## ----sapply-------------------------------------------------------------------
 # name and length of the gene lists:
 sapply(allOncoGeneLists, length)
 
-## ----warning=FALSE, message=FALSE, eval=FALSE---------------------------------
+## ----library, warning=FALSE, message=FALSE, eval=FALSE------------------------
 # # Previously load the genomic annotation package for the studied specie:
 # library(org.Hs.eg.db)
 # humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
 # 
 # # Computing the irrelevance-threshold matrix of dissimilarities
 # dissMatrx_BP4 <- sorenThreshold(allOncoGeneLists,
-#                             geneUniverse = humanEntrezIDs,
-#                             orgPackg = "org.Hs.eg.db",
-#                             onto = "BP",
-#                             GOLevel = 4,
-#                             trace = FALSE)
+#   geneUniverse = humanEntrezIDs,
+#   orgPackg = "org.Hs.eg.db",
+#   onto = "BP",
+#   GOLevel = 4,
+#   trace = FALSE
+# )
 # dissMatrx_BP4
 
-## ----echo=FALSE---------------------------------------------------------------
+## ----opd, echo=FALSE----------------------------------------------------------
 options(digits = 4)
 data("dissMatrx_BP4")
 data("cont_all_BP4")
 dissMatrx_BP4
 
-## ----warning=FALSE, message=FALSE, comment=NA, eval=FALSE---------------------
+## ----dissMatrx-BP, eval=FALSE-------------------------------------------------
+# dissMatrx_BP <- sorenThreshold(allOncoGeneLists,
+#   geneUniverse = humanEntrezIDs,
+#   orgPackg = "org.Hs.eg.db",
+#   onto = "BP",
+#   GOLevel = NULL,
+#   trace = FALSE
+# )
+# dissMatrx_BP
+
+## ----cont_all_BP4, warning=FALSE, message=FALSE, comment=NA, eval=FALSE-------
 # # Previously compute the enrichment contingency tables:
 # cont_all_BP4 <- buildEnrichTable(allOncoGeneLists,
-#                                  geneUniverse = humanEntrezIDs,
-#                                  orgPackg = "org.Hs.eg.db",
-#                                  onto = "BP",
-#                                  GOLevel = 4)
+#   geneUniverse = humanEntrezIDs,
+#   orgPackg = "org.Hs.eg.db",
+#   onto = "BP",
+#   GOLevel = 4
+# )
 
-## -----------------------------------------------------------------------------
-# Computing the irrelevance-threshold matrix of dissimilarities from the 
+## ----dissMatrx_BP4------------------------------------------------------------
+# Computing the irrelevance-threshold matrix of dissimilarities from the
 # enrichment contingency table "cont_all_BP4":
-dissMatrx_BP4 <- sorenThreshold(cont_all_BP4, 
-                                trace = FALSE)
+dissMatrx_BP4 <- sorenThreshold(cont_all_BP4,
+  trace = FALSE
+)
 dissMatrx_BP4
 
-## ----eval=FALSE---------------------------------------------------------------
+## ----dissMatrx_BP,eval=FALSE--------------------------------------------------
+# dissMatrx_BP <- sorenThreshold(cont_all_BP,
+#   trace = FALSE
+# )
+# dissMatrx_BP
+
+## ----boot_dissMatrx-BP4, eval=FALSE-------------------------------------------
 # boot_dissMatrx_BP4 <- sorenThreshold(allOncoGeneLists,
-#                             geneUniverse = humanEntrezIDs,
-#                             orgPackg = "org.Hs.eg.db",
-#                             onto = "BP",
-#                             GOLevel = 4,
-#                             boot = TRUE, # use bootstrap distribution
-#                             trace = FALSE)
+#   geneUniverse = humanEntrezIDs,
+#   orgPackg = "org.Hs.eg.db",
+#   onto = "BP",
+#   GOLevel = 4,
+#   boot = TRUE, # use bootstrap distribution
+#   trace = FALSE
+# )
 # boot_dissMatrx_BP4
 
-## ----echo=FALSE---------------------------------------------------------------
+## ----sorenThreshold, echo=FALSE-----------------------------------------------
 sorenThreshold(cont_all_BP4, boot = TRUE, trace = FALSE)
 
-## -----------------------------------------------------------------------------
-boot_dissMatrx_BP4 <- sorenThreshold(cont_all_BP4, 
-                                     boot = TRUE, 
-                                     trace = FALSE)
-boot_dissMatrx_BP4
+## ----boot_dissMatrx_BP4,eval=FALSE--------------------------------------------
+# boot_dissMatrx_BP4 <- sorenThreshold(cont_all_BP4,
+#   boot = TRUE,
+#   trace = FALSE
+# )
+# boot_dissMatrx_BP4
 
-## ----warning=FALSE, message=FALSE, comment=NA, eval=FALSE---------------------
+## ----allDissMatrx, warning=FALSE, message=FALSE, comment=NA, eval=FALSE-------
 # # For example, for GO levels 3 to 10 and for the ontologies BP, CC and MF:
 # allDissMatrx <- allSorenThreshold(allOncoGeneLists,
-#                                   geneUniverse = humanEntrezIDs,
-#                                   orgPackg = "org.Hs.eg.db",
-#                                   ontos = c("BP", "CC", "MF"),
-#                                   GOLevels = 3:10,
-#                                   trace = FALSE)
+#   geneUniverse = humanEntrezIDs,
+#   orgPackg = "org.Hs.eg.db",
+#   ontos = c("BP", "CC", "MF"),
+#   GOLevels = 3:10,
+#   trace = FALSE
+# )
 
-## ----warning=FALSE, message=FALSE, comment=NA, eval=FALSE---------------------
+## ----allDissMatrxNoLevel,eval=FALSE-------------------------------------------
+# allDissMatrxNoLevel <- allSorenThreshold(allOncoGeneLists,
+#   geneUniverse = humanEntrezIDs,
+#   orgPackg = "org.Hs.eg.db",
+#   ontos = c("BP", "CC", "MF"),
+#   GOLevels = NULL,
+#   trace = FALSE
+# )
+
+## ----allContTabs, warning=FALSE, message=FALSE, comment=NA, eval=FALSE--------
 # # Previously compute the enrichment contingency tables:
 # allContTabs <- allBuildEnrichTable(allOncoGeneLists,
-#                                    geneUniverse = humanEntrezIDs,
-#                                    orgPackg = "org.Hs.eg.db",
-#                                    ontos = c("BP", "CC", "MF"),
-#                                    GOLevels = 3:10)
+#   geneUniverse = humanEntrezIDs,
+#   orgPackg = "org.Hs.eg.db",
+#   ontos = c("BP", "CC", "MF"),
+#   GOLevels = 3:10
+# )
 # 
 # # Computing the irrelevance-threshold matrix of dissimilarities from the
 # # enrichment contingency tables "allContTabs":
 # allDissMatrx <- allSorenThreshold(allContTabs,
-#                                   trace = FALSE)
+#   trace = FALSE
+# )
 
-## ----warning=FALSE, message=FALSE---------------------------------------------
+## ----allContTabsNoLevel, eval=FALSE-------------------------------------------
+# allContTabsNoLevel <- allBuildEnrichTable(allOncoGeneLists,
+#   geneUniverse = humanEntrezIDs,
+#   orgPackg = "org.Hs.eg.db",
+#   ontos = c("BP", "CC", "MF"),
+#   GOLevels = NULL
+# )
+# 
+# allDissMatrxNoLevel <- allSorenThreshold(allContTabsNoLevel,
+#   trace = FALSE
+# )
+
+## ----clust.threshold, warning=FALSE, message=FALSE----------------------------
 clust.threshold <- hclustThreshold(dissMatrx_BP4)
 plot(clust.threshold)
 
-## ----warning=FALSE, message=FALSE---------------------------------------------
+## ----mds, warning=FALSE, message=FALSE----------------------------------------
 # multidimensional scaling analysis:
 mds <- as.data.frame(cmdscale(dissMatrx_BP4, k = 2))
 
-## ----warning=FALSE, message=FALSE, fig.align='left', fig.height=3, fig.width=5----
+## ----plot, warning=FALSE, message=FALSE, fig.align='left', fig.height=3, fig.width=5----
 library(ggplot2)
 library(ggrepel)
 graph <- ggplot() +
- geom_point(aes(mds[,1], mds[,2]), color = "blue", size = 3) +
- geom_text_repel(aes(mds[,1], mds[,2], label = attr(dissMatrx_BP4, "Labels")),
-                 color = "black", size = 3) +
- xlab("Dim 1") +
- ylab("Dim 2") +
- theme_light()
+  geom_point(aes(mds[, 1], mds[, 2]), color = "blue", size = 3) +
+  geom_text_repel(aes(mds[, 1], mds[, 2], label = attr(dissMatrx_BP4, "Labels")),
+    color = "black", size = 3
+  ) +
+  xlab("Dim 1") +
+  ylab("Dim 2") +
+  theme_light()
 graph
 
-## -----------------------------------------------------------------------------
+## ----prop---------------------------------------------------------------------
 # Split the axis 20% to the left, 60% to the middle and 20% to the right:
-prop <- c(0.2, 0.6, 0.2) 
+prop <- c(0.2, 0.6, 0.2)
 
 # Sort according  dimension 1:
-sorted <- mds[order(mds[, 1]), ] 
+sorted <- mds[order(mds[, 1]), ]
 
 # Determine the range for dimension 1.
-range <- sorted[, 1][c(1, nrow(mds))] 
+range <- sorted[, 1][c(1, nrow(mds))]
 
 # Find the cut-points to split the axis:
 cutpoints <- (cumsum(prop)[1:2] * diff(range)) + range[1]
 
-# Identify lists to the left:  
+# Identify lists to the left:
 lleft <- rownames(sorted[sorted[, 1] < cutpoints[1], ])
 lleft
 
@@ -254,15 +300,17 @@ lleft
 lright <- rownames(sorted[sorted[, 1] > cutpoints[2], ])
 lright
 
-## ----warning=FALSE, message=FALSE, fig.align='left', fig.height=3, fig.width=5----
+## ----graph, warning=FALSE, message=FALSE, fig.align='left', fig.height=3, fig.width=5----
 graph +
-  geom_vline(xintercept = cutpoints, color = "red", 
-             linetype = "dashed", linewidth = 0.75)
+  geom_vline(
+    xintercept = cutpoints, color = "red",
+    linetype = "dashed", linewidth = 0.75
+  )
 
-## ----echo=FALSE---------------------------------------------------------------
+## ----op-max, echo=FALSE-------------------------------------------------------
 options(max.print = 16)
 
-## -----------------------------------------------------------------------------
+## ----contTablesBP4------------------------------------------------------------
 # enrichment contingency tables:
 contTablesBP4 <- attr(dissMatrx_BP4, "all2x2Tables")
 
@@ -270,17 +318,17 @@ contTablesBP4 <- attr(dissMatrx_BP4, "all2x2Tables")
 tableleft <- attr(contTablesBP4, "enriched")[, lleft, drop = FALSE]
 tableleft
 
-## ----echo=FALSE---------------------------------------------------------------
+## ----op-max5, echo=FALSE------------------------------------------------------
 options(max.print = 50)
 
-## -----------------------------------------------------------------------------
+## ----tableright---------------------------------------------------------------
 # matrix of GO term enrichment for the lists located at the extreme right
 tableright <- attr(contTablesBP4, "enriched")[, lright, drop = FALSE]
 tableright
 
-## ----warning=FALSE, message=FALSE---------------------------------------------
+## ----mean_sd, warning=FALSE, message=FALSE------------------------------------
 # function to compute mean and standard deviation:
-mean_sd <- function(x){
+mean_sd <- function(x) {
   c("mean" = mean(x), "sd" = ifelse(length(x) == 1, 0, sd(x)))
 }
 
@@ -290,17 +338,17 @@ lmnsd <- apply(tableleft, 1, mean_sd)
 # mean and sd of the lists to the extreme right:
 rmnsd <- apply(tableright, 1, mean_sd)
 
-## ----warning=FALSE, message=FALSE---------------------------------------------
-nl <- ncol(tableleft) 
-nr <- ncol(tableright) 
-t_stat <- abs(lmnsd[1, ] - rmnsd[1, ]) / 
+## ----nl, warning=FALSE, message=FALSE-----------------------------------------
+nl <- ncol(tableleft)
+nr <- ncol(tableright)
+t_stat <- abs(lmnsd[1, ] - rmnsd[1, ]) /
   sqrt((((lmnsd[2, ] / nl) + (rmnsd[2, ] / nr))) + 0.00000001)
 
-## ----warning=FALSE, message=FALSE---------------------------------------------
+## ----result, warning=FALSE, message=FALSE-------------------------------------
 result <- t_stat[t_stat == max(t_stat)]
 result
 
-## ----warning=FALSE, message=FALSE---------------------------------------------
+## ----desc, warning=FALSE, message=FALSE---------------------------------------
 library(GO.db)
 library(DT)
 # Previous function to get the description of the identified GO terms:
@@ -310,8 +358,16 @@ get_go_description <- function(go_id) {
 }
 
 # GO terms description:
-datatable(data.frame(GO_term = names(result),
-                     Description = sapply(names(result), get_go_description, 
-                                           USE.NAMES = TRUE)), 
-          filter = "top", rownames = FALSE)
+datatable(
+  data.frame(
+    GO_term = names(result),
+    Description = sapply(names(result), get_go_description,
+      USE.NAMES = TRUE
+    )
+  ),
+  filter = "top", rownames = FALSE
+)
+
+## ----session-info-------------------------------------------------------------
+sessionInfo()
 

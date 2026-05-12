@@ -44,7 +44,7 @@
 #' levels must be specified like \code{"level 6"} or \code{c("level 4", "level 5", "level 6")}
 #' In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{seq.int(4,6)}.
 #'
-#'@seealso \code{\link{getNboot}}
+#' @seealso \code{\link{getNboot}}
 #'
 #' @examples
 #' # Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
@@ -63,7 +63,7 @@
 #' # Not a bootstrap test, first upgrade to a bootstrap test:
 #' boot.sanger_atlas.BP.4 <- upgrade(eqTest_atlas.sanger_BP4, boot = TRUE)
 #'
-#' #getEffNboot(eqTest_atlas.sanger_BP4)
+#' # getEffNboot(eqTest_atlas.sanger_BP4)
 #' getEffNboot(boot.sanger_atlas.BP.4)
 #' getNboot(boot.sanger_atlas.BP.4)
 #'
@@ -125,7 +125,7 @@ getEffNboot.equivSDhtest <- function(x, ...) {
 #' @describeIn getEffNboot S3 method for class "equivSDhtestList"
 #' @export
 getEffNboot.equivSDhtestList <- function(x, simplify = TRUE, ...) {
-  result <- lapply(x, function(xi){
+  result <- lapply(x, function(xi) {
     resaux <- lapply(xi, getEffNboot.equivSDhtest)
     names(resaux) <- names(xi)
     return(resaux)
@@ -141,20 +141,21 @@ getEffNboot.equivSDhtestList <- function(x, simplify = TRUE, ...) {
     rownames(resMat) <- namsMat
     colnames(resMat) <- namsMat
     return(resMat)
-  }else{
+  } else {
     return(result)
   }
 }
 #'
 #' @describeIn getEffNboot S3 method for class "AllEquivSDhtest"
 #' @export
-getEffNboot.AllEquivSDhtest <- function(x, onto, GOLevel, listNames, simplify = TRUE, ...)
-{
+getEffNboot.AllEquivSDhtest <- function(x, onto, GOLevel, listNames, simplify = TRUE, ...) {
   if (missing(onto)) {
     onto <- names(x)
   }
-  stopifnot("GO ontology names must be one or more of 'BP', 'CC' or 'MF'" =
-              onto %in% c("BP","CC","MF"))
+  stopifnot(
+    "GO ontology names must be one or more of 'BP', 'CC' or 'MF'" =
+      onto %in% c("BP", "CC", "MF")
+  )
   if (missing(GOLevel)) {
     GOLevel <- names(x[[1]])
   } else {
@@ -164,8 +165,10 @@ getEffNboot.AllEquivSDhtest <- function(x, onto, GOLevel, listNames, simplify = 
   }
   allLists <- missing(listNames)
   if (!allLists) {
-    stopifnot("'listNames' must be a 'character' of length 2" =
-                is.character(listNames) && (length(listNames) == 2))
+    stopifnot(
+      "'listNames' must be a 'character' of length 2" =
+        is.character(listNames) && (length(listNames) == 2)
+    )
   }
   result <- lapply(onto, function(ionto) {
     resLev <- lapply(GOLevel, function(ilev) {

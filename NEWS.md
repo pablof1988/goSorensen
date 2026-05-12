@@ -38,3 +38,21 @@ In addition:
 In this updated version, unless the user specifies otherwise in the _onlyEnriched_ argument of the _enrichedIn_ function, the enrichment matrix of GO terms includes only those terms that are enriched in at least one of the lists being compared, excluding all terms that are not enriched in any of the lists. This optimization significantly reduces computation times for enrichment analysis compared to previous versions, such as when generating enrichment contingency tables using _buildEnrichTable_.
 
 Additionally, with the latest versions of Bioconductor and its updated packages, we have revised the naming conventions and outputs for results obtained from the primary __goSorensen__ functions. These changes are summarized in two new bullet points, offering clearer guidance and improved usability for package users compared to earlier versions.
+
+## version 1.14.0
+In this updated version, the package allows enrichment analysis and downstream comparisons without restricting the computation to a specific GO level. By setting the arguments _GOLevel = NULL_ or _GOLevels = NULL_, users can work directly with all GO terms in the selected ontology.
+
+Additionally, the main functions now include the _keyType_ argument, allowing users to specify the type of gene identifiers (e.g., ENTREZID, SYMBOL, etc.) used in the analysis, improving flexibility and compatibility with different genes' ID.
+
+This new functionality has been incorporated into the following functions:
+
+- __enrichedIn__
+- __buildEnrichTable__
+- __allBuildEnrichTable__
+- __equivTestSorensen__
+- __allEquivTestSorensen__
+
+In addition:
+
+- The documentation of these functions has been revised to reflect the new options of performing analyses without GO level restriction and specifying the gene identifier type via _keyType_.
+- Examples and outputs were updated accordingly to illustrate both workflows: analyses at a specific GO level and analyses without GO level restriction.

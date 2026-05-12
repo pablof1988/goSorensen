@@ -1,12 +1,15 @@
 ---
 title: "An Introduction to goSorensen R-Package"
 author:
-- name: Jordi Ocaña
-  email: jocana@ateneu.ub.edu
-  affiliation: Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona
 - name: Pablo Flores
   email: p_flores@espoch.edu.ec
   affiliation: Escuela Superior Politécnica de Chimborazo (ESPOCH), Facultad de Ciencias, Carrera de Estadística.
+- name: Jordi Ocaña
+  email: jocana@ateneu.ub.edu
+  affiliation: Department of Genetics, Microbiology and Statistics, Statistics Section, University of Barcelona.
+- name: Alex Mantilla
+  email: asmantilla.25@est.ucab.edu.ve
+  affiliation: Universidad Catolica Andres Bello (UCAB), Facultad de Ingeniería, Doctorado en Ingeniería.   
 package: goSorensen
 output:
   BiocStyle::html_document:
@@ -16,15 +19,13 @@ abstract: >
   This vignette provides an introduction to [**_goSorensen_**](https://bioconductor.org/packages/release/bioc/html/goSorensen.html)  R-package. The main goal of goSorensen is to implement an inferential statistical method to compare gene lists (to prove equivalence, in the sense of equivalence tests, e.g. @wellek2002testing) in terms of their biological significance as expressed in the Gene Ontology GO. This method is presented in @flores2022equivalence: "[**_An equivalence test between features lists, based on the Sorensen - Dice index and the joint frequencies of GO term enrichment_**](https://rdcu.be/cOISz)." 
   
   
-  For a given ontology (BP, CC, or MF) and GO level, both enriched and non-enriched GO terms are identified for the compared lists. This enrichment can be summarized in contingency tables for each pair of compared lists. The dissimilarity between gene lists is assessed using a measure based on the Sorensen-Dice index. The fundamental guiding principle is that two gene lists are considered similar if they share a significant proportion of common enriched GO terms.
+   For a given ontology (BP, CC, or MF), either at a specific GO level or without GO level restriction, both enriched and non-enriched GO terms are identified for the compared lists. This enrichment can be summarized in contingency tables for each pair of compared lists. The dissimilarity between gene lists is assessed using a measure based on the Sorensen-Dice index. The fundamental guiding principle is that two gene lists are considered similar if they share a significant proportion of common enriched GO terms.
 vignette: >
   %\VignetteIndexEntry{An Introduction to goSorensen R-Package}
   %\VignetteEngine{knitr::rmarkdown}
   %%\VignetteKeywords{Annotation, GO, GeneSetEnrichment, Software, Microarray, Pathways, GeneExpression, MultipleComparison}
   %\VignetteEncoding{UTF-8}
-  
 ---
-
 
 ```{r style, echo = FALSE, results = 'asis'}
 BiocStyle::markdown()
@@ -49,24 +50,24 @@ cat("
 
 /* Título de Nivel 1 */
 h1 {
-    font-size: 1.2em; 
-    color: #0e5775; 
+    font-size: 1.2em;
+    color: #0e5775;
     font-weight: bold;
 }
 
 /* Título de Nivel 2 */
 h2.collapsible-header {
-    font-size: 1.1em; 
-    color: #12769f; 
-    margin-left: 20px; 
+    font-size: 1.1em;
+    color: #12769f;
+    margin-left: 20px;
     font-weight: bold;
 }
 
 /* Título de Nivel 3 */
 h3.collapsible-header {
-    font-size: 1.0em; 
-    color: #16a3dc; 
-    margin-left: 40px; 
+    font-size: 1.0em;
+    color: #16a3dc;
+    margin-left: 40px;
     font-weight: bold;
 }
 
@@ -81,9 +82,9 @@ h3.collapsible-header {
 
 /* Estilo para el contenedor de referencias */
 #refs {
-    list-style-type: none; 
+    list-style-type: none;
     margin-left: 20px;
-    padding-left: 20px; 
+    padding-left: 20px;
     text-align: justify;
 }
 
@@ -98,9 +99,9 @@ h3.collapsible-header {
 }
 
 .sidenote {
-    text-align: justify; 
+    text-align: justify;
     float: right; /* Posiciona el pie de página en el lado derecho */
-    width: 28%; 
+    width: 28%;
     max-width: 28%; /* Ajusta el ancho relativo al contenedor principal */
     padding-left: 20px; /* Añade margen interno dentro del pie de página */
     box-sizing: border-box; /* Asegura que padding no desborde el ancho del contenedor */
@@ -163,8 +164,10 @@ knitr::opts_chunk$set(
 library(goSorensen)
 ```
 
-# PRELIMINARIES. 
-## Theoretical Framework of Reference. 
+# PRELIMINARIES.
+
+## Theoretical Framework of Reference.
+
 Given two gene lists, $L_1$ and $L_2$, (the data) and a given set of $n$ Gene Ontology (GO) terms (the frame of reference for biological significance in these lists), `goSorensen` makes the required computations to answer the following question: Is the dissimilarity between the biological information in both lists negligible? In other words, are both lists functionally equivalent?
 
 We employ the following metric derived from the Sorensen-Dice index to quantify this dissimilarity:
@@ -178,22 +181,20 @@ We employ the following metric derived from the Sorensen-Dice index to quantify 
 where:
 
 - $n_{11}$ corresponds to the number (i.e., the absolute frequency) of GO terms enriched in both gene lists. Similarly, $\hat{p}_{11}$ corresponds to the relative frequency of joint enrichment.
-- $n_{10}$ represents the number of GO terms enriched in list $L_1$ but not in list  $L_2$, and $n_{01}$ the number of GO terms non enriched in list $L_1$ but enriched in $L_2$. In other words,$n_{10} + n_{01}$ is the absolute frequency of marginal enrichment, and $\hat{p}_{10} + \hat{p}_{01}$ the proportion of marginal enrichment.
+- $n_{10}$ represents the number of GO terms enriched in list $L_1$ but not in list $L_2$, and $n_{01}$ the number of GO terms non enriched in list $L_1$ but enriched in $L_2$. In other words,$n_{10} + n_{01}$ is the absolute frequency of marginal enrichment, and $\hat{p}_{10} + \hat{p}_{01}$ the proportion of marginal enrichment.
 - $n_{00}$ corresponds to the absolute frequency (and $p_{00}$ to the relative frequency) of GO terms not enriched in either gene list.
-
 
 The enrichment frequency can be represented in a $2 \times 2$ contingency table, as follows:
 
-|                           	| **enriched in $L_2$** 	| **non-enriched in $L_2$** 	|          	|
-|:-------------------------:	|:---------------------:	|:-------------------------:	|:--------:	|
-|   **enriched in $L_1$**   	|        $n_{11}$       	|          $n_{10}$         	| $n_{1.}$ 	|
-| **non-enriched in $L_1$** 	|        $n_{01}$       	|          $n_{00}$         	| $n_{0.}$ 	|
-|                           	|        $n_{.1}$       	|          $n_{.0}$         	|    $n$   	|
-
+|   | **enriched in** $L_2$ | **non-enriched in** $L_2$ |   |
+|:--:|:--:|:--:|:--:|
+| **enriched in** $L_1$ | $n_{11}$ | $n_{10}$ | $n_{1.}$ |
+| **non-enriched in** $L_1$ | $n_{01}$ | $n_{00}$ | $n_{0.}$ |
+|  | $n_{.1}$ | $n_{.0}$ | $n$ |
 
 In @flores2022equivalence it is shown that $d_S$ asymptotically follows a normal distribution. In cases of low joint enrichment, a sampling distribution derived from the bootstrap approach demonstrates a better fit and provides more suitable results.
 
-Consider the following equivalence hypothesis test: 
+Consider the following equivalence hypothesis test:
 
 \begin{equation*}
 H_0:d_S \ge d_0 \\
@@ -208,29 +209,28 @@ For the moment, the reference set of GO terms can be only all those GO terms in 
 
 For more details, see the reference paper.
 
-
-## goSorensen Installation. 
+## goSorensen Installation.
 
 `goSorensen` package must be installed with a working R version (\>=4.4.0). Installation could take a few minutes on a regular desktop or laptop. Package can be installed from Bioconductor, then it needs to be loaded using `library(goSorensen)`:
 
-```{r, eval=FALSE}
+```{r lib, eval=FALSE}
 if (!requireNamespace("goSorensen", quietly = TRUE)) {
-    BiocManager::install("goSorensen")
+  BiocManager::install("goSorensen")
 }
 library(goSorensen)
 ```
 
-## Data Used in this Vignette. 
+## Data Used in this Vignette.
 
 The dataset used in this vignette, `allOncoGeneLists`, is based on the gene lists compiled at <http://www.bushmanlab.org/links/genelists>, a comprehensive set of gene lists related to cancer. The package `goSorensen` loads this dataset using `data(allOncoGeneLists)`:
 
-```{r}
+```{r data}
 data("allOncoGeneLists")
 ```
 
-`allOncoGeneLists`  is an object of class list, containing seven character vectors with the ENTREZ gene identifiers of a gene list related to cancer.
+`allOncoGeneLists` is an object of class list, containing seven character vectors with the ENTREZ gene identifiers of a gene list related to cancer.
 
-```{r}
+```{r allonco}
 sapply(allOncoGeneLists, length)
 
 # First 15 gene identifiers of gene lists atlas and sanger:
@@ -238,30 +238,31 @@ allOncoGeneLists[["atlas"]][1:15]
 allOncoGeneLists[["sanger"]][1:15]
 ```
 
-## Before Using goSorensen.  
-Before using `goSorensen,` the users must have adequate knowledge of the species they intend to focus their analysis on. The genomic annotation packages available in Bioconductor provide all the essential information about many species. 
+## Before Using goSorensen.
 
+Before using `goSorensen,` the users must have adequate knowledge of the species they intend to focus their analysis on. The genomic annotation packages available in Bioconductor provide all the essential information about many species.
 
 For the specific case of this vignette and the help pages of the package, given that the analysis will be done in the human species, the `org.Hs.eg.db` package must be previously installed and activated as follows:
 
-```{r, message = FALSE, warning = FALSE, eval = FALSE}
+```{r bioc, message = FALSE, warning = FALSE, eval = FALSE}
 if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) {
-    BiocManager::install("org.Hs.eg.db")
+  BiocManager::install("org.Hs.eg.db")
 }
 ```
 
-```{r, message = FALSE, warning = FALSE, eval = TRUE}
+```{r org, message = FALSE, warning = FALSE, eval = TRUE}
 library(org.Hs.eg.db)
 ```
 
-Actually, the `org.Hs.eg.db` package is automatically installed as a dependency on `goSorensen`, making its installation unnecessary. However, for any other species, the user must install the corresponding genome annotation for the species to analyse, as indicated in the above code. 
+Actually, the `org.Hs.eg.db` package is automatically installed as a dependency on `goSorensen`, making its installation unnecessary. However, for any other species, the user must install the corresponding genome annotation for the species to analyse, as indicated in the above code.
 
+In addition, it is necessary to have a vector containing the IDs of the gene universe associated with the species under study. The genomic annotation package provides an easy way to obtain this universe. In this vignette, human gene universe IDs are retrieved using ENTREZ identifiers as follows:
 
-In addition, it is necessary to have a vector containing the IDs of the universe of genes associated with the species under study. The genomic annotation package provides an easy way to obtain this universe. The ENTREZ identifiers of the gene universe for humans, necessary for this vignette, are obtained as follows:
-
-```{r, message = FALSE, warning = FALSE, echo = TRUE}
+```{r human, message = FALSE, warning = FALSE, echo = TRUE}
 humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
 ```
+
+Although ENTREZID is used throughout this vignette for illustration purposes and to match the example dataset, the updated version of `goSorensen` is not restricted to ENTREZ identifiers. Other supported key types available in the corresponding annotation package may also be used, provided that the same identifier type is used consistently in the gene lists, the gene universe, and the `keyType` argument of the functions.
 
 In this same way, the identifiers of the gene universe can be obtained for any other species.
 
@@ -285,46 +286,65 @@ Due to the extensive research conducted on the human species and the examples do
 
 If you are working with other species, you must install the appropriate package to use the genomic annotation for those species."
 
-
-
 # MATRIX OF GO TERMS ENRICHMENT.
-## For One List.
 
-The first step[^1] is to determine whether the GO terms for a specific ontology and GO level are enriched or not enriched across the different lists to be compared. The `enrichedIn` function assigns `TRUE` when a GO term is enriched in a gene list and `FALSE` when it is not.
+## For One List (With or Without GO Level Restriction).
 
-[^1]: In fact, this is an internal step hidden within the function `buildEnrichTable`  described in Section 3. However, providing a brief explanation of this process may help clarify certain details about how enrichment contingency tables are constructed. For users working with the package at a not-so-advanced level, this step can be skipped without affecting their understanding of how to use the core functions of `goSorensen`.
+The first step[^1] is to determine whether the GO terms of a specific ontology are enriched or not enriched across the different lists to be compared. This can be done either at a specific GO level or without GO level restriction. The `enrichedIn` function assigns `TRUE` when a GO term is enriched in a gene list and `FALSE` when it is not.
 
+[^1]: In fact, this is an internal step hidden within the function `buildEnrichTable` described in Section 3. However, providing a brief explanation of this process may help clarify certain details about how enrichment contingency tables are constructed. For users working with the package at a not-so-advanced level, this step can be skipped without affecting their understanding of how to use the core functions of `goSorensen`.
 
 For example, for the list `atlas`, which is part of `allOncoGeneLists`, the enrichment of GO terms in the BP ontology at GO level 4 may be obtained as follows:
 
-```{r, echo=FALSE}
+```{r op, echo=FALSE}
 options(max.print = 50)
 ```
 
-```{r, eval=TRUE}
+```{r en-atlas}
 enrichedAtlas <- enrichedIn(allOncoGeneLists[["atlas"]],
-           geneUniverse = humanEntrezIDs, 
-           orgPackg = "org.Hs.eg.db",
-           onto = "BP", GOLevel = 4)
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP", GOLevel = 4
+)
 enrichedAtlas
 ```
 
-The result is a vector containing only the GO terms enriched (`TRUE`) in the `atlas` list in the BP ontology at GO level 4. 
+The result is a vector containing only the GO terms enriched (`TRUE`) in the `atlas` list in the BP ontology at GO level 4.
 
 The attribute `nTerms` indicates the total number of GO terms, both enriched (`TRUE`) and non-enriched (`FALSE`), by the list `atlas` in the BP ontology at GO level 4. To obtain this vector, the logical argument `onlyEnriched` (which is `TRUE` by default) must be set to `FALSE`, as follows:
 
-```{r}
+```{r full-atlas}
 fullEnrichedAtlas <- enrichedIn(allOncoGeneLists[["atlas"]],
-           geneUniverse = humanEntrezIDs, 
-           orgPackg = "org.Hs.eg.db",
-           onto = "BP", GOLevel = 4, 
-           onlyEnriched = FALSE)
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP", GOLevel = 4,
+  onlyEnriched = FALSE
+)
 fullEnrichedAtlas
 ```
 
 The full vector (`fullEnrichedAtlas`) is much larger than the vector containing only the enriched GO terms (`enrichedAtlas`), which implies a higher memory usage.
 
-```{r}
+Alternatively, the enrichment can be computed without restricting the analysis to a specific GO level by setting `GOLevel = NULL`. For example, for the BP ontology:
+
+```{r en-atlas-BP}
+enrichedAtlasBP <- enrichedIn(allOncoGeneLists[["atlas"]],
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP", GOLevel = NULL
+)
+enrichedAtlasBP
+```
+
+In this case, the result contains only the GO terms enriched (`TRUE`) in the selected list, considering all GO terms in the BP ontology without GO level restriction.
+
+```{r atr-atlas}
+attr(enrichedAtlasBP, "nTerms")
+```
+
+This attribute gives the total number of GO terms considered in the level-free analysis.
+
+```{r n-terms}
 # number of GO terms in enrichedAtlas
 length(enrichedAtlas)
 
@@ -334,46 +354,101 @@ length(fullEnrichedAtlas)
 
 The length of `fullEnrichedAtlas` corresponds to the total number of GO terms in the BP ontology at GO level 4. In contrast, the length of `enrichedAtlas` represents only the number of GO terms that are enriched in the list `atlas`.
 
+To illustrate the use of alternative identifier types, the seven gene lists in `allOncoGeneLists` can also be converted from `ENTREZID` to `SYMBOL`. This allows the user to run the same analysis using gene symbols instead of ENTREZ identifiers, provided that the gene lists, the gene universe, and the `keyType` argument are all defined consistently.
 
-## For Two or More Lists.
-For the seven lists of `allOncoGeneLists`, the matrix containing the GO terms enriched in at least one of the lists to be compared is calculated as follows:
+```{r symbol,message=FALSE}
+library(AnnotationDbi)
 
-```{r, echo=FALSE}
+# Convert all gene lists from ENTREZID to SYMBOL
+allOncoGeneListsSYMBOL <- lapply(allOncoGeneLists, function(geneList) {
+  symbols <- AnnotationDbi::mapIds(org.Hs.eg.db,
+    keys = geneList,
+    column = "SYMBOL",
+    keytype = "ENTREZID",
+    multiVals = "first"
+  )
+
+  unique(na.omit(symbols))
+})
+
+# Obtain the human gene universe using SYMBOL identifiers
+humanSymbols <- keys(org.Hs.eg.db, keytype = "SYMBOL")
+```
+
+For example, the enrichment of GO terms in the BP ontology at GO level 4 for the list `atlas`, now represented using `SYMBOL` identifiers, can be obtained as follows:
+
+```{r en-atlas-symbol}
+enrichedAtlasSymbolBP4 <- enrichedIn(allOncoGeneListsSYMBOL$atlas,
+  geneUniverse = humanSymbols,
+  orgPackg = "org.Hs.eg.db",
+  keyType = "SYMBOL",
+  onto = "BP", GOLevel = 4
+)
+enrichedAtlasSymbolBP4
+```
+
+The result is a vector containing only the GO terms enriched (`TRUE`) in the `atlas` list in the BP ontology at GO level 4, now using gene symbols instead of ENTREZ identifiers.
+
+## For Two or More Lists (With or Without GO Level Restriction).
+
+For the seven lists of `allOncoGeneLists`, the matrix containing the GO terms enriched in at least one of the lists to be compared can be calculated either at a specific GO level or without GO level restriction.
+
+For example, the enrichment matrix for the BP ontology at GO level 4 is obtained as follows:
+
+```{r op-100, echo=FALSE}
 options(max.print = 100)
 ```
 
-```{r, eval=FALSE}
-enrichedInBP4 <- enrichedIn(allOncoGeneLists, 
-                               geneUniverse = humanEntrezIDs, 
-                               orgPackg = "org.Hs.eg.db", 
-                               onto = "BP", GOLevel = 4) 
+```{r en-BP4, eval=FALSE}
+enrichedInBP4 <- enrichedIn(allOncoGeneLists,
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP", GOLevel = 4
+)
 enrichedInBP4
 ```
 
-```{r, echo=FALSE}
+```{r en-b-BP4, echo=FALSE}
 data("enrichedInBP4")
 enrichedInBP4
 ```
 
-To obtain the full matrix with all the GO terms in the BP ontology at GO level 4, we must set the argument `onlyEnriched`  (which is `TRUE` by default) to `FALSE`, as follows:
+To obtain the full matrix with all the GO terms in the BP ontology at GO level 4, we must set the argument `onlyEnriched` (which is `TRUE` by default) to `FALSE`, as follows:
 
-```{r, eval=FALSE}
-fullEnrichedInBP4 <- enrichedIn(allOncoGeneLists, 
-                               geneUniverse = humanEntrezIDs, 
-                               orgPackg = "org.Hs.eg.db", 
-                               onto = "BP", GOLevel = 4,
-                               onlyEnriched = FALSE) 
+```{r f-en-BP4, eval=FALSE}
+fullEnrichedInBP4 <- enrichedIn(allOncoGeneLists,
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP", GOLevel = 4,
+  onlyEnriched = FALSE
+)
 fullEnrichedInBP4
 ```
 
-```{r, echo=FALSE}
+```{r f-en-b-BP4, echo=FALSE}
 data("fullEnrichedInBP4")
 fullEnrichedInBP4
 ```
 
+The enrichment matrix can also be obtained without restricting the analysis to a specific GO level by setting `GOLevel = NULL`. For example, for the BP ontology:
+
+```{r en-BP, eval=FALSE}
+enrichedInBP <- enrichedIn(allOncoGeneLists,
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP", GOLevel = NULL
+)
+enrichedInBP
+```
+
+```{r en-b-BP,echo=FALSE}
+data("enrichedInBP")
+enrichedInBP
+```
+
 The number of rows in the full matrix (`fullEnrichedInBP4`) is much larger than in the matrix containing only the GO terms enriched in at least one list (`enrichedInBP4`), which implies a more intensive memory usage..
 
-```{r}
+```{r nrow-BP4}
 # number of GO terms (rows) in enrichedInBP4
 nrow(enrichedInBP4)
 
@@ -384,213 +459,358 @@ nrow(fullEnrichedInBP4)
 The number of rows in `fullEnrichedInBP4` corresponds to the total number of GO terms in the BP ontology at GO level 4. In contrast, the number of rows in `enrichedInBP4` represents only the GO terms enriched in at least one list from `allOncoGeneLists`, meaning that each row in this matrix contains at least one `TRUE.`
 
 #### NOTE: {.unnumbered}
-To provide users with a quick visualization, the `goSorensen` package includes the objects `enrichedInBP4` and `fullEnrichedInBP4`, which can be accessed using `data(enrichedInBP4)` and `data(fullEnrichedInBP4)`. 
+
+To provide users with a quick visualization, the `goSorensen` package includes the objects `enrichedInBP4` and `fullEnrichedInBP4`, which can be accessed using `data(enrichedInBP4)` and `data(fullEnrichedInBP4)`.
 
 Note that gene lists, GO terms, and Bioconductor may change over time. So, consider these objects only as illustrative examples, valid exclusively for the `allOncoGeneLists` at a specific time. The current version of these results was generated with Bioconductor version 3.20. The same comment is applicable to other objects included in `goSorensen` for quick visualization, some of which are also described in this vignette.
 
-The calculations illustrated in this vignette are based on the matrix containing GO terms enriched in at least one list (in our case, `enrichedInBP4`). In the illustrations provided for this vignette, there is no evidence to suggest that this matrix produces results different from the full matrix, which includes all GO terms for a specific ontology and level, including those that are not enriched in any of the lists being compared. This is very beneficial since the computational cost of processing is much lower than it could be.
+The calculations illustrated in this vignette are based on the matrix containing GO terms enriched in at least one list (in our case, `enrichedInBP4`). In the illustrations provided for this vignette, th
 
+ere is no evidence to suggest that this matrix produces results different from the full matrix, which includes all GO terms for a specific ontology and level, including those that are not enriched in any of the lists being compared. This is very beneficial since the computational cost of processing is much lower than it could be.
 
 # ENRICHMENT CONTINGENCY TABLES
-## For a Specific Ontology and one GO Level. 
+
+## For a Specific Ontology (With or Without GO Level Restriction).
+
 ### Contingency Tables for Two Lists.
+
 The enrichment contingency tables considered in `goSorensen` are the direct result of obtaining cross-frequency tables between pairs of columns (lists) of the enrichment matrices described in the Section 2 of this vignette. In general, these are internal details that the user of this package does not need to worry about.
 
-Possibly, the only aspect to take into account here is that the main function for this task, `buildEnrichTable`, always calls internally the function `enrichedIn` with the argument `onlyEnriched` put at `TRUE` and, therefore, the obtained enrichment tables are always in their compact version: Only rows with at least one TRUE (in other words, GO terms enriched in at least one gene list).
+Possibly, the only aspect to take into account here is that the main function for this task, `buildEnrichTable`, always calls internally the function `enrichedIn` with the argument `onlyEnriched` set to `TRUE` and, therefore, the obtained enrichment tables are always in their compact version: Only rows with at least one TRUE (in other words, GO terms enriched in at least one gene list).
 
-For the specific case of two gene lists, the function `buildEnrichTable` computes the contingency table by accepting two vectors of the class `character` containing the IDs of the lists to be compared.
-For instance, for the BP ontology at GO level 4, the contingency table representing the enrichment of GO terms in the lists `atlas` and `sanger` is obtained as follows:
+For the specific case of two gene lists, the function `buildEnrichTable` computes the contingency table by accepting two vectors of the class `character` containing the IDs of the lists to be compared. For instance, for the BP ontology at GO level 4, the contingency table representing the enrichment of GO terms in the lists `atlas` and `sanger` is obtained as follows:
 
-```{r, eval=FALSE}
-cont_atlas.sanger_BP4 <- buildEnrichTable(allOncoGeneLists$atlas, 
-                                          allOncoGeneLists$sanger,
-                                          listNames = c("atlas", "sanger"),
-                                          geneUniverse = humanEntrezIDs, 
-                                          orgPackg = "org.Hs.eg.db", 
-                                          onto = "BP", 
-                                          GOLevel = 4)
+```{r cont-atlas-sanger-BP4, eval=FALSE}
+cont_atlas.sanger_BP4 <- buildEnrichTable(allOncoGeneLists$atlas,
+  allOncoGeneLists$sanger,
+  listNames = c("atlas", "sanger"),
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP",
+  GOLevel = 4
+)
 cont_atlas.sanger_BP4
 ```
 
-```{r, echo=FALSE}
+```{r cont-b-atlas-sanger-BP4, echo=FALSE}
 data("cont_atlas.sanger_BP4")
 cont_atlas.sanger_BP4
 ```
 
-The result is an enrichment contingency table of class `table`. If the argument `storeEnrichedIn` of `buildEnrichTable` was set to `TRUE` (the default value), it has an attribute, `enriched`, with the logical matrix of enriched GO terms in these gene lists, i.e., the output of function `enrichedIn` (always de compact form of these matrices, only rows with almost one `TRUE`). 
+Alternatively, the contingency table can be computed in a level-free framework by setting `GOLevel = NULL`. For example, for the BP ontology:
+
+```{r cont-atlas-sanger-BP,eval=FALSE}
+cont_atlas.sanger_BP <- buildEnrichTable(allOncoGeneLists$atlas,
+  allOncoGeneLists$sanger,
+  listNames = c("atlas", "sanger"),
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP",
+  GOLevel = NULL
+)
+cont_atlas.sanger_BP
+```
+
+```{r cont-b-atlas-sanger-BP,echo=FALSE}
+data("cont_atlas.sanger_BP")
+cont_atlas.sanger_BP
+```
+
+In this case, the contingency table is built considering all GO terms in the selected ontology, without GO level restriction.
+
+The result is an enrichment contingency table of class `table`. If the argument `storeEnrichedIn` of `buildEnrichTable` was set to `TRUE` (the default value), it has an attribute, `enriched`, with the logical matrix of enriched GO terms in these gene lists, i.e., the output of function `enrichedIn` (always the compact form of these matrices, only rows with at least one `TRUE`).
 
 #### NOTE: {.unnumbered}
+
 To provide users with a quick visualization, the `goSorensen` package includes the object `cont_atlas.sanger_BP4`, which can be accessed using `data(cont_atlas.sanger_BP4)`.
 
-
 ### Contingency Tables for Two or More Lists.
+
 Given $s$ ($s \geq 2$) lists to compare, the $s(s-1)/2$ possible enrichment contingency tables can also be obtained using the function `buildEnrichTable.` Instead of providing two vectors as the main argument, we provide an object of the class `list`, containing at least two elements, each of which contains the identifiers of the different lists to be compared.
 
 For example, for the BP ontology at GO level 4, the $7(6)/2=21$ contingency tables calculated from the 7 gene lists contained in `allOncoGeneLists` are obtained as follows:
-```{r, eval=FALSE}
+
+```{r cont-all-BP4, eval=FALSE}
 cont_all_BP4 <- buildEnrichTable(allOncoGeneLists,
-                                 geneUniverse = humanEntrezIDs, 
-                                 orgPackg = "org.Hs.eg.db", 
-                                 onto = "BP", 
-                                 GOLevel = 4)
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP",
+  GOLevel = 4
+)
 ```
+
+```{r cont-b-all-BP4,echo=FALSE, eval=FALSE}
+data("cont_all_BP4")
+cont_all_BP4
+```
+
+Alternatively, the contingency tables can be computed in a level-free framework by setting `GOLevel = NULL`. For example, for the BP ontology:
+
+```{r cont-all-BP, eval=FALSE}
+cont_all_BP <- buildEnrichTable(allOncoGeneLists,
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP",
+  GOLevel = NULL
+)
+```
+
+```{r cont-b-all-BP,echo=FALSE,eval=FALSE}
+data("cont_all_BP")
+cont_all_BP
+```
+
+In this case, the resulting object contains all pairwise enrichment contingency tables between the compared gene lists, considering all GO terms in the selected ontology without GO level restriction.
 
 The result is an object of the class `tableList`, which is exclusive from `goSorensen` and contains all the possible enrichment contingency tables between the compared gene lists at GO level 4 for the ontology BP. Since the output is very large, it is not displayed it in this vignette.
 
 If the argument `storeEnrichedIn` of `buildEnrichTable` was set to `TRUE` (its default value), an important attribute of this object is `enriched`, accessible via `attr(cont_all_BP4, "enriched")`, which contains the enrichment matrix obtained using the `enrichedIn` function. For this particular case, `attr(cont_all_BP4, "enriched")` contains exactly the same information as the object `enrichedInBP4` from Section 2.2 of this vignette.
 
 #### NOTE: {.unnumbered}
+
 To provide users with a quick visualization, the `goSorensen` package includes the object `cont_all_BP4`, which can be accessed using `data(cont_all_BP4)`.
 
+## For More than One Ontology and GO Configurations (Levels or No Level Restriction).
 
-## For More than One Ontology and GO Level.
-When you want to obtain contingency tables for two or more lists across multiple ontologies and more than one GO level, you can use the function `allBuildEnrichTable.`
+When you want to obtain contingency tables for two or more lists across multiple ontologies, either for several GO levels or without GO level restriction, you can use the function `allBuildEnrichTable.`
 
 For example to obtain the $7(6)/2=21$ contingency tables calculated from the 7 gene lists in `allOncoGeneLists` for the three ontologies (BP, CC, and MF) and for the GO levels from 3 to 10, you can use the function `allBuildEnrichTable` as follows:
-```{r, eval=FALSE}
+
+```{r allcontTabs, eval=FALSE}
 allContTabs <- allBuildEnrichTable(allOncoGeneLists,
-                                   geneUniverse = humanEntrezIDs, 
-                                   orgPackg = "org.Hs.eg.db", 
-                                   ontos = c("BP", "CC", "MF"), 
-                                   GOLevels = 3:10)
+  geneUnierse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  ontos = c("BP", "CC", "MF"),
+  GOLevels = 3:10
+)
 ```
 
+The contingency tables can also be obtained without restricting the analysis to specific GO levels by setting `GOLevels = NULL`, as follows:
 
-The result is an object of the class `allTableList`, which is exclusive from `goSorensen` and contains all possible enrichment contingency tables between the compared gene lists for the BP, CC, and MF ontologies, and for GO levels 3 to 10. Since the output is very large, it is not displayed in this vignette.
+```{r allcontTabsNoLevel,eval=FALSE}
+allContTabsNoLevel <- allBuildEnrichTable(allOncoGeneLists,
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  ontos = c("BP", "CC", "MF"),
+  GOLevels = NULL
+)
+```
 
-The attribute `enriched` is present in each element of this output, meaning that for each ontology and GO level contained in this object, there is an enrichment matrix similar to the one obtained with the function `enrichedIn`. For instance, by running the code `attr(allContTabs$BP$'level 4', 'enriched')`, you can access the enrichment matrix `enrichedInBP4` obtained in Section 2.2 of this vignette. 
+In this case, the output contains one `tableList` object for each selected ontology, without the intermediate subdivision by GO levels.
+
+The result is an object of the class `allTableList`, which is exclusive to `goSorensen` and contains all possible enrichment contingency tables between the compared gene lists for the BP, CC, and MF ontologies, and for GO levels 3 to 10. Since the output is very large, it is not displayed in this vignette.
+
+The attribute `enriched` is present in each element of this output, meaning that for each ontology and GO level contained in this object, there is an enrichment matrix similar to the one obtained with the function `enrichedIn`. For instance, by running the code `attr(allContTabs$BP$'level 4', 'enriched')`, you can access the enrichment matrix `enrichedInBP4` obtained in Section 2.2 of this vignette.
+
+In the level-free case, the attribute `enriched` is also available for each ontology, but without the intermediate subdivision by GO levels.
 
 #### NOTE: {.unnumbered}
+
 To provide users with a quick visualization, the `goSorensen` package includes the object `allContTabs`, which can be accessed using `data(allContTabs)`.
 
-
 # EQUIVALENCE TESTS.
-## For a Specific Ontology and GO level.
+
+## For a Specific Ontology (With or Without GO Level Restriction).
+
 ### Equivalence Test for Two Lists.
+
 The function `equivTestSorensen` performs an equivalence test to detect equivalence between gene lists.
 
 For the specific case of two gene lists, you need to provide the function `equivTestSorensen` with two character vectors containing the IDs of the lists to be compared.
 
 For example, using an asymptotic normal distribution, an irrelevance limit $d_0=0.4444$ and a significance level $\alpha=0.05$ (the default parameters), an equivalence test to compare the lists `atlas` and `sanger` for the BP ontology at GO level 4 can be performed as follows:
-```{r, eval=FALSE}
-eqTest_atlas.sanger_BP4 <- equivTestSorensen(allOncoGeneLists$atlas, 
-                                             allOncoGeneLists$sanger,
-                                             listNames = c("atlas", "sanger"),
-                                             geneUniverse = humanEntrezIDs, 
-                                             orgPackg = "org.Hs.eg.db", 
-                                             onto = "BP", GOLevel = 4,
-                                             d0 = 0.4444, 
-                                             conf.level = 0.95)
+
+```{r eqTest-atlas-sanger-BP4, eval=FALSE}
+eqTest_atlas.sanger_BP4 <- equivTestSorensen(allOncoGeneLists$atlas,
+  allOncoGeneLists$sanger,
+  listNames = c("atlas", "sanger"),
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP", GOLevel = 4,
+  d0 = 0.4444,
+  conf.level = 0.95
+)
 eqTest_atlas.sanger_BP4
 ```
 
-```{r, echo=FALSE}
+```{r eqTest-b-atlas-sanger-BP4, echo=FALSE}
 data("eqTest_atlas.sanger_BP4")
 eqTest_atlas.sanger_BP4
 ```
 
-If the enrichment contingency table is available prior to performing the test, such as `cont_atlas.sanger_BP4` determined in Section 3.1.1, the execution time for the calculation is much shorter. To use `equivTestSorensen` with the contingency table as input, proceed as follows:
-```{r}
-equivTestSorensen(cont_atlas.sanger_BP4, 
-                  d0 = 0.4444, 
-                  conf.level = 0.95)
+Alternatively, the equivalence test can be performed in a level-free framework by setting `GOLevel = NULL`. For example, for the BP ontology:
+
+```{r eqTest-atlas-sanger-BP,eval=FALSE}
+eqTest_atlas.sanger_BP <- equivTestSorensen(allOncoGeneLists$atlas,
+  allOncoGeneLists$sanger,
+  listNames = c("atlas", "sanger"),
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP", GOLevel = NULL,
+  d0 = 0.4444,
+  conf.level = 0.95
+)
+eqTest_atlas.sanger_BP
 ```
-As you can see, both procedures produce the same result, but the last one (whenever possible) is much faster because no time is wasted internally generating the contingency table from the lists of genes and GO terms. Regardless of the procedure, the result is an object of class `equivSDhtest` (a specialization of class `htest`),  which is exclusive from `goSorensen`.
 
-If you want to change the calculation parameters of the test, such as using a bootstrap distribution instead of a normal distribution, setting an irrelevance limit of $d_0 = 0.2857$ instead of $d_0 =0.4444$ (or any other), or changing the significance level to $\alpha = 0.01$ instead of $\alpha = 0.05$ (or any other), one option would be to use the `equivTestSorensen` function again with the new parameters. However, this would require performing all the calculations again, leading to additional computational costs, which increase as more tests are performed. Instead, the  function `upgrade` allows you to update the test output much more quickly by simply specifying the name of the object where the test results are stored and the new parameters you wish to apply, as shown below:
+```{r eqTest-b-atlas-sanger-BP,echo=FALSE}
+data("eqTest_atlas.sanger_BP")
+eqTest_atlas.sanger_BP
+```
 
-```{r}
-upgrade(eqTest_atlas.sanger_BP4, d0 = 0.2857, 
-        conf.level = 0.99, boot = TRUE)
+In this case, the equivalence test is based on the enrichment contingency table built from all GO terms in the selected ontology, without GO level restriction.
+
+If the enrichment contingency table is available prior to performing the test, such as `cont_atlas.sanger_BP4` determined in Section 3.1.1, the execution time for the calculation is much shorter. To use `equivTestSorensen` with the contingency table as input, proceed as follows:
+
+```{r equivtestSorensen}
+equivTestSorensen(cont_atlas.sanger_BP4,
+  d0 = 0.4444,
+  conf.level = 0.95
+)
+```
+
+As you can see, both procedures produce the same result, but the last one (whenever possible) is much faster because no time is wasted internally generating the contingency table from the lists of genes and GO terms. Regardless of the procedure, the result is an object of class `equivSDhtest` (a specialization of class `htest`), which is exclusive from `goSorensen`.
+
+If you want to change the calculation parameters of the test, such as using a bootstrap distribution instead of a normal distribution, setting an irrelevance limit of $d_0 = 0.2857$ instead of $d_0 =0.4444$ (or any other), or changing the significance level to $\alpha = 0.01$ instead of $\alpha = 0.05$ (or any other), one option would be to use the `equivTestSorensen` function again with the new parameters. However, this would require performing all the calculations again, leading to additional computational costs, which increase as more tests are performed. Instead, the function `upgrade` allows you to update the test output much more quickly by simply specifying the name of the object where the test results are stored and the new parameters you wish to apply, as shown below:
+
+```{r upgrade-t}
+upgrade(eqTest_atlas.sanger_BP4,
+  d0 = 0.2857,
+  conf.level = 0.99, boot = TRUE
+)
 ```
 
 ### Equivalence Test for Two or More Lists.
+
 Given $s$ ($s \geq 2$) lists to compare, the $s(s-1)/2$ possible equivalence tests can also be obtained using the function `equivTestSorensen` Instead of providing two vectors as the main argument, we provide an object of the class `list`, containing at least two elements, each of which contains the identifiers of the different lists to be compared.
 
 For example, for the BP ontology at GO level 4, the $7(6)/2=21$ possible test calculated from the 7 gene lists contained in `allOncoGeneLists` are obtained as follows:
-```{r, eval=FALSE}
+
+```{r eqTest-all-BP4, eval=FALSE}
 eqTest_all_BP4 <- equivTestSorensen(allOncoGeneLists,
-                                    geneUniverse = humanEntrezIDs, 
-                                    orgPackg = "org.Hs.eg.db", 
-                                    onto = "BP", 
-                                    GOLevel = 4,
-                                    d0 = 0.4444, 
-                                    conf.level = 0.95)
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP",
+  GOLevel = 4,
+  d0 = 0.4444,
+  conf.level = 0.95
+)
 ```
+
+The equivalence tests can also be computed without restricting the analysis to a specific GO level by setting `GOLevel = NULL`. For example, for the BP ontology:
+
+```{r alleqTestsBP,eval=FALSE}
+allEqTestsBP <- equivTestSorensen(allOncoGeneLists,
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  onto = "BP",
+  GOLevel = NULL,
+  d0 = 0.4444,
+  conf.level = 0.95
+)
+```
+
+In this case, the result contains all pairwise equivalence tests between the compared gene lists, considering all GO terms in the selected ontology without GO level restriction.
 
 But remember, it is much simpler if we already have the contingency tables as an object of the class `tableList.` In our case, we have already calculated the contingency tables for all possible pairs of `allOncoGeneLists` for the ontology BP, GO level 4, in Section 3.1.2 and stored them in the object `cont_all_BP4.` Therefore, we can calculate the `eqTest_all_BP4` object more efficiently in the following way:
 
-```{r, eval=FALSE}
+```{r eqTest-b-all-BP4, eval=FALSE}
 eqTest_all_BP4 <- equivTestSorensen(cont_all_BP4,
-                                    d0 = 0.4444, 
-                                    conf.level = 0.95)
+  d0 = 0.4444,
+  conf.level = 0.95
+)
 ```
 
-```{r, echo=FALSE}
+```{r eqTest-db-all-BP4, echo=FALSE}
 data(eqTest_all_BP4)
 ```
 
-
-Remember that similarly to the comparison of two lists in Section 4.1.1, you can use the function `upgrade` to update the results by changing the parameters of the tests, such as the confidence level, irrelevance limit, and others. For instance, `upgrade(eqTest_atlas.sanger_BP4, d0 = 0.2857` to update the equivalence test using an irrelevance limit $d_0=0.2857$. 
+Remember that similarly to the comparison of two lists in Section 4.1.1, you can use the function `upgrade` to update the results by changing the parameters of the tests, such as the confidence level, irrelevance limit, and others. For instance, `upgrade(eqTest_atlas.sanger_BP4, d0 = 0.2857` to update the equivalence test using an irrelevance limit $d_0=0.2857$.
 
 Since the output contained in `eqTest_all_BP4` is very large, it is not displayed in this vignette. However, `goSorensen` provides accessor functions that allow you to retrieve specific outputs of interest. For example, to obtain a summary of the Sorensen dissimilarities contained in the tests comparing all pairs of lists in the BP ontology at GO level 4, you can use the function `getDissimilarity` and retrieve them as follows:
-```{r, echo=FALSE}
+
+```{r op-d, echo=FALSE}
 options(digits = 4)
 ```
 
-
-```{r}
+```{r getdissimilarity}
 getDissimilarity(eqTest_all_BP4, simplify = FALSE)
 ```
 
 Another example of accessor function is the function `getPvalue` to obtain the p-values across the object `eqTest_all_BP4`:
 
-```{r}
+```{r getpvalue}
 getPvalue(eqTest_all_BP4, simplify = FALSE)
 ```
 
 NaN values occur when the test statistic cannot be calculated due to an indeterminacy, for example when the standard error of the sample Sorensen-Dice dissimilarity cannot be calculated or is null. One of these scenarios occurs when there is no joint enrichment between two lists (i.e., when $n_{11}=0$).
 
-In addition other accesor functions include: `getSE` for the standard error, `getUpper` for the upper bound of the confidence interval and `getTable` for the enrichment contingency tables. 
+In addition other accesor functions include: `getSE` for the standard error, `getUpper` for the upper bound of the confidence interval and `getTable` for the enrichment contingency tables.
 
 #### NOTE: {.unnumbered}
+
 To provide users with a quick visualization, the `goSorensen` package includes the object `eqTest_all_BP4`, which can be accessed using `data(eqTest_all_BP4)`.
 
+## For Multiple Ontologies and GO Configurations.
 
-## For More than One Ontology and GO level.
-When you want to obtain the outputs of the equivalence tests to compare two or more lists across multiple ontologies and more than one GO level, you can use the function `allEquivTestSorensen`
+When you want to obtain the outputs of the equivalence tests to compare two or more lists across multiple ontologies, either for several GO levels or without GO level restriction, you can use the function `allEquivTestSorensen`
 
 For example to obtain the $7(6)/2=21$ equivalence tests calculated from the 7 gene lists in `allOncoGeneLists` for the three ontologies (BP, CC, and MF) and for the GO levels from 3 to 10, you can use the function `allEquivTestSorensen` as follows:
-```{r, eval=FALSE}
+
+```{r alleqTests, eval=FALSE}
 allEqTests <- allEquivTestSorensen(allOncoGeneLists,
-                                   geneUniverse = humanEntrezIDs, 
-                                   orgPackg = "org.Hs.eg.db", 
-                                   ontos = c("BP", "CC", "MF"), 
-                                   GOLevels = 3:10,
-                                   d0 = 0.4444, 
-                                   conf.level = 0.95)
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  ontos = c("BP", "CC", "MF"),
+  GOLevels = 3:10,
+  d0 = 0.4444,
+  conf.level = 0.95
+)
 ```
+
+Alternatively, the equivalence tests can be computed without restricting the analysis to specific GO levels by setting `GOLevels = NULL`, as follows:
+
+```{r alleqTestsNoLevel,eval=FALSE}
+allEqTestsNoLevel <- allEquivTestSorensen(allOncoGeneLists,
+  geneUniverse = humanEntrezIDs,
+  orgPackg = "org.Hs.eg.db",
+  ontos = c("BP", "CC", "MF"),
+  GOLevels = NULL,
+  d0 = 0.4444,
+  conf.level = 0.95
+)
+```
+
+In this case, the output contains the equivalence tests for all pairwise comparisons between the gene lists within each selected ontology, considering all GO terms in the ontology without GO level restriction.
 
 But remember, it is much simpler if we already have the contingency tables as an object of the class `allTableList` In our case, we have already calculated the contingency tables for all possible pairs of `allOncoGeneLists` for the ontologies BP, CC, MF, and for the GO levels 3 to 10, in Section 3.2 and stored them in the object `allContTabs` Therefore, we can calculate the `allEqTests` object more efficiently in the following way:
-```{r, eval=FALSE}
+
+```{r all-b-eqTests, eval=FALSE}
 allEqTests <- allEquivTestSorensen(allContTabs,
-                                   d0 = 0.4444, 
-                                   conf.level = 0.95)
+  d0 = 0.4444,
+  conf.level = 0.95
+)
 ```
 
-The result is an object of the class `AllEquivSDhtest`, which is exclusive to `goSorensen.` 
+Likewise, if the contingency tables were previously computed without GO level restriction, the corresponding equivalence tests can also be obtained more efficiently from that `allConTabsNoLevel` object.
+
+The result is an object of the class `AllEquivSDhtest`, which is exclusive to `goSorensen.`
 
 In a similar way to what is explained in Section 4.1.1 and 4.1.2, you can use the function `upgrade` to update the results by changing the parameters of the tests, such as the confidence level, irrelevance limit, sample distribution (normal or bootstrap) and others.
 
-You can use also the accessor functions to obtain key test outputs, such as the Sorensen dissimilarities (`getDissimilarity`), p-values (`getPvalue`), enrichment contingency tables  (`getTable`), and more.
+You can use also the accessor functions to obtain key test outputs, such as the Sorensen dissimilarities (`getDissimilarity`), p-values (`getPvalue`), enrichment contingency tables (`getTable`), and more.
 
 #### NOTE: {.unnumbered}
+
 To provide users with a quick visualization, the `goSorensen` package includes the object `allEqTests`, which can be accessed using `data(allEqTests)`.
 
+```{r session-info}
+sessionInfo()
+```
 
 # References {.unnumbered}
 
-
+````{=html}
 <!-- 
 # Session information. {.unnumbered}
 
@@ -600,3 +820,4 @@ All software and respective versions used to produce this document are listed be
 sessionInfo()
 ```
 -->
+````

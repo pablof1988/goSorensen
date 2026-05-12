@@ -2,10 +2,10 @@
 #'
 #' @description
 #' A contingency 2x2 table with the number of joint enriched GO terms (TRUE-TRUE); the number of GO terms enriched only in one list but not in the other one (FALSE-TRUE and TRUE-FALSE); and the number of GO terms not enriched in either of the two lists.
-#' 
+#'
 #' @details
 #' Consider this object only as an illustrative example, which is valid exclusively for the lists atlas and sanger from the data \code{\link{allOncoGeneLists}} contained in this package. Note that gene lists, GO terms, and Bioconductor may change over time. The current version of these results were generated with Bioconductor version 3.20.
-#' 
-#' @format An object of class "table" 
+#'
+#' @format An object of class "table"
 #' @usage data(cont_atlas.sanger_BP4)
 "cont_atlas.sanger_BP4"

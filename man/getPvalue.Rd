@@ -16,30 +16,38 @@ getPvalue(x, ...)
 \method{getPvalue}{AllEquivSDhtest}(x, onto, GOLevel, listNames, simplify = TRUE, ...)
 }
 \arguments{
-\item{x}{an object of class "equivSDhtest" or "equivSDhtestList" or "allEquivSDtest".}
+\item{x}{an object of class "equivSDhtest" or "equivSDhtestList" or
+"allEquivSDtest".}
 
 \item{...}{Additional parameters.}
 
-\item{simplify}{logical, if TRUE the result is simplified, e.g., returning a vector instead
+\item{simplify}{logical, if TRUE the result is simplified, e.g., returning a
+vector instead
 of a matrix.}
 
-\item{onto}{character, a vector with one or more of "BP", "CC" or "MF", ontologies to access.}
+\item{onto}{character, a vector with one or more of "BP", "CC" or "MF",
+ontologies to access.}
 
-\item{GOLevel}{numeric or character, a vector with one or more GO levels to access.
+\item{GOLevel}{numeric or character, a vector with one or more GO levels to
+access.
 See the details section and the examples.}
 
 \item{listNames}{character(2), the names of a pair of gene lists.}
 }
 \value{
-When \code{x} is an object of class "equivSDhtest" (i.e., the result of a single
-equivalence test), the returned value is a single numeric value, the test p-value.
+When \code{x} is an object of class "equivSDhtest" (i.e., the result
+of a single
+equivalence test), the returned value is a single numeric value, the test
+p-value.
 For an object of class "equivSDhtestList" (i.e. all pairwise tests for a
-set of gene lists), if \code{simplify = TRUE} (the default), the resulting value is a vector
+set of gene lists), if \code{simplify = TRUE} (the default), the resulting
+value is a vector
 with the p-values in all those tests, or the symmetric matrix of all p-values
-if \code{simplify = TRUE}. If \code{x} is an object of class "allEquivSDtest" (i.e., the
-test iterated along GO ontologies and levels), the preceding result is returned in the form
-of a list along the ontologies, levels and pairs of gene lists specified by the arguments
-\code{onto, GOlevel} and \code{listNames} (or all present in \code{x} for missing arguments).
+if \code{simplify = TRUE}. If \code{x} is an object of class "allEquivSDtest"
+(i.e., the test iterated along GO ontologies and levels), the preceding
+result is returned in the form of a list along the ontologies, levels and
+pairs of gene lists specified by the arguments \code{onto, GOlevel} and
+\code{listNames} (or all present in \code{x} for missing arguments).
 }
 \description{
 Given objects representing the result(s) of one or more equivalence tests
@@ -48,9 +56,11 @@ result of functions 'equivTestSorensen' and 'allEquivTestSorensen')
 this function returns the p-values of the tests.
 }
 \details{
-Argument \code{GOLevel} can be of class "character" or "numeric". In the first case, the GO
-levels must be specified like \code{"level 6"} or \code{c("level 4", "level 5", "level 6")}
-In the second case ("numeric"), the GO levels must be specified like\code{6} or \code{seq.int(4,6)}.
+Argument \code{GOLevel} can be of class "character" or "numeric". In the
+first case, the GO levels must be specified like \code{"level 6"} or
+\code{c("level 4", "level 5", "level 6")}
+In the second case ("numeric"), the GO levels must be specified like\code{6}
+or \code{seq.int(4,6)}.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -62,53 +72,22 @@ In the second case ("numeric"), the GO levels must be specified like\code{6} or 
 
 }}
 \examples{
-# Dataset 'allOncoGeneLists' contains the result of the equivalence test between gene lists
-# 'sanger' and 'atlas', at level 4 of the BP ontology:
-data(eqTest_atlas.sanger_BP4)
-eqTest_atlas.sanger_BP4
-class(eqTest_atlas.sanger_BP4)
-# This may correspond to the result of code like:
-# eqTest_atlas.sanger_BP4 <- equivTestSorensen(
-#   allOncoGeneLists[["sanger"]], allOncoGeneLists[["atlas"]],
-#   geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#   onto = "BP", GOLevel = 4, listNames = c("sanger", "atlas"))
-# (But results may vary according to GO updating)
-getPvalue(eqTest_atlas.sanger_BP4)
+# Manually define a 2 x 2 enrichment contingency table
+contTable <- as.table(matrix(c(127, 19, 159, 3018),
+  nrow = 2,
+  dimnames = list(
+    "Enriched in List 1" = c(TRUE, FALSE),
+    "Enriched in List 2" = c(TRUE, FALSE)
+  )
+))
+contTable
 
-# All pairwise equivalence tests at level 4 of the BP ontology
-data(eqTest_all_BP4)
-?eqTest_all_BP4
-class(eqTest_all_BP4)
-# This may correspond to a call like:
-# eqTest_all_BP4 <- equivTestSorensen(allOncoGeneLists,
-#                           geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db",
-#                           onto = "BP", GOLevel = 4)
-getPvalue(eqTest_all_BP4)
-getPvalue(eqTest_all_BP4, simplify = FALSE)
+# Compute the Sorensen equivalence test from the contingency table.
+# The result is an object of class "equivSDhtest".
+equivalenceTest <- equivTestSorensen(contTable)
+equivalenceTest
 
-# Equivalence test iterated over all GO ontologies and levels 3 to 10:
-data(allEqTests)
-?allEqTests
-class(allEqTests)
-# This may correspond to code like:
-# (By default, the tests are iterated over all GO ontologies and for levels 3 to 10)
-# allEqTests <- allEquivTestSorensen(allOncoGeneLists,
-#                                             geneUniverse = humanEntrezIDs,
-#                                             orgPackg = "org.Hs.eg.db")
-# All p-values:
-getPvalue(allEqTests)
-getPvalue(allEqTests, simplify = FALSE)
-
-# P-values only for some GO ontologies, levels or pairs of gene lists:
-getPvalue(allEqTests, GOLevel = "level 6")
-getPvalue(allEqTests, GOLevel = 6)
-getPvalue(allEqTests, GOLevel = seq.int(4,6))
-getPvalue(allEqTests, GOLevel = "level 6", simplify = FALSE)
-getPvalue(allEqTests, GOLevel = "level 6", listNames = c("atlas", "sanger"))
-getPvalue(allEqTests, GOLevel = seq.int(4,6), onto = "BP")
-getPvalue(allEqTests, GOLevel = seq.int(4,6), onto = "BP", simplify = FALSE)
-getPvalue(allEqTests, GOLevel = "level 6", onto = "BP",
-          listNames = c("waldman", "sanger"))
-getPvalue(allEqTests$BP$`level 4`)
+# Extract the pvalue from the equivalence test object
+getPvalue(equivalenceTest)
 
 }

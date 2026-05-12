@@ -1,36 +1,46 @@
-#' For a given level (2, 3, ...) in a GO ontology (BP, MF or CC), compute the equivalence threshold
-#'   dissimilarity matrix.
+#' For a given level (2, 3, ...) in a GO ontology (BP, MF or CC), compute the
+#' equivalence threshold dissimilarity matrix.
+#' @importFrom withr with_seed
 #'
 #' @param x either an object of class "list" or class "tableList".
 #' See the details section for more information.
-#' @param GOLevel integer (2, 3, ...) level of a GO ontology where the GO profiles are built
+#' @param GOLevel integer (2, 3, ...) level of a GO ontology where the GO
+#' profiles are built
 #' @param onto character, GO ontology ("BP", "MF" or "CC") under consideration
-#' @param orgPackg A string with the name of the genomic annotation package corresponding to a specific species to be analyzed, which must be previously installed and activated. For more details see \href{../doc/README.html}{README File}.
-#' @param geneUniverse character vector containing the universe of genes from where geneLists have been extracted. This vector must be extracted from the annotation package declared in \code{orgPackg}. For more details see \href{../doc/README.html}{README File}.
+#' @param orgPackg A string with the name of the genomic annotation package
+#' corresponding to a specific species to be analyzed, which must be previously
+#' installed and activated. For more details see
+#' \href{https://github.com/pablof1988/goSorensen/blob/master/README.md}{README File}.
+#' @param geneUniverse character vector containing the universe of genes from
+#' where geneLists have been extracted. This vector must be extracted from the
+#' annotation package declared in \code{orgPackg}. For more details see
+#' \href{https://github.com/pablof1988/goSorensen/blob/master/README.md}{README File}.
 #' @param boot boolean. If TRUE, the p-values are computed by means
-#' of a bootstrap approach instead of the asymptotic normal approach. Defaults to FALSE.
-#' @param nboot numeric, number of initially planned bootstrap replicates. Ignored if
-#' \code{boot == FALSE}. Defaults to 10000
-#' @param boot.seed starting random seed for all bootstrap iterations. Defaults to 6551.
-#'   see the details section
+#' of a bootstrap approach instead of the asymptotic normal approach. Defaults
+#' to FALSE.
+#' @param nboot numeric, number of initially planned bootstrap replicates.
+#' Ignored if \code{boot == FALSE}. Defaults to 10000
+#' @param boot.seed starting random seed for all bootstrap iterations. Defaults
+#' to 6551. see the details section
 #' @param trace boolean, the full process must be traced? Defaults to TRUE
-#' @param alpha simultaneous nominal significance level for the equivalence tests to be repeteadly performed,
-#'   defaults to 0.05
-#' @param precis numerical precision in the iterative search of the equivalence threshold dissimilarities,
-#'   defaults to 0.001
+#' @param alpha simultaneous nominal significance level for the equivalence
+#' tests to be repeteadly performed, defaults to 0.05
+#' @param precis numerical precision in the iterative search of the equivalence
+#' threshold dissimilarities, defaults to 0.001
 #' @param ... additional arguments to \code{buildEnrichTable}
-#' @return An object of class "dist", the equivalence threshold dissimilarity matrix based on the
-#' Sorensen-Dice dissimilarity.
+#' @return An object of class "dist", the equivalence threshold dissimilarity
+#' matrix based on the Sorensen-Dice dissimilarity.
 #' @details
-#' If \code{x} is an object of class "list", each of its elements must be a "character" vector of gene
-#' identifiers (e.g., ENTREZ). Then all pairwise threshold dissimilarities between these gene lists are obtained.
+#' If \code{x} is an object of class "list", each of its elements must be a
+#' "character" vector of gene identifiers (e.g., ENTREZ). Then all pairwise
+#' threshold dissimilarities between these gene lists are obtained.
 #'
-#' Class "tableList" corresponds to objects representing all mutual enrichment contingency tables
-#' generated in a pairwise fashion:
-#' Given gene lists l1, l2, ..., lk, an object of class "tableList" (typically constructed by a call to function
-#' \code{\link{buildEnrichTable}}) is a list of lists of
-#' contingency tables tij generated from each pair of gene lists i and j, with the
-#' following structure:
+#' Class "tableList" corresponds to objects representing all mutual enrichment
+#' contingency tables generated in a pairwise fashion:
+#' Given gene lists l1, l2, ..., lk, an object of class "tableList" (typically
+#' constructed by a call to function \code{\link{buildEnrichTable}}) is a list
+#' of lists of contingency tables tij generated from each pair of gene lists i
+#' and j, with the following structure:
 #'
 #' $l2
 #'
@@ -44,38 +54,57 @@
 #'
 #' $lk$l1$tk1, $lk$l2$tk2, ..., $lk$l(k-1)tk(k-1)
 #'
-#' If \code{x} is an object of class "tableList", the threshold dissimilarity is obtained
-#' over each one of these tables.
+#' If \code{x} is an object of class "tableList", the threshold dissimilarity is
+#' obtained over each one of these tables.
 #'
-#' If \code{boot == TRUE}, all series of \code{nboot} bootstrap replicates start from the same random
-#' seed, provided by the argument \code{boot.seed}, except if \code{boot == NULL}.
+#' If \code{boot == TRUE}, all series of \code{nboot} bootstrap replicates start
+#' from the same random seed, provided by the argument \code{boot.seed}, except
+#' if \code{boot == NULL}.
 #'
-#' Do not confuse the resulting threshold dissimilarity matrix with the Sorensen-Dice dissimilarities
-#' computed in each equivalence test.
+#' Do not confuse the resulting threshold dissimilarity matrix with the
+#' Sorensen-Dice dissimilarities computed in each equivalence test.
 #'
-#' The dimension of the resulting matrix may be less than the number of original gene lists being
-#' compared, as the process may not converge for some pairs of gene lists.
+#' The dimension of the resulting matrix may be less than the number of original
+#' gene lists being compared, as the process may not converge for some pairs of
+#' gene lists.
 #'
 #' @importFrom stats as.dist
 #' @examples
-#' # Gene lists to be explored for enrichment:
-#' data(allOncoGeneLists)
-#' 
-#' # Obtaining ENTREZ identifiers for the gene universe of humans:
+#' ## The following example is highly time-consuming and is therefore not run
+#' ## automatically during R CMD check.
+#'
+#' \dontrun{
+#' ## i) Obtaining ENTREZ identifiers for the gene universe of humans:
 #' library(org.Hs.eg.db)
 #' humanEntrezIDs <- keys(org.Hs.eg.db, keytype = "ENTREZID")
-#' 
-#' # This example is quite time consuming:
-#' # sorenThreshold(allOncoGeneLists,
-#' #                geneUniverse = humanEntrezIDs, orgPackg = "org.Hs.eg.db")
-#' # Much faster:
-#' # Object \code{cont_all_BP4} of class "tableList" contains all the pairwise contingency
-#' # tables of joint enrichment for the gene lists in \code{allOncoGeneLists}, for the BP
-#' # GO ontology at level 4:
-#' data("cont_all_BP4")
-#' sorenThreshold(cont_all_BP4)
 #'
-
+#' ## ii) Gene lists to be explored for analysis:
+#' data(allOncoGeneLists)
+#'
+#' # iii) Computing the threshold dissimilarity matrix directly from gene lists at
+#' # GO level 4 and BP ontology:
+#' dissMatrx_BP4 <- sorenThreshold(allOncoGeneLists,
+#'   geneUniverse = humanEntrezIDs,
+#'   orgPackg = "org.Hs.eg.db",
+#'   onto = "BP",
+#'   GOLevel = 4,
+#'   trace = FALSE
+#' )
+#' dissMatrx_BP4
+#' }
+#'
+#' # Since running this example may take several minutes, the result has been
+#' # pre-computed and is accessible as the following:
+#' data(dissMatrx_BP4)
+#' dissMatrx_BP4
+#' # This shortcut applies only to this example; for your own gene-list data,
+#' # the computation must be performed explicitly.
+#'
+#' # For a complete overview of this function's use, see the section 2 of the
+#' # vignette "Working with the Irrelevance-threshold Matrix of Dissimilarities"
+#' # You can do this by consulting the general package documentation or by
+#' # directly running the following code in the R console:
+#' # vignette("Dissimilarities_Matrix", package = "goSorensen")
 #' @export
 sorenThreshold <- function(x, ...) {
   UseMethod("sorenThreshold")
@@ -85,36 +114,47 @@ sorenThreshold <- function(x, ...) {
 #' @export
 sorenThreshold.list <- function(x, onto, GOLevel, geneUniverse, orgPackg,
                                 boot = FALSE, nboot = 10000, boot.seed = 6551,
-                                trace = TRUE, alpha = 0.05, precis = 0.001, ...)
-{
+                                trace = TRUE, alpha = 0.05, precis = 0.001, ...) {
   if (trace) {
-    cat("\n", date(), "  Building all enrichment contingency tables...\n")
+    message("\n", date(), "  Building all enrichment contingency tables...\n")
   }
   all2x2Tables <- buildEnrichTable(x,
-                                   onto = onto, GOLevel = GOLevel,
-                                   geneUniverse = geneUniverse, orgPackg = orgPackg,
-                                   ...)
-  return(sorenThreshold.tableList(all2x2Tables, onto = onto, GOLevel = GOLevel,
-                                  boot = boot, nboot = nboot, boot.seed = boot.seed,
-                                  trace = trace, alpha = alpha, precis = precis, ...))
+    onto = onto, GOLevel = GOLevel,
+    geneUniverse = geneUniverse,
+    orgPackg = orgPackg,
+    ...
+  )
+  return(sorenThreshold.tableList(all2x2Tables,
+    onto = onto, GOLevel = GOLevel,
+    boot = boot, nboot = nboot,
+    boot.seed = boot.seed,
+    trace = trace, alpha = alpha,
+    precis = precis, ...
+  ))
 }
 
 #' @describeIn sorenThreshold S3 method for class "tableList"
 #' @export
-sorenThreshold.tableList <- function(x, #onto = NULL, GOLevel = NULL,
-                                     #geneUniverse, orgPackg,
-                                     boot = FALSE, nboot = 10000, boot.seed = 6551,
-                                     trace = TRUE, alpha = 0.05, precis = 0.001, ...)
-{
+sorenThreshold.tableList <- function(x, # onto = NULL, GOLevel = NULL,
+                                     # geneUniverse, orgPackg,
+                                     boot = FALSE, nboot = 10000,
+                                     boot.seed = 6551,
+                                     trace = TRUE, alpha = 0.05,
+                                     precis = 0.001, ...) {
   s <- length(x) + 1
   h <- s * (s - 1) * 0.5
   equivDists <- rep(NA, h)
-  dIdxs <- unlist(lapply(seq.int(2,s),
-                         function(i) lapply(seq.int(1,(i-1)),
-                                            function(j) c(i,j))
+  dIdxs <- unlist(lapply(
+    seq.int(2, s),
+    function(i) {
+      lapply(
+        seq.int(1, (i - 1)),
+        function(j) c(i, j)
+      )
+    }
   ), recursive = FALSE)
   if (boot) {
-    arrTabs <- array(unlist(x), dim = c(2,2,h))
+    arrTabs <- array(unlist(x), dim = c(2, 2, h))
   }
   d <- dSorensen(x)
   d <- d[upper.tri(d)]
@@ -128,7 +168,7 @@ sorenThreshold.tableList <- function(x, #onto = NULL, GOLevel = NULL,
   }
   finite.idxs <- integer(h.finite)
   ih.finite <- 0
-  for (ih in seq.int(1,h)) {
+  for (ih in seq.int(1, h)) {
     if (finite.se[ih]) {
       ih.finite <- ih.finite + 1
       finite.idxs[ih.finite] <- ih
@@ -137,17 +177,22 @@ sorenThreshold.tableList <- function(x, #onto = NULL, GOLevel = NULL,
   d <- d[finite.se]
   se <- se[finite.se]
   if (boot) {
-    arrTabs <- arrTabs[,,finite.se, drop = FALSE]
+    arrTabs <- arrTabs[, , finite.se, drop = FALSE]
   }
-  deltaMax <- startingDelta(alpha, d, se, h.finite, boot, nboot, boot.seed, arrTabs)
+  deltaMax <- startingDelta(
+    alpha, d, se, h.finite, boot, nboot, boot.seed,
+    arrTabs
+  )
   delta <- deltaMax
 
   if (trace) {
-    cat("\n", date(), "  Computing all threshold equivalence distances...\n")
+    message("\n", date(), "  Computing all threshold equivalence distances...\n")
   }
-  for (ih in seq.int(h.finite,1)) {
-    nextStep <- nextEquivDist(d, se, ih, delta, alpha, precis,
-                              boot, nboot, boot.seed, arrTabs)
+  for (ih in seq.int(h.finite, 1)) {
+    nextStep <- nextEquivDist(
+      d, se, ih, delta, alpha, precis,
+      boot, nboot, boot.seed, arrTabs
+    )
     delta <- nextStep$delta
     iDelta <- nextStep$iDelta
     equivDists[finite.idxs[iDelta]] <- delta
@@ -166,7 +211,7 @@ sorenThreshold.tableList <- function(x, #onto = NULL, GOLevel = NULL,
 
   if (nrow(distMat) <= 1) {
     if (trace) {
-      cat("\n", date(), "Invalid threshold distance matrix\n")
+      message("\n", date(), "Invalid threshold distance matrix\n")
     }
     return(NULL)
   }
@@ -181,13 +226,13 @@ sorenThreshold.tableList <- function(x, #onto = NULL, GOLevel = NULL,
 }
 
 startingDelta <- function(alpha, d, se, h, boot, nboot, boot.seed, arrTabs) {
-  alphas.holm <- alpha / seq.int(h,1)
+  alphas.holm <- alpha / seq.int(h, 1)
   delta <- max(c(1, qnorm(1 - alpha / h)) %*% t(matrix(c(d, se), ncol = 2)))
   incDelta <- delta * 0.1
   repeat {
     p.vals <- pvals(delta, d, se, boot, nboot, boot.seed, arrTabs)
     p.order <- order(p.vals)
-    p.sort <- p.vals[p.order][seq.int(1,h)]
+    p.sort <- p.vals[p.order][seq.int(1, h)]
     if (all(p.sort <= alphas.holm)) {
       return(delta)
     } else {
@@ -199,11 +244,11 @@ startingDelta <- function(alpha, d, se, h, boot, nboot, boot.seed, arrTabs) {
 nextEquivDist <- function(d, se, h, delta, alpha, precis, boot,
                           nboot, boot.seed, arrTabs) {
   incDelta <- 0.1 * delta
-  alphas.holm <- alpha / seq.int(h,1)
+  alphas.holm <- alpha / seq.int(h, 1)
   repeat {
     p.vals <- pvals(delta, d, se, boot, nboot, boot.seed, arrTabs)
     p.order <- order(p.vals)
-    p.sort <- p.vals[p.order][seq.int(1,h)]
+    p.sort <- p.vals[p.order][seq.int(1, h)]
     if (all(p.sort <= alphas.holm)) {
       if (incDelta < precis) {
         return(list(delta = delta, iDelta = p.order[h]))
@@ -219,27 +264,35 @@ nextEquivDist <- function(d, se, h, delta, alpha, precis, boot,
   }
 }
 
-pvals <- function(delta, d, se, boot, nboot, boot.seed, arrTabs){
+pvals <- function(delta, d, se, boot, nboot, boot.seed, arrTabs) {
   if (boot) {
-    if (!is.null(boot.seed)) {
-      set.seed(boot.seed)
+    # Función interna que genera los p-valores (sin fijar semilla)
+    compute_pvals <- function() {
+      unlist(vapply(seq.int(1, length(se)), function(i) {
+        if (is.na(se[i])) {
+          return(NA)
+        } else {
+          di <- d[i]
+          return(pboot((di - delta) / se[i], nboot, arrTabs[, , i], di))
+        }
+      }, FUN.VALUE = numeric(1)))
     }
-    p.vals <- unlist(vapply(seq.int(1,length(se)), function(i) {
-      if (is.na(se[i])) {
-        return(NA)
-      } else {
-        di <- d[i]
-        return(pboot((di - delta) / se[i], nboot, arrTabs[,,i], di))
-      }
-    }, FUN.VALUE = numeric(1)))
+
+    # Fijar la semilla solo si se proporciona boot.seed
+    if (!is.null(boot.seed)) {
+      p.vals <- withr::with_seed(boot.seed, compute_pvals())
+    } else {
+      p.vals <- compute_pvals()
+    }
   } else {
     p.vals <- ifelse(is.na(se), NA, pnorm((d - delta) / se))
   }
+  return(p.vals)
 }
 
 pboot <- function(x, nboot, tab, d) {
   n <- sum(tab)
-  nu <- sum(tab[seq.int(1,3)])
+  nu <- sum(tab[seq.int(1, 3)])
   pTab <- tab / n
   bootTabs <- rmultinom(nboot, size = n, prob = pTab)
   tStats <- apply(bootTabs, 2, tStatSorensen, dis = d)
@@ -256,4 +309,3 @@ tStatSorensen <- function(xBoot, dis) {
   se <- 2 * sqrt(p11 * (1 - p11) / (nu - 1)) / (p11plus * p11plus)
   return((dBoot - dis) / se)
 }
-

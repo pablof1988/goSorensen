@@ -14,10 +14,10 @@
 #' @details This function is repeatedly evaluated during bootstrap iterations.
 #' Given a contingency table 'x' of mutual enrichment (the "true" dataset):
 #'
-#'\tabular{rr}{
+#' \tabular{rr}{
 #' \eqn{n_{11}} \tab \eqn{n_{10}} \cr
 #' \eqn{n_{01}} \tab \eqn{n_{00}},
-#'}
+#' }
 #'
 #' summarizing the status of mutual presence of enrichment in two gene lists, where
 #' the subindex '11' corresponds to those GO terms enriched in both lists,
